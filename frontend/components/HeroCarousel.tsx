@@ -19,7 +19,7 @@ export function HeroCarousel() {
   }, [])
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-secondary/60 via-white to-secondary/40 pt-24 pb-20">
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-secondary/60 via-white to-secondary/40 py-24 md:py-32">
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -28,38 +28,25 @@ export function HeroCarousel() {
           animation: 'gradient-shift 15s ease infinite',
         }}
       />
-      <div className="max-w-4xl mx-auto px-6 text-center relative">
-        <p className="font-sans text-base md:text-lg tracking-[0.2em] uppercase text-black/80 mb-6">
+      <div className="w-full max-w-[100vw] px-6 md:px-12 lg:px-16 text-center relative flex-1 flex flex-col justify-center">
+        <p className="font-sans text-sm md:text-base tracking-[0.25em] uppercase text-black/70 mb-8 md:mb-12">
           {t('hero.badge')}
         </p>
-        <div className="min-h-[4.5rem] md:min-h-[5.5rem] relative">
+        <div className="min-h-[6rem] md:min-h-[8rem] lg:min-h-[10rem] relative flex items-center justify-center">
           {SLIDES.map((slide, i) => (
             <div
               key={i}
-              className={`absolute inset-x-0 transition-opacity duration-700 ${
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 ${
                 i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'
               }`}
               aria-hidden={i !== active}
             >
-              <h1 className="font-serif-legacy text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-black leading-[1.2] tracking-tight">
+              <h1 className="font-serif-legacy text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-medium text-black leading-[1.15] tracking-tight max-w-[90vw]">
                 {t(slide.titleKey)}
                 <br />
                 <span className="text-black/90">{t(slide.subtitleKey)}</span>
               </h1>
             </div>
-          ))}
-        </div>
-        <div className="flex justify-center gap-2 mt-8">
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActive(i)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                i === active ? 'bg-primary' : 'bg-black/20 hover:bg-black/40'
-              }`}
-              aria-label={`Слайд ${i + 1}`}
-            />
           ))}
         </div>
       </div>
