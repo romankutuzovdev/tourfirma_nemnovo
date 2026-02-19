@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, type ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
-  variant?: 'fade-up' | 'fade-in'
+  variant?: 'fade-up' | 'fade-in' | 'scale'
   delay?: number
 }
 
@@ -32,6 +32,7 @@ export function AnimateOnScroll({ children, variant = 'fade-up', delay = 0 }: Pr
   const variants = {
     'fade-up': visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
     'fade-in': visible ? 'opacity-100' : 'opacity-0',
+    'scale': visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
   }
 
   return (

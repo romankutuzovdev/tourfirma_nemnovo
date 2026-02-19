@@ -31,7 +31,7 @@ export function ServicesSection() {
                 <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
                 <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
                   <h3 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">{item.title}</h3>
-                  <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">{item.short_desc}</p>
+                  <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">{item.excerpt}</p>
                   <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">{t('servicesSection.more')}</span>
                 </div>
               </Link>

@@ -20,7 +20,7 @@ export default async function RootLayout({
     <html lang="ru">
       <body>
         <NextIntlClientProvider>
-          <LocaleProvider locale="ru" initialServices={[]} initialPromos={[]} initialPortfolio={[]} initialExcursions={[]}>
+          <LocaleProvider locale="ru" initialServices={[]} initialPromos={[]} initialPortfolio={[]} initialExcursions={[]} initialEvents={[]} initialNews={[]}>
             <AuthProvider>
               <Header />
               <main>{children}</main>

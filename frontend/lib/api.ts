@@ -42,6 +42,7 @@ export type PortfolioItem = {
   image_url?: string
   image_urls?: string[]
   event_date?: string
+  is_pinned?: boolean
 }
 
 export type ExcursionItem = {
@@ -69,9 +70,9 @@ export async function fetchServices(locale: Locale): Promise<ServiceItem[]> {
     const res = await fetch(`${API_BASE}/services/?locale=${locale}`)
     if (!res.ok) return []
     const data = await res.json()
-    return Array.isArray(data) ? data.map((s: { short_desc?: string; image_url?: string }) => ({
-      slug: s.slug,
-      title: s.title,
+    return Array.isArray(data) ? data.map((s: { slug?: string; title?: string; short_desc?: string; excerpt?: string; image_url?: string; image?: string; price?: number; currency?: string }) => ({
+      slug: s.slug ?? '',
+      title: s.title ?? '',
       excerpt: s.short_desc ?? s.excerpt,
       image: s.image_url ?? s.image,
       price: s.price,
@@ -92,7 +93,7 @@ export async function fetchPromos(locale: Locale): Promise<PromoItem[]> {
   }
 }
 
-export type PromoDetail = PromoItem & { long_desc?: string; image_url?: string }
+export type PromoDetail = PromoItem & { short_desc?: string; long_desc?: string; image_url?: string }
 
 export async function fetchPromoBySlug(slug: string, locale: Locale): Promise<PromoDetail | null> {
   try {
@@ -107,6 +108,10 @@ export async function fetchPromoBySlug(slug: string, locale: Locale): Promise<Pr
 
 export function getPromoImageSrc(promo: { image?: string | null; image_url?: string | null }): string {
   return promo?.image ?? promo?.image_url ?? ''
+}
+
+export function getServiceImageSrc(item: { image?: string; image_url?: string }): string {
+  return item?.image ?? item?.image_url ?? ''
 }
 
 export type ServiceDetail = ServiceItem & { long_desc?: string }
@@ -135,7 +140,7 @@ export async function fetchExcursions(locale: Locale): Promise<ExcursionItem[]> 
     const res = await fetch(`${API_BASE}/excursions/?locale=${locale}`)
     if (!res.ok) return []
     const data = await res.json()
-    return Array.isArray(data) ? data.map((e: { short_desc?: string }) => ({
+    return Array.isArray(data) ? data.map((e: ExcursionItem & { excerpt?: string; image_url?: string }) => ({
       ...e,
       short_desc: e.short_desc ?? e.excerpt,
       image: e.image ?? e.image_url,
@@ -210,7 +215,7 @@ export async function fetchEvents(locale: Locale): Promise<EventItem[]> {
     const res = await fetch(`${API_BASE}/events/?locale=${locale}`)
     if (!res.ok) return []
     const data = await res.json()
-    return Array.isArray(data) ? data.map((e: { image_url?: string }) => ({ ...e, image: e.image ?? e.image_url })) : []
+    return Array.isArray(data) ? data.map((e: EventItem & { image_url?: string }) => ({ ...e, image: e.image ?? e.image_url })) : []
   } catch {
     return []
   }
@@ -248,7 +253,7 @@ export async function fetchNews(locale: Locale): Promise<NewsItem[]> {
     const res = await fetch(`${API_BASE}/news/?locale=${locale}`)
     if (!res.ok) return []
     const data = await res.json()
-    return Array.isArray(data) ? data.map((n: { image_url?: string }) => ({ ...n, image: n.image ?? n.image_url })) : []
+    return Array.isArray(data) ? data.map((n: NewsItem & { image_url?: string }) => ({ ...n, image: n.image ?? n.image_url })) : []
   } catch {
     return []
   }
