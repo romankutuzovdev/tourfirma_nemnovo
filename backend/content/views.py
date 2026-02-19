@@ -12,14 +12,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Service, Event, Excursion, News, Promo, HotOffer, PortfolioItem, Review, Partner, HowToGetRoute, CompanyInfo
+from .models import Service, Event, News, Promo, HotOffer, PortfolioItem, Review, Partner, HowToGetRoute, CompanyInfo
 from .serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
     EventListSerializer,
     EventDetailSerializer,
-    ExcursionListSerializer,
-    ExcursionDetailSerializer,
     NewsListSerializer,
     NewsDetailSerializer,
     PromoListSerializer,
@@ -97,25 +95,6 @@ def service_detail(request, slug):
     except Service.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = ServiceDetailSerializer(service, context={'locale': locale, 'request': request})
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def excursion_list(request):
-    locale = get_locale(request)
-    qs = Excursion.objects.all()
-    serializer = ExcursionListSerializer(qs, many=True, context={'locale': locale, 'request': request})
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def excursion_detail(request, slug):
-    locale = get_locale(request)
-    try:
-        excursion = Excursion.objects.get(slug=slug)
-    except Excursion.DoesNotExist:
-        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-    serializer = ExcursionDetailSerializer(excursion, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
 

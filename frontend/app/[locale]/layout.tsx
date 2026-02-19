@@ -11,7 +11,7 @@ import { LocaleProvider } from '@/contexts/LocaleContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { LocaleSetter } from '@/components/LocaleSetter'
-import { fetchServices, fetchPromos, fetchPortfolio, fetchExcursions, fetchEvents, fetchNews } from '@/lib/api'
+import { fetchServices, fetchEvents, fetchNews, fetchPromos, fetchPortfolio } from '@/lib/api'
 
 type Props = { children: React.ReactNode; params: Promise<{ locale: string }> }
 
@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: 'Немново — Близкая. Незнакомая. Беларусь.',
-  description: 'Турбаза в Беларуси. Создавайте яркие воспоминания вместе с нами. Услуги, фотоотчёты, как добраться.',
+  description: 'Турфирма. Мы сделаем активный отдых незабываемым! Услуги, фотоотчёты, экскурсии.',
 }
 
 export default async function LocaleLayout({ children, params }: Props) {
@@ -34,26 +34,23 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(loc)
 
   let initialServices: Awaited<ReturnType<typeof fetchServices>> = []
-  let initialPromos: Awaited<ReturnType<typeof fetchPromos>> = []
-  let initialPortfolio: Awaited<ReturnType<typeof fetchPortfolio>> = []
-  let initialExcursions: Awaited<ReturnType<typeof fetchExcursions>> = []
   let initialEvents: Awaited<ReturnType<typeof fetchEvents>> = []
   let initialNews: Awaited<ReturnType<typeof fetchNews>> = []
+  let initialPromos: Awaited<ReturnType<typeof fetchPromos>> = []
+  let initialPortfolio: Awaited<ReturnType<typeof fetchPortfolio>> = []
   try {
-    const [services, promos, portfolio, excursions, events, news] = await Promise.all([
+    const [services, events, news, promos, portfolio] = await Promise.all([
       fetchServices(loc),
-      fetchPromos(loc),
-      fetchPortfolio(loc),
-      fetchExcursions(loc),
       fetchEvents(loc),
       fetchNews(loc),
+      fetchPromos(loc),
+      fetchPortfolio(loc),
     ])
     initialServices = services
-    initialPromos = promos
-    initialPortfolio = portfolio
-    initialExcursions = excursions
     initialEvents = events
     initialNews = news
+    initialPromos = promos
+    initialPortfolio = portfolio
   } catch {
     // leave empty
   }
@@ -65,11 +62,10 @@ export default async function LocaleLayout({ children, params }: Props) {
       <LocaleProvider
         locale={loc}
         initialServices={initialServices}
-        initialPromos={initialPromos}
-        initialPortfolio={initialPortfolio}
-        initialExcursions={initialExcursions}
         initialEvents={initialEvents}
         initialNews={initialNews}
+        initialPromos={initialPromos}
+        initialPortfolio={initialPortfolio}
       >
         <AuthProvider>
         <LocaleSetter locale={locale} />

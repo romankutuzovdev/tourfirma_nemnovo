@@ -3,8 +3,6 @@ from rest_framework import serializers
 from .models import (
     Service, ServiceTranslation,
     Event, EventTranslation,
-    Excursion, ExcursionTranslation,
-    ExcursionCategory, ExcursionCategoryTranslation,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
@@ -134,77 +132,6 @@ class EventListSerializer(serializers.ModelSerializer):
     def get_short_desc(self, obj):
         t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
         return t.short_desc if t else ''
-
-    def get_image(self, obj):
-        if obj.image:
-            return _build_media_url(self.context.get('request'), obj.image)
-        return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
-
-
-class ExcursionListSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-    short_desc = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-    category_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Excursion
-        fields = ['slug', 'image', 'image_url', 'order', 'category_slug', 'category_name', 'title', 'short_desc']
-
-    def get_title(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.title if t else obj.slug
-
-    def get_short_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.short_desc if t else ''
-
-    def get_category_name(self, obj):
-        if not obj.category_slug:
-            return ''
-        cat = ExcursionCategory.objects.filter(slug=obj.category_slug).first()
-        if not cat:
-            return obj.category_slug
-        t = _locale_translation(cat.translations, self.context.get('locale', 'ru'))
-        return t.name if t else obj.category_slug
-
-    def get_image(self, obj):
-        if obj.image:
-            return _build_media_url(self.context.get('request'), obj.image)
-        return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
-
-
-class ExcursionDetailSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-    short_desc = serializers.SerializerMethodField()
-    long_desc = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-    category_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Excursion
-        fields = ['slug', 'image', 'image_url', 'order', 'category_slug', 'category_name', 'title', 'short_desc', 'long_desc']
-
-    def get_title(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.title if t else obj.slug
-
-    def get_short_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.short_desc if t else ''
-
-    def get_long_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.long_desc if t else ''
-
-    def get_category_name(self, obj):
-        if not obj.category_slug:
-            return ''
-        cat = ExcursionCategory.objects.filter(slug=obj.category_slug).first()
-        if not cat:
-            return obj.category_slug
-        t = _locale_translation(cat.translations, self.context.get('locale', 'ru'))
-        return t.name if t else obj.category_slug
 
     def get_image(self, obj):
         if obj.image:

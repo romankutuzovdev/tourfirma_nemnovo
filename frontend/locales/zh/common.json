@@ -3,30 +3,20 @@
     "home": "首页",
     "menuOpen": "菜单",
     "services": "服务",
+    "events": "活动",
     "about": "关于我们",
     "portfolio": "作品集",
     "reviews": "评价",
     "contact": "联系方式",
+    "agencies": "旅行社",
     "promos": "优惠",
+    "news": "新闻",
     "howToGet": "如何到达",
     "cabinet": "个人中心",
     "tourfirm": "旅行社",
     "login": "登录",
     "logout": "退出",
-    "register": "注册",
-    "faq": "常见问题",
-    "excursions": "游览",
-    "visafree": "Brest Grodno Visa Free"
-  },
-  "faq": {
-    "badge": "FAQ",
-    "title": "常见问题",
-    "items": [
-      {"q": "如何预订旅游或服务？", "a": "请通过「联系方式」页面的表格提交申请或致电我们。经理将在工作日内与您联系。"},
-      {"q": "如何前往旅游基地？", "a": "「如何到达」部分包含从不同城市出发的详细路线。那里还列出了地址和导航坐标。"},
-      {"q": "有哪些付款方式？", "a": "现场现金、银行卡。在线支付在个人中心注册后可用。"},
-      {"q": "可以取消预订吗？", "a": "可以。请尽快通过邮件或电话联系我们。退款条件在预订时确认。"}
-    ]
+    "register": "注册"
   },
   "auth": {
     "loginTitle": "登录",
@@ -34,7 +24,6 @@
     "forgotTitle": "找回密码",
     "resetTitle": "设置新密码",
     "cabinetTitle": "个人中心",
-    "payOrSubscribe": "支付",
     "username": "用户名",
     "usernamePlaceholder": "请输入用户名",
     "password": "密码",
@@ -58,36 +47,39 @@
     "backToLogin": "返回登录",
     "successReset": "邮件已发送，请查收。",
     "successChange": "密码已修改。",
-    "successProfile": "资料已保存。",
-    "paymentHistory": "支付历史",
-    "paymentStatuses": "支付状态",
-    "paymentStatusSuccess": "已支付",
-    "paymentStatusPending": "待处理",
-    "paymentStatusCancelled": "已取消",
-    "paymentStatusError": "错误",
-    "noPaymentsYet": "暂无支付记录。",
-    "paymentPageLink": "支付页面"
+    "successProfile": "资料已保存。"
   },
   "hero": {
-    "badge": "白俄罗斯旅行社",
+    "badge": "旅行社",
     "title1": "亲近。陌生。",
     "title2": "白俄罗斯。",
-    "subtitle": "与我们共创美好回忆！",
+    "subtitle": "我们将让您的户外活动成为难忘的体验！",
     "cta1": "服务",
     "cta2": "提交申请"
   },
   "about": {
     "badge": "关于我们",
-    "title": "NemnovoTour — 您的旅行社",
-    "p1": "我们组织白俄罗斯的旅游与休闲：游览、活动、国内旅行。",
-    "p2": "面向格罗德诺、明斯克及白俄罗斯各地的客人 — 家庭、朋友聚会及想发现新白俄罗斯的人们。"
+    "title": "Nemnovo — 您的休闲旅游基地",
+    "p1": "我们在白俄罗斯为您营造宁静的休息环境：自然、宁静与所需设施。",
+    "p2": "面向格罗德诺、明斯克及白俄罗斯各地的客人 — 家庭、朋友聚会及喜爱简约与自然的人们。"
   },
   "servicesSection": {
     "badge": "服务",
     "title": "我们提供的服务",
     "allServices": "全部服务",
+    "more": "了解更多 →"
+  },
+  "eventsSection": {
+    "badge": "活动",
+    "title": "活动",
+    "allEvents": "全部活动",
+    "more": "了解更多 →"
+  },
+  "newsSection": {
+    "badge": "新闻",
+    "title": "新闻",
     "more": "了解更多 →",
-    "from": "起"
+    "noNews": "暂无新闻。"
   },
   "reviewsSection": {
     "badge": "评价",
@@ -115,9 +107,8 @@
     ]
   },
   "partnersSection": {
-    "badge": "合作伙伴",
-    "title": "我们的合作伙伴",
-    "viewAll": "查看所有合作伙伴",
+    "badge": "",
+    "title": "我们的客户",
     "loading": "加载中…",
     "prevPartner": "上一位",
     "nextPartner": "下一位"
@@ -127,10 +118,9 @@
     "title": "联系我们",
     "intro": "申请发送至 office@nemnovotour.by。投诉与建议发至单独邮箱。",
     "inboxNote": "申请发送至 office@nemnovotour.by，我们将在当日回复。",
-    "complaintIntro": "投诉与建议发送至 marketingnemnovo@list.ru。",
+    "complaintIntro": "留下评价",
     "formMain": "预订 / 咨询",
     "formComplaint": "投诉与建议",
-    "requisitesTitle": "公司信息",
     "nameLabel": "姓名",
     "namePlaceholder": "如何称呼您",
     "emailLabel": "Email",
@@ -142,20 +132,30 @@
     "sending": "发送中…",
     "sendError": "发送失败",
     "send": "发送",
-    "thanks": "感谢，我们已收到您的消息。"
+    "thanks": "感谢，我们已收到您的消息。",
+    "close": "关闭"
   },
   "footer": {
-    "slogan": "亲近。陌生。白俄罗斯。与我们共创美好回忆！",
+    "slogan": "亲近。陌生。白俄罗斯。\n与我们共创美好回忆！",
     "address": "白俄罗斯，格罗德诺州，格罗德诺区，索波茨金乡，Nemnovo村15号。GPS: 53°51′47″N, 23°45′44″E",
+    "addressShort": "白俄罗斯，格罗德诺州，格罗德诺区，索波茨金乡，Nemnovo村15号",
     "howToGet": "如何到达",
     "privacy": "隐私政策",
-    "copyright": "NemnovoTour",
+    "personalDataPolicy": "个人数据处理政策",
+    "cookiePolicy": "Cookie政策",
+    "copyright": "Nemnovo",
+    "workingHours": "营业时间",
+    "workingHoursValue": "周三至周日 8:00–22:00\n周一、周二 休息",
+    "phone": "电话",
+    "phoneValue": "+375 29 123 45 67",
+    "phone1Label": "管理员",
+    "phone2Label": "旅游专员",
     "legalAddressLabel": "注册地址：",
     "officeAddressLabel": "办公地址：",
+    "addressLabel": "地址",
+    "requisites": "公司信息",
     "unpLabel": "УНП",
-    "okpoLabel": "ОКПО",
-    "loyaltySoon": "忠诚度计划 — 即将推出",
-    "tourfirmSite": "官网"
+    "okpoLabel": "ОКПО"
   },
   "cookie": {
     "text": "我们使用 cookies 用于网站与统计。继续即表示您同意",
@@ -169,7 +169,7 @@
     "yandex": "YANDEX 地图",
     "google": "GOOGLE 地图",
     "copy": "复制地址",
-    "mapTitle": "地图",
+    "mapTitle": "基地地图",
     "mapHint": "点击对象以放大图像"
   },
   "privacy": {
@@ -180,76 +180,67 @@
     "p3": "表单数据仅用于回复您的消息。",
     "p4": "数据相关咨询：office@nemnovotour.by。"
   },
+  "cookiePolicy": {
+    "title": "Cookie政策",
+    "p1": "本网站使用 cookie 以确保运营、分析与改善用户体验。",
+    "p2": "继续使用网站即表示您同意根据本政策使用 cookie。"
+  },
   "promosSection": {
     "badge": "优惠",
-    "title": "优惠活动"
+    "title": "优惠活动",
+    "prev": "上一张",
+    "next": "下一张"
   },
   "portfolioSection": {
-    "badge": "作品集",
-    "title": "活动照片集",
+    "badge": "活动照片集",
+    "title": "作品集",
     "description": "活动和出行的照片。可以通过按钮下载相册。",
     "button": "下载活动照片",
     "pinnedBadge": "置顶",
     "photos": "张照片",
     "backToPortfolio": "作品集"
   },
+  "agencies": {
+    "badge": "合作伙伴",
+    "title": "旅行社",
+    "intro": "涅姆诺沃旅游基地诚邀旅行社合作，提供优惠合作条件。我们组织白俄罗斯的休闲与活动 — 您可从每笔销售获得佣金。",
+    "whyTitle": "为什么选择我们？",
+    "why1": "正规经营 — 在法律框架内运营，愿与旅行社透明合作。",
+    "why2": "优惠条件 — 合作伙伴佣金及针对您客户的灵活方案。",
+    "why3": "行程与活动尽量减少取消 — 为您的游客提供可靠服务。",
+    "why4": "及时提供空位与条件信息 — 快速回复并协助选择。",
+    "why5": "客户经理支持 — 团队随时在线，解答问题并协助销售。",
+    "why6": "小团与个性化服务 — 为每位客人提供舒适与关注。",
+    "howTitle": "如何开始合作？",
+    "howIntro": "若您有意合作：",
+    "howStep1": "请通过电话或邮件联系我们以确认细节与条款。",
+    "howStep2": "填写所需文件并寄至我方地址（可应要求提供模板）。",
+    "howOutro": "我们重视长期互利关系，愿支持贵社提升收入！",
+    "ctaTitle": "期待您的咨询！",
+    "ctaPhone": "电话",
+    "ctaEmail": "邮箱",
+    "phoneValue": "+375 29 123 45 67",
+    "emailValue": "office@nemnovotour.by"
+  },
+  "hotOffer": {
+    "close": "关闭",
+    "closeAria": "关闭优惠弹窗",
+    "formTitle": "提交咨询",
+    "timerEndsIn": "优惠截止",
+    "dayShort": "天",
+    "hourShort": "时",
+    "minShort": "分",
+    "secShort": "秒"
+  },
   "common": {
     "allServices": "全部服务",
     "otherServices": "全部服务",
     "toServicesPage": "前往「我们提供的服务」",
-    "close": "关闭"
-  },
-  "accessibility": {
-    "ariaLabel": "无障碍选项",
-    "panelTitle": "无障碍",
-    "fontSize": "字号",
-    "fontSizeNormal": "A",
-    "fontSizeMedium": "A+",
-    "fontSizeLarge": "A++",
-    "highContrast": "高对比度"
-  },
-  "events": {
-    "title": "活动日历",
-    "description": "最新的游览、旅行和活动。选择日期并提交申请。",
-    "cta": "查看游览"
-  },
-  "gift": {
-    "title": "礼品券",
-    "description": "赠送难忘体验——游览或旅行礼品券。",
-    "cta": "订购礼品券"
-  },
-  "promos": {
-    "title": "热门优惠",
-    "empty": "优惠即将推出。",
-    "badge": "热门优惠",
-    "popupText": "游览特别优惠！",
-    "cta": "查看"
-  },
-  "newsletter": {
-    "title": "订阅通讯",
-    "description": "通过电子邮件获取游览和旅行公告。",
-    "placeholder": "email@example.com",
-    "submit": "订阅",
-    "sending": "…",
-    "success": "感谢！您已订阅。",
-    "error": "错误。请稍后再试。"
-  },
-  "partners": {
-    "title": "我们的合作伙伴"
-  },
-  "map": {
-    "title": "如何找到我们",
-    "openInYandex": "在Yandex地图中打开"
-  },
-  "chat": {
-    "label": "聊天",
-    "placeholder": "聊天功能开发中。请通过联系表与我们联系。"
-  },
-  "search": {
-    "ariaLabel": "站内搜索",
-    "placeholder": "搜索服务、优惠、作品集…",
-    "submit": "搜索",
-    "noResults": "未找到结果",
-    "hint": "输入搜索内容"
+    "allEvents": "全部活动",
+    "otherEvents": "其他活动",
+    "toEventsPage": "前往「活动」",
+    "allNews": "全部新闻",
+    "otherNews": "其他新闻",
+    "toNewsPage": "前往「新闻」"
   }
 }

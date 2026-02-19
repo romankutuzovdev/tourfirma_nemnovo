@@ -2,8 +2,6 @@ from django.contrib import admin
 from .models import (
     Service, ServiceTranslation,
     Event, EventTranslation,
-    Excursion, ExcursionTranslation,
-    ExcursionCategory, ExcursionCategoryTranslation,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
@@ -35,28 +33,6 @@ class EventTranslationInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     list_display = ['slug', 'order']
     inlines = [EventTranslationInline]
-
-
-class ExcursionTranslationInline(admin.TabularInline):
-    model = ExcursionTranslation
-    extra = 0
-
-
-@admin.register(Excursion)
-class ExcursionAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'category_slug', 'order']
-    inlines = [ExcursionTranslationInline]
-
-
-class ExcursionCategoryTranslationInline(admin.TabularInline):
-    model = ExcursionCategoryTranslation
-    extra = 0
-
-
-@admin.register(ExcursionCategory)
-class ExcursionCategoryAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'order']
-    inlines = [ExcursionCategoryTranslationInline]
 
 
 class NewsTranslationInline(admin.TabularInline):

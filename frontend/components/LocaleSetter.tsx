@@ -1,14 +1,19 @@
 'use client'
 
 import { useEffect } from 'react'
+import type { Locale } from '@/lib/i18n'
 
-type Props = { locale: string }
+const localeToLang: Record<Locale, string> = {
+  ru: 'ru',
+  be: 'be',
+  en: 'en',
+  pl: 'pl',
+  zh: 'zh',
+}
 
-export function LocaleSetter({ locale }: Props) {
+export function LocaleSetter({ locale }: { locale: string }) {
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = locale
-    }
+    document.documentElement.lang = localeToLang[locale as Locale] ?? 'ru'
   }, [locale])
   return null
 }

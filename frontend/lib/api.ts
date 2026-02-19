@@ -1,335 +1,357 @@
+/**
+ * API бэкенда: контент (услуги, новости). UI-переводы — в frontend/locales (next-intl).
+ */
+
 import type { Locale } from './i18n'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+const LOCALES: Locale[] = ['ru', 'be', 'en', 'pl', 'zh']
 
-export type CompanyInfo = {
-  company_name: string
-  legal_address?: string
-  office_address?: string
-  unp?: string
-  okpo?: string
-  trade_register?: string
-  services_register?: string
-  contact_email: string
-  tour_base_url?: string
+export function getApiUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_API_URL
+  if (raw === '' || (typeof raw === 'string' && raw.trim() === '')) return ''
+  const url = (raw || 'http://127.0.0.1:8000').trim().replace(/\/$/, '')
+  return url
 }
 
+/** Элемент из /api/services/?locale= */
 export type ServiceItem = {
   slug: string
+  image: string | null
+  image_url: string
+  order: number
   title: string
-  excerpt?: string
-  image?: string
-  price?: number
-  currency?: string
+  short_desc: string
 }
 
+/** Ответ /api/services/<slug>/?locale= */
+export type ServiceDetail = ServiceItem & { long_desc: string }
+
+/** Нормализует URL картинки: полный URL или относительный /media/... (если API на том же origin) */
+function toAbsoluteImageUrl(value: string): string {
+  if (value.startsWith('http://') || value.startsWith('https://')) return value
+  const path = value.startsWith('/') ? value : `/${value}`
+  const mediaPath = path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
+  const base = getApiUrl()
+  if (base === '') return mediaPath
+  return `${base}${mediaPath}`
+}
+
+/** URL картинки услуги: приоритет у загруженного image, иначе image_url */
+export function getServiceImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
+}
+
+/** Элемент из /api/events/?locale= */
+export type EventItem = {
+  slug: string
+  image: string | null
+  image_url: string
+  order: number
+  title: string
+  short_desc: string
+}
+
+/** Ответ /api/events/<slug>/?locale= */
+export type EventDetail = EventItem & { long_desc: string }
+
+/** Элемент из /api/news/?locale= */
+export type NewsItem = {
+  slug: string
+  image: string | null
+  image_url: string
+  order: number
+  title: string
+  short_desc: string
+  created_at: string
+}
+
+/** Ответ /api/news/<slug>/?locale= */
+export type NewsDetail = NewsItem & { long_desc: string }
+
+/** URL картинки новости: приоритет у загруженного image, иначе image_url */
+export function getNewsImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
+}
+
+/** URL картинки мероприятия: приоритет у загруженного image, иначе image_url */
+export function getEventImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
+}
+
+/** Элемент из /api/promos/?locale= */
 export type PromoItem = {
   slug: string
+  image: string | null
+  image_url: string
+  order: number
   title: string
-  excerpt?: string
-  image?: string
-  date_start?: string
-  date_end?: string
+  short_desc: string
 }
 
+/** Ответ /api/promos/<slug>/?locale= */
+export type PromoDetail = PromoItem & { long_desc: string }
+
+/** URL картинки акции: приоритет у загруженного image, иначе image_url */
+export function getPromoImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
+}
+
+/** Элемент из /api/hot-offers/?locale= (горячее предложение для попапа) */
+export type HotOfferItem = {
+  slug: string
+  image: string | null
+  order: number
+  delay_seconds: number
+  valid_until: string | null
+  title: string
+  short_desc: string
+  button_text: string
+}
+
+/** URL картинки горячего предложения. Всегда отдаём относительный /media/... чтобы запрос шёл через rewrite Next.js на бэкенд (картинка грузится с того же origin). */
+export function getHotOfferImageSrc(item: { image: string | null }): string {
+  const raw = item.image || ''
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) {
+    try {
+      const path = new URL(raw).pathname
+      return path.startsWith('/') ? path : `/${path}`
+    } catch {
+      return raw
+    }
+  }
+  const path = raw.startsWith('/') ? raw : `/${raw}`
+  return path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
+}
+
+/** Элемент из /api/portfolio/?locale= */
 export type PortfolioItem = {
   slug: string
+  image: string | null
+  image_url: string
+  image_urls: string[]
+  event_date: string | null
+  order: number
+  is_pinned: boolean
   title: string
-  excerpt?: string
-  description?: string
-  images?: string[]
-  image?: string
-  image_url?: string
-  image_urls?: string[]
-  event_date?: string
-  is_pinned?: boolean
+  description: string
 }
 
-export type ExcursionItem = {
-  slug: string
-  title: string
-  short_desc?: string
-  image?: string
-  order?: number
-  category_slug?: string
-  category_name?: string
+/** Деталь мероприятия из /api/portfolio/<slug>/?locale= — с массивом всех фото */
+export type PortfolioItemDetail = Omit<PortfolioItem, 'image_urls'> & { images: string[] }
+
+/** URL главной картинки портфолио: приоритет у загруженного image, иначе image_url */
+export function getPortfolioImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
 }
 
-export async function fetchCompanyInfo(): Promise<CompanyInfo | null> {
+const API_TIMEOUT = 15000 // 15 сек
+
+async function apiFetch(url: string): Promise<Response | null> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT)
   try {
-    const res = await fetch(`${API_BASE}/company-info/`)
-    if (!res.ok) return null
-    return res.json()
+    const res = await fetch(url, { cache: 'no-store' as RequestCache, signal: controller.signal })
+    return res
   } catch {
-    return null
+    return null // таймаут, сеть, и т.д.
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
 export async function fetchServices(locale: Locale): Promise<ServiceItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/services/?locale=${locale}`)
-    if (!res.ok) return []
-    const data = await res.json()
-    return Array.isArray(data) ? data.map((s: { slug?: string; title?: string; short_desc?: string; excerpt?: string; image_url?: string; image?: string; price?: number; currency?: string }) => ({
-      slug: s.slug ?? '',
-      title: s.title ?? '',
-      excerpt: s.short_desc ?? s.excerpt,
-      image: s.image_url ?? s.image,
-      price: s.price,
-      currency: s.currency ?? 'BYN',
-    })) : []
-  } catch {
-    return []
-  }
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/services/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
 }
 
-export async function fetchPromos(locale: Locale): Promise<PromoItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/promos/?locale=${locale}`)
-    if (!res.ok) return []
-    return res.json()
-  } catch {
-    return []
-  }
+export async function fetchServiceBySlug(slug: string, locale: Locale): Promise<ServiceDetail | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/services/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res) return null
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json().catch(() => null)
 }
-
-export type PromoDetail = PromoItem & { short_desc?: string; long_desc?: string; image_url?: string }
-
-export async function fetchPromoBySlug(slug: string, locale: Locale): Promise<PromoDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/promos/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    const p = await res.json()
-    return { ...p, image: p.image ?? p.image_url }
-  } catch {
-    return null
-  }
-}
-
-export function getPromoImageSrc(promo: { image?: string | null; image_url?: string | null }): string {
-  return promo?.image ?? promo?.image_url ?? ''
-}
-
-export function getServiceImageSrc(item: { image?: string; image_url?: string }): string {
-  return item?.image ?? item?.image_url ?? ''
-}
-
-export type ServiceDetail = ServiceItem & { long_desc?: string }
-
-export async function fetchServiceDetail(slug: string, locale: Locale): Promise<ServiceDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/services/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    const s = await res.json()
-    return {
-      slug: s.slug,
-      title: s.title,
-      excerpt: s.short_desc ?? s.excerpt,
-      image: s.image_url ?? s.image,
-      price: s.price,
-      currency: s.currency ?? 'BYN',
-      long_desc: s.long_desc,
-    }
-  } catch {
-    return null
-  }
-}
-
-export async function fetchExcursions(locale: Locale): Promise<ExcursionItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/excursions/?locale=${locale}`)
-    if (!res.ok) return []
-    const data = await res.json()
-    return Array.isArray(data) ? data.map((e: ExcursionItem & { excerpt?: string; image_url?: string }) => ({
-      ...e,
-      short_desc: e.short_desc ?? e.excerpt,
-      image: e.image ?? e.image_url,
-    })) : []
-  } catch {
-    return []
-  }
-}
-
-export type ExcursionDetail = ExcursionItem & { long_desc?: string }
-
-export async function fetchExcursionDetail(slug: string, locale: Locale): Promise<ExcursionDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/excursions/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    const e = await res.json()
-    return {
-      ...e,
-      short_desc: e.short_desc ?? e.excerpt,
-      image: e.image ?? e.image_url,
-    }
-  } catch {
-    return null
-  }
-}
-
-export async function fetchPortfolio(locale: Locale): Promise<PortfolioItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/portfolio/?locale=${locale}`)
-    if (!res.ok) return []
-    return res.json()
-  } catch {
-    return []
-  }
-}
-
-export function getPortfolioImageSrc(item: { image?: string; image_url?: string; image_urls?: string[]; images?: string[] }): string {
-  return item?.image ?? item?.image_url ?? item?.image_urls?.[0] ?? item?.images?.[0] ?? ''
-}
-
-export type PortfolioDetail = PortfolioItem & { images?: string[] }
-
-export async function fetchPortfolioItem(slug: string, locale: Locale): Promise<PortfolioDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/portfolio/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    return res.json()
-  } catch {
-    return null
-  }
-}
-
-const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/api\/?$/, '')
-
-export function getPortfolioDownloadUrl(slug: string): string {
-  return `${API_ORIGIN}/api/portfolio/${slug}/download/`
-}
-
-// ——— Events ———
-export type EventItem = {
-  slug: string
-  title: string
-  short_desc?: string
-  image?: string
-  image_url?: string
-}
-
-export type EventDetail = EventItem & { long_desc?: string }
 
 export async function fetchEvents(locale: Locale): Promise<EventItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/events/?locale=${locale}`)
-    if (!res.ok) return []
-    const data = await res.json()
-    return Array.isArray(data) ? data.map((e: EventItem & { image_url?: string }) => ({ ...e, image: e.image ?? e.image_url })) : []
-  } catch {
-    return []
-  }
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/events/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
 }
 
 export async function fetchEventBySlug(slug: string, locale: Locale): Promise<EventDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/events/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    const e = await res.json()
-    return { ...e, image: e.image ?? e.image_url }
-  } catch {
-    return null
-  }
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/events/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res) return null
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json().catch(() => null)
 }
-
-export function getEventImageSrc(item: { image?: string; image_url?: string }): string {
-  return item?.image ?? item?.image_url ?? ''
-}
-
-// ——— News ———
-export type NewsItem = {
-  slug: string
-  title: string
-  short_desc?: string
-  created_at: string
-  image?: string
-  image_url?: string
-}
-
-export type NewsDetail = NewsItem & { long_desc?: string }
 
 export async function fetchNews(locale: Locale): Promise<NewsItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/news/?locale=${locale}`)
-    if (!res.ok) return []
-    const data = await res.json()
-    return Array.isArray(data) ? data.map((n: NewsItem & { image_url?: string }) => ({ ...n, image: n.image ?? n.image_url })) : []
-  } catch {
-    return []
-  }
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/news/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
 }
 
 export async function fetchNewsBySlug(slug: string, locale: Locale): Promise<NewsDetail | null> {
-  try {
-    const res = await fetch(`${API_BASE}/news/${slug}/?locale=${locale}`)
-    if (!res.ok) return null
-    const n = await res.json()
-    return { ...n, image: n.image ?? n.image_url }
-  } catch {
-    return null
-  }
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/news/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res) return null
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json().catch(() => null)
 }
 
-export function getNewsImageSrc(item: { image?: string; image_url?: string }): string {
-  return item?.image ?? item?.image_url ?? ''
+export async function fetchPromos(locale: Locale): Promise<PromoItem[]> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/promos/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
 }
 
-// ——— Reviews ———
+export async function fetchPromoBySlug(slug: string, locale: Locale): Promise<PromoDetail | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/promos/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res) return null
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json().catch(() => null)
+}
+
+export async function fetchHotOffers(locale: Locale): Promise<HotOfferItem[]> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/hot-offers/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
+}
+
+export async function fetchPortfolio(locale: Locale): Promise<PortfolioItem[]> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/portfolio/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
+}
+
+export async function fetchPortfolioItem(slug: string, locale: Locale): Promise<PortfolioItemDetail | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/portfolio/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res) return null
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json().catch(() => null)
+}
+
+/** Ссылка для скачивания всех фото мероприятия (ZIP) */
+export function getPortfolioDownloadUrl(slug: string): string {
+  return `${getApiUrl()}/api/portfolio/${encodeURIComponent(slug)}/download/`
+}
+
+/** Блок способа из /api/how-to-get/ (на самолёте, автобусе и т.д.) */
+export type HowToGetBlockItem = {
+  transport_type: string
+  title: string
+  content: string
+}
+
+/** Город из /api/how-to-get/ (Из Минска, Из Москвы и т.д.) */
+export type HowToGetCityItem = {
+  slug: string
+  name: string
+  order: number
+  blocks: HowToGetBlockItem[]
+}
+
+/** Ответ /api/how-to-get/?locale= */
+export type HowToGetResponse = {
+  cities: HowToGetCityItem[]
+  address: string
+  gps_lat: number | null
+  gps_lon: number | null
+}
+
+const DEFAULT_HOW_TO_GET: HowToGetResponse = { cities: [], address: '', gps_lat: null, gps_lon: null }
+
+export async function fetchHowToGet(locale: Locale): Promise<HowToGetResponse> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/how-to-get/?locale=${loc}`)
+  if (!res?.ok) return DEFAULT_HOW_TO_GET
+  return res.json().catch(() => DEFAULT_HOW_TO_GET)
+}
+
+/** Элемент из /api/partners/ */
+export type PartnerItem = {
+  id: number
+  name: string
+  logo_display: string | null
+  link: string
+  order: number
+}
+
+export async function fetchPartners(): Promise<PartnerItem[]> {
+  const res = await apiFetch(`${getApiUrl()}/api/partners/`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
+}
+
+/** Отзыв из /api/reviews/ (для главной, с оценкой 1–5) */
 export type ReviewItem = {
   id: number
   author: string
   text: string
   rating: number
-  order?: number
+  order: number
 }
 
 export async function fetchReviews(): Promise<ReviewItem[]> {
-  try {
-    const res = await fetch(`${API_BASE}/reviews/`)
-    if (!res.ok) return []
-    return res.json()
-  } catch {
-    return []
-  }
+  const res = await apiFetch(`${getApiUrl()}/api/reviews/`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
 }
 
-// ——— Contact ———
-export type ContactFormPayload = { name: string; email: string; message: string }
+/** Реквизиты компании для футера (GET /api/company-info/) */
+export type CompanyInfo = {
+  company_name: string
+  legal_address: string
+  office_address: string
+  unp: string
+  okpo: string
+  state_registration?: string
+  trade_register: string
+  services_register: string
+  contact_email: string
+}
+
+export async function fetchCompanyInfo(): Promise<CompanyInfo | null> {
+  const res = await apiFetch(`${getApiUrl()}/api/company-info/`)
+  if (!res?.ok) return null
+  return res.json().catch(() => null)
+}
+
+/** Отправка формы контакта (заявка, претензия или обратная связь из горячего предложения). */
+export type ContactFormType = 'main' | 'complaint' | 'hot_offer'
 
 export async function sendContactForm(
-  type: 'main' | 'complaint' | 'hot_offer',
-  payload: ContactFormPayload
+  type: ContactFormType,
+  payload: { name: string; email: string; message: string }
 ): Promise<{ ok: true } | { error: string }> {
-  try {
-    const res = await fetch(`${API_BASE}/contact/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, ...payload }),
-    })
-    const data = await res.json().catch(() => ({}))
-    if (!res.ok) return { error: (data as { error?: string }).error ?? `Ошибка ${res.status}` }
-    return { ok: true }
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : 'Ошибка отправки' }
-  }
-}
-
-// ——— How to get ———
-export type HowToGetBlockItem = { transport_type: string; title: string; content: string }
-export type HowToGetCityItem = { slug: string; name: string; order: number; blocks: HowToGetBlockItem[] }
-export type HowToGetResponse = {
-  cities: HowToGetCityItem[]
-  address?: string
-  gps_lat?: number | null
-  gps_lon?: number | null
-}
-
-export async function fetchHowToGet(locale: Locale): Promise<HowToGetResponse> {
-  try {
-    const res = await fetch(`${API_BASE}/how-to-get/?locale=${locale}`)
-    if (!res.ok) return { cities: [] }
-    return res.json()
-  } catch {
-    return { cities: [] }
-  }
+  const res = await fetch(`${getApiUrl()}/api/contact/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, ...payload }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) return { error: (data as { error?: string }).error || `Ошибка ${res.status}` }
+  if ((data as { ok?: boolean }).ok) return { ok: true }
+  return { error: (data as { error?: string }).error || 'Неизвестная ошибка' }
 }

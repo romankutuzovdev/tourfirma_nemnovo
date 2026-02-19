@@ -3,30 +3,20 @@
     "home": "Strona główna",
     "menuOpen": "Menu",
     "services": "Usługi",
+    "events": "Wydarzenia",
     "about": "O nas",
     "portfolio": "Portfolio",
     "reviews": "Opinie",
     "contact": "Kontakt",
+    "agencies": "Dla agencji",
     "promos": "Promocje",
+    "news": "Aktualności",
     "howToGet": "Jak dojechać",
     "cabinet": "Konto",
     "tourfirm": "BIURO PODRÓŻY",
     "login": "Zaloguj się",
     "logout": "Wyloguj",
-    "register": "Rejestracja",
-    "faq": "FAQ",
-    "excursions": "Wycieczki",
-    "visafree": "Brest Grodno Visa Free"
-  },
-  "faq": {
-    "badge": "FAQ",
-    "title": "Często zadawane pytania",
-    "items": [
-      {"q": "Jak zarezerwować wycieczkę lub usługę?", "a": "Złóż wniosek za pomocą formularza na stronie «Kontakt» lub zadzwoń do nas. Menadżer skontaktuje się z Tobą w ciągu jednego dnia roboczego."},
-      {"q": "Jak dojechać do bazy turystycznej?", "a": "Sekcja «Jak dojechać» zawiera szczegółowe trasy z różnych miast. Znajdziesz tam także adres i współrzędne do nawigacji."},
-      {"q": "Jakie metody płatności są dostępne?", "a": "Gotówka na miejscu, karta bankowa. Płatność online dostępna po rejestracji w panelu osobistym."},
-      {"q": "Czy można anulować rezerwację?", "a": "Tak. Skontaktuj się z nami e-mailem lub telefonicznie jak najszybciej. Warunki zwrotu ustalane są przy rezerwacji."}
-    ]
+    "register": "Rejestracja"
   },
   "auth": {
     "loginTitle": "Logowanie",
@@ -34,7 +24,6 @@
     "forgotTitle": "Odzyskiwanie hasła",
     "resetTitle": "Nowe hasło",
     "cabinetTitle": "Konto",
-    "payOrSubscribe": "Zapłać",
     "username": "Login",
     "usernamePlaceholder": "Wpisz login",
     "password": "Hasło",
@@ -58,36 +47,39 @@
     "backToLogin": "Powrót do logowania",
     "successReset": "Email wysłany. Sprawdź skrzynkę.",
     "successChange": "Hasło zmienione.",
-    "successProfile": "Profil zapisany.",
-    "paymentHistory": "Historia płatności",
-    "paymentStatuses": "Statusy płatności",
-    "paymentStatusSuccess": "Opłacono",
-    "paymentStatusPending": "Oczekuje",
-    "paymentStatusCancelled": "Anulowano",
-    "paymentStatusError": "Błąd",
-    "noPaymentsYet": "Brak płatności.",
-    "paymentPageLink": "Strona płatności"
+    "successProfile": "Profil zapisany."
   },
   "hero": {
-    "badge": "Biuro podróży na Białorusi",
+    "badge": "Biuro turystyczne",
     "title1": "Bliska. Nieznana.",
     "title2": "Białoruś.",
-    "subtitle": "Twórz z nami niezapomniane wspomnienia!",
+    "subtitle": "Sprawimy, że aktywny wypoczynek będzie niezapomniany!",
     "cta1": "Usługi",
     "cta2": "Zostaw zapytanie"
   },
   "about": {
     "badge": "O nas",
-    "title": "NemnovoTour — biuro podróży dla Twoich wycieczek",
-    "p1": "Organizujemy wycieczki i wypoczynek na Białorusi: wycieczki, imprezy, podróże po kraju.",
-    "p2": "Zapraszamy gości z Grodna, Mińska i całej Białorusi — rodziny, grupy przyjaciół i tych, którzy chcą odkryć nową Białoruś."
+    "title": "Nemnovo — baza turystyczna na Twój wypoczynek",
+    "p1": "Tworzymy warunki do spokojnego wypoczynku na Białorusi: natura, cisza i wszystko, czego potrzeba na terenie.",
+    "p2": "Zapraszamy gości z Grodna, Mińska i całej Białorusi — rodziny, grupy przyjaciół i tych, którzy cenią prostotę i bliskość natury."
   },
   "servicesSection": {
     "badge": "Usługi",
     "title": "Co oferujemy",
     "allServices": "Wszystkie usługi",
-    "more": "Więcej →",
-    "from": "od"
+    "more": "Więcej →"
+  },
+  "eventsSection": {
+    "badge": "Wydarzenia",
+    "title": "Wydarzenia",
+    "allEvents": "Wszystkie wydarzenia",
+    "more": "Więcej →"
+  },
+  "newsSection": {
+    "badge": "Aktualności",
+    "title": "Aktualności",
+    "more": "Czytaj więcej →",
+    "noNews": "Brak aktualności."
   },
   "reviewsSection": {
     "badge": "Opinie",
@@ -115,9 +107,8 @@
     ]
   },
   "partnersSection": {
-    "badge": "Partnerzy",
-    "title": "Z kim współpracujemy",
-    "viewAll": "Zobacz wszystkich partnerów",
+    "badge": "",
+    "title": "Nasi klienci",
     "loading": "Ładowanie partnerów…",
     "prevPartner": "Poprzedni partner",
     "nextPartner": "Następny partner"
@@ -134,10 +125,9 @@
     "title": "Skontaktuj się",
     "intro": "Zapytania: office@nemnovotour.by. Skargi i sugestie na osobny adres.",
     "inboxNote": "Zapytania trafiają na office@nemnovotour.by. Odpowiemy w ciągu dnia.",
-    "complaintIntro": "Skargi i sugestie trafiają na marketingnemnovo@list.ru.",
+    "complaintIntro": "Zostaw opinię",
     "formMain": "Rezerwacja / zapytanie",
     "formComplaint": "Skargi i sugestie",
-    "requisitesTitle": "Dane firmy",
     "nameLabel": "Imię",
     "namePlaceholder": "Jak się do Pani/Pana zwracać",
     "emailLabel": "Email",
@@ -149,20 +139,30 @@
     "sending": "Wysyłanie…",
     "sendError": "Nie udało się wysłać",
     "send": "Wyślij",
-    "thanks": "Dziękujemy, otrzymaliśmy wiadomość."
+    "thanks": "Dziękujemy, otrzymaliśmy wiadomość.",
+    "close": "Zamknij"
   },
   "footer": {
-    "slogan": "Bliska. Nieznana. Białoruś. Twórz z nami wspomnienia!",
+    "slogan": "Bliska. Nieznana. Białoruś.\nTwórz z nami wspomnienia!",
     "address": "Białoruś, obw. grodzieński, rej. grodzieński, Sopockin s/s, wieś Nemnovo, 15. GPS: 53°51′47″N, 23°45′44″E",
+    "addressShort": "Białoruś, obw. grodzieński, rej. grodzieński, Sopockin s/s, wieś Nemnovo, 15",
     "howToGet": "Dojazd",
     "privacy": "Polityka prywatności",
-    "copyright": "NemnovoTour",
+    "personalDataPolicy": "Polityka przetwarzania danych osobowych",
+    "cookiePolicy": "Polityka dotycząca plików cookie",
+    "copyright": "Nemnovo",
+    "workingHours": "Godziny pracy",
+    "workingHoursValue": "ŚR–ND 8:00–22:00\nPN, WT — ZAMKNIĘTE",
+    "phone": "Telefon",
+    "phoneValue": "+375 29 123 45 67",
+    "phone1Label": "Administrator",
+    "phone2Label": "Specjalista ds. turystyki",
     "legalAddressLabel": "Adres rejestrowy:",
     "officeAddressLabel": "Adres biura:",
+    "addressLabel": "Adres",
+    "requisites": "Dane firmy",
     "unpLabel": "UNP",
-    "okpoLabel": "OKPO",
-    "loyaltySoon": "Program lojalnościowy — wkrótce",
-    "tourfirmSite": "Strona główna"
+    "okpoLabel": "OKPO"
   },
   "cookie": {
     "text": "Używamy plików cookies. Kontynuując, zgadzasz się na",
@@ -176,7 +176,7 @@
     "yandex": "YANDEX MAPY",
     "google": "GOOGLE MAPS",
     "copy": "Kopiuj adres",
-    "mapTitle": "Mapa",
+    "mapTitle": "Mapa bazy turystycznej",
     "mapHint": "Kliknij obiekt, aby powiększyć zdjęcie"
   },
   "privacy": {
@@ -187,76 +187,67 @@
     "p3": "Dane z formularzy służą wyłącznie do odpowiedzi.",
     "p4": "W sprawach danych: office@nemnovotour.by."
   },
+  "cookiePolicy": {
+    "title": "Polityka dotycząca plików cookie",
+    "p1": "Strona używa plików cookie do działania, analityki i poprawy doświadczenia użytkownika.",
+    "p2": "Kontynuując korzystanie ze strony, zgadzasz się na używanie cookie zgodnie z tą polityką."
+  },
   "promosSection": {
     "badge": "Promocje",
-    "title": "Korzystne oferty"
+    "title": "Korzystne oferty",
+    "prev": "Wstecz",
+    "next": "Dalej"
   },
   "portfolioSection": {
-    "badge": "Portfolio",
-    "title": "Relacje zdjęciowe z wydarzeń",
+    "badge": "Relacje zdjęciowe z wydarzeń",
+    "title": "Portfolio",
     "description": "Zdjęcia z imprez i wyjazdów. Można pobrać album przyciskiem.",
     "button": "Pobierz zdjęcia z wydarzenia",
     "pinnedBadge": "Przypięte",
     "photos": "zdjęć",
     "backToPortfolio": "Portfolio"
   },
+  "agencies": {
+    "badge": "Dla partnerów",
+    "title": "Dla agencji",
+    "intro": "Baza turystyczna «Nemnovo» zaprasza biura podróży do współpracy i oferuje korzystne warunki. Organizujemy wypoczynek i wydarzenia na Białorusi — otrzymujesz prowizję od każdej sprzedaży.",
+    "whyTitle": "Dlaczego wybierają nas?",
+    "why1": "Oficjalna działalność — działamy w ramach prawa, gotowi do przejrzystej współpracy z agencjami.",
+    "why2": "Korzystne warunki — prowizja dla partnerów i elastyczne oferty dla Twoich klientów.",
+    "why3": "Wycieczki i wydarzenia bez zbędnych odwołań — niezawodność dla Twoich turystów.",
+    "why4": "Aktualne informacje o dostępności i warunkach — szybko odpowiadamy i pomagamy w doborze.",
+    "why5": "Wsparcie menedżerów — nasz zespół jest w kontakcie, gotowy odpowiedzieć na pytania i pomóc w sprzedaży.",
+    "why6": "Małe grupy i indywidualne podejście — komfort i uwaga dla każdego gościa.",
+    "howTitle": "Jak rozpocząć współpracę?",
+    "howIntro": "Jeśli jesteś zainteresowany partnerstwem:",
+    "howStep1": "Skontaktuj się z nami telefonicznie lub mailowo, aby uzyskać szczegóły i warunki.",
+    "howStep2": "Wypełnij wymagane dokumenty i wyślij na nasz adres (na życzenie prześlemy szablony).",
+    "howOutro": "Cenimy długoterminowe i mutually beneficial relacje i jesteśmy gotowi wspierać Twoje biuro w zwiększaniu przychodów!",
+    "ctaTitle": "Czekamy na Twoje zapytania!",
+    "ctaPhone": "Telefon",
+    "ctaEmail": "Email",
+    "phoneValue": "+375 29 123 45 67",
+    "emailValue": "office@nemnovotour.by"
+  },
+  "hotOffer": {
+    "close": "Zamknij",
+    "closeAria": "Zamknij okno oferty",
+    "formTitle": "Zostaw zapytanie",
+    "timerEndsIn": "Oferta kończy się za",
+    "dayShort": "d",
+    "hourShort": "g",
+    "minShort": "m",
+    "secShort": "s"
+  },
   "common": {
     "allServices": "Wszystkie usługi",
     "otherServices": "Wszystkie usługi",
     "toServicesPage": "Strona «Co oferujemy»",
-    "close": "Zamknij"
-  },
-  "accessibility": {
-    "ariaLabel": "Wersja dla słabowidzących",
-    "panelTitle": "Dostępność",
-    "fontSize": "Rozmiar czcionki",
-    "fontSizeNormal": "A",
-    "fontSizeMedium": "A+",
-    "fontSizeLarge": "A++",
-    "highContrast": "Wysoki kontrast"
-  },
-  "events": {
-    "title": "Kalendarz wydarzeń",
-    "description": "Aktualne wycieczki, wyjazdy i wydarzenia. Wybierz datę i zostaw zapytanie.",
-    "cta": "Zobacz wycieczki"
-  },
-  "gift": {
-    "title": "Bon podarunkowy",
-    "description": "Podaruj niezapomniane wrażenia — bon na wycieczkę lub wyjazd.",
-    "cta": "Zamów bon"
-  },
-  "promos": {
-    "title": "Gorące oferty",
-    "empty": "Promocje wkrótce.",
-    "badge": "Gorąca oferta",
-    "popupText": "Specjalne warunki na wycieczki!",
-    "cta": "Zobacz"
-  },
-  "newsletter": {
-    "title": "Zapisz się do newslettera",
-    "description": "Otrzymuj zapowiedzi wycieczek i wyjazdów na email.",
-    "placeholder": "email@example.com",
-    "submit": "Zapisz się",
-    "sending": "…",
-    "success": "Dziękujemy! Subskrypcja aktywna.",
-    "error": "Błąd. Spróbuj ponownie później."
-  },
-  "partners": {
-    "title": "Z kim współpracujemy"
-  },
-  "map": {
-    "title": "Jak nas znaleźć",
-    "openInYandex": "Otwórz w Yandex Mapach"
-  },
-  "chat": {
-    "label": "Czat",
-    "placeholder": "Czat w przygotowaniu. Napisz do nas przez formularz kontaktowy."
-  },
-  "search": {
-    "ariaLabel": "Wyszukiwanie na stronie",
-    "placeholder": "Szukaj usług, promocji, portfolio…",
-    "submit": "Szukaj",
-    "noResults": "Nie znaleziono wyników",
-    "hint": "Wprowadź zapytanie"
+    "allEvents": "Wszystkie wydarzenia",
+    "otherEvents": "Inne wydarzenia",
+    "toEventsPage": "Strona «Wydarzenia»",
+    "allNews": "Wszystkie aktualności",
+    "otherNews": "Inne aktualności",
+    "toNewsPage": "Strona «Aktualności»"
   }
 }

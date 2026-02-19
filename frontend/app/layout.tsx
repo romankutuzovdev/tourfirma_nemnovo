@@ -1,30 +1,18 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { LocaleProvider } from '@/contexts/LocaleContext';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { NextIntlClientProvider } from 'next-intl';
+import React from 'react'
+import { PT_Serif } from 'next/font/google'
+import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Турфирма Немново — Путешествия вашей мечты',
-  description: 'Турфирма Немново — подбор и бронирование туров по всему миру. Отдых, экскурсии, приключения.',
-};
+const ptSerif = PT_Serif({
+  weight: ['400', '700'],
+  subsets: ['cyrillic', 'latin'],
+  display: 'swap',
+  variable: '--font-pt-serif',
+})
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru">
-      <body>
-        <NextIntlClientProvider>
-          <LocaleProvider locale="ru" initialServices={[]} initialPromos={[]} initialPortfolio={[]} initialExcursions={[]} initialEvents={[]} initialNews={[]}>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </LocaleProvider>
-        </NextIntlClientProvider>
-      </body>
+    <html lang="ru" className={ptSerif.variable}>
+      <body className="font-sans antialiased min-h-screen flex flex-col text-base font-medium">{children}</body>
     </html>
-  );
+  )
 }

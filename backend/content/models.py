@@ -315,65 +315,6 @@ class HotOfferTranslation(models.Model):
         return f'{self.hot_offer.slug} ({self.locale})'
 
 
-class Excursion(models.Model):
-    """Экскурсия: slug и изображение общие, тексты — по локалям. category_slug для группировки."""
-    slug = models.SlugField(max_length=120, unique=True)
-    image = models.ImageField(upload_to='excursions/', blank=True, null=True)
-    image_url = models.URLField(blank=True, help_text='Если нет загрузки файла')
-    order = models.PositiveIntegerField(default=0)
-    category_slug = models.SlugField(max_length=80, blank=True, help_text='Группа, напр. grodno-region, minsk-belarus')
-
-    class Meta:
-        ordering = ['category_slug', 'order', 'id']
-        verbose_name = 'Экскурсия'
-        verbose_name_plural = 'Экскурсии'
-
-    def __str__(self):
-        return self.slug
-
-
-class ExcursionTranslation(models.Model):
-    excursion = models.ForeignKey(Excursion, on_delete=models.CASCADE, related_name='translations')
-    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
-    title = models.CharField(max_length=200)
-    short_desc = models.TextField(blank=True)
-    long_desc = models.TextField(blank=True)
-
-    class Meta:
-        unique_together = [('excursion', 'locale')]
-        ordering = ['excursion', 'locale']
-
-    def __str__(self):
-        return f'{self.excursion.slug} ({self.locale})'
-
-
-class ExcursionCategory(models.Model):
-    """Категория экскурсий (Гродно и область, Минск и Беларусь)."""
-    slug = models.SlugField(max_length=80, unique=True)
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order', 'slug']
-        verbose_name = 'Категория экскурсий'
-        verbose_name_plural = 'Категории экскурсий'
-
-    def __str__(self):
-        return self.slug
-
-
-class ExcursionCategoryTranslation(models.Model):
-    category = models.ForeignKey(ExcursionCategory, on_delete=models.CASCADE, related_name='translations')
-    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
-    name = models.CharField(max_length=200)
-
-    class Meta:
-        unique_together = [('category', 'locale')]
-        ordering = ['category', 'locale']
-
-    def __str__(self):
-        return f'{self.category.slug} ({self.locale})'
-
-
 class CompanyInfo(models.Model):
     """Одна запись — контактные/юридические данные для футера и страниц (редактируются в админке)."""
     company_name = models.CharField('Название', max_length=200, default='ООО «Немново Тур»')

@@ -3,34 +3,20 @@
     "home": "Home",
     "menuOpen": "Menu",
     "services": "Services",
+    "events": "Events",
     "about": "About",
     "portfolio": "Portfolio",
     "reviews": "Reviews",
     "contact": "Contact",
+    "agencies": "For agencies",
     "promos": "Promos",
+    "news": "News",
     "howToGet": "How to get there",
     "cabinet": "Account",
     "tourfirm": "TOUR OPERATOR",
     "login": "Log in",
     "logout": "Log out",
-    "register": "Sign up",
-    "news": "News",
-    "payment": "Payment",
-    "agencies": "For agencies",
-    "terms": "Terms of use",
-    "faq": "FAQ",
-    "excursions": "Excursions",
-    "visafree": "Brest Grodno Visa Free"
-  },
-  "faq": {
-    "badge": "FAQ",
-    "title": "Frequently asked questions",
-    "items": [
-      {"q": "How to book a tour or service?", "a": "Submit a request via the form on the Contact page or call us. Our manager will contact you within one business day."},
-      {"q": "How to get to the tour venue?", "a": "The «How to get there» section has detailed routes from different cities. Address and coordinates for navigation are also listed there."},
-      {"q": "What payment methods are available?", "a": "Cash on arrival, bank card. Online payment is available after registration in your personal account."},
-      {"q": "Can I cancel a booking?", "a": "Yes. Contact us by email or phone as soon as possible. Refund conditions are clarified at the time of booking."}
-    ]
+    "register": "Sign up"
   },
   "auth": {
     "loginTitle": "Log in",
@@ -38,7 +24,6 @@
     "forgotTitle": "Forgot password",
     "resetTitle": "New password",
     "cabinetTitle": "Account",
-    "payOrSubscribe": "Pay",
     "username": "Username",
     "usernamePlaceholder": "Enter username",
     "password": "Password",
@@ -62,48 +47,39 @@
     "backToLogin": "Back to login",
     "successReset": "Email sent. Please check your inbox.",
     "successChange": "Password changed.",
-    "successProfile": "Profile saved.",
-    "paymentHistory": "Payment history",
-    "paymentStatuses": "Payment statuses",
-    "paymentStatusSuccess": "Paid",
-    "paymentStatusPending": "Pending",
-    "paymentStatusCancelled": "Cancelled",
-    "paymentStatusError": "Error",
-    "noPaymentsYet": "No payments yet.",
-    "paymentPageLink": "Payment page"
+    "successProfile": "Profile saved."
   },
   "hero": {
-    "badge": "Tour operator in Belarus",
+    "badge": "Tour company",
     "title1": "Close. Unfamiliar.",
     "title2": "Belarus.",
-    "subtitle": "Create vivid memories with us!",
+    "subtitle": "We will make active recreation unforgettable!",
     "cta1": "Services",
-    "cta2": "Send request",
-    "slide1Title": "Nemnovo Tour —",
-    "slide1Subtitle": "discovering unique places and exciting routes",
-    "slide2Title": "Travel with us —",
-    "slide2Subtitle": "We will make your active holiday unforgettable!",
-    "slide3Title": "Ride the wave of bright emotions",
-    "slide3Subtitle": "Together with Nemnovo Tour!"
+    "cta2": "Send request"
   },
   "about": {
     "badge": "About",
-    "title": "Travel agency «Nemnovo Tour» — 16 years of successful organization of your holiday.",
-    "p1": "We organize tours and holidays in Belarus: excursions, kayaking, active recreation and trips around the country.",
-    "p2": "We focus on guests from Grodno, Minsk and all of Belarus.",
-    "points": [
-      "Creative and responsible managers who will plan the most interesting route and fully organize your holiday",
-      "Experienced and caring instructors who will accompany you during active recreation and make it as safe as possible",
-      "Guides in love with their work who will take you on a time machine to the exciting world of Belarusian Renaissance and the era of kings!"
-    ],
-    "cta": "Learn more"
+    "title": "Nemnovo — tour base for your rest",
+    "p1": "We create conditions for a quiet rest in Belarus: nature, silence and everything you need on the territory.",
+    "p2": "We focus on guests from Grodno, Minsk and all of Belarus — families, groups of friends and those who value simplicity and closeness to nature."
   },
   "servicesSection": {
-    "badge": "Services",
-    "title": "What we offer",
+    "badge": "What we offer",
+    "title": "Services",
     "allServices": "All services",
+    "more": "Learn more →"
+  },
+  "eventsSection": {
+    "badge": "Events",
+    "title": "Events",
+    "allEvents": "All events",
+    "more": "Learn more →"
+  },
+  "newsSection": {
+    "badge": "News",
+    "title": "News",
     "more": "Learn more →",
-    "from": "from"
+    "noNews": "No news yet."
   },
   "reviewsSection": {
     "badge": "Reviews",
@@ -131,9 +107,8 @@
     ]
   },
   "partnersSection": {
-    "badge": "Partners",
-    "title": "Who we work with",
-    "viewAll": "View all partners",
+    "badge": "",
+    "title": "Our clients",
     "loading": "Loading partners…",
     "prevPartner": "Previous partner",
     "nextPartner": "Next partner"
@@ -143,10 +118,9 @@
     "title": "Get in touch",
     "intro": "Requests go to office@nemnovotour.by. Complaints and suggestions to a separate email.",
     "inboxNote": "Requests go to office@nemnovotour.by. We will reply within a day.",
-    "complaintIntro": "Complaints and suggestions go to marketingnemnovo@list.ru.",
+    "complaintIntro": "Leave a review",
     "formMain": "Booking / enquiry",
     "formComplaint": "Complaints and suggestions",
-    "requisitesTitle": "Requisites",
     "nameLabel": "Name",
     "namePlaceholder": "How to address you",
     "emailLabel": "Email",
@@ -158,25 +132,30 @@
     "sending": "Sending…",
     "sendError": "Failed to send",
     "send": "Send",
-    "thanks": "Thank you, we have received your message."
+    "thanks": "Thank you, we have received your message.",
+    "close": "Close"
   },
   "footer": {
-    "slogan": "Close. Unfamiliar. Belarus. Create vivid memories with us!",
+    "slogan": "Close. Unfamiliar. Belarus.\nCreate vivid memories with us!",
     "address": "Belarus, Grodno region, Grodno district, Sopotskin s/s, Nemnovo village, 15. GPS: 53°51′47″N, 23°45′44″E",
+    "addressShort": "Belarus, Grodno region, Grodno district, Sopotskin s/s, Nemnovo village, 15",
     "howToGet": "How to get there",
     "privacy": "Privacy policy",
-    "copyright": "NemnovoTour",
+    "personalDataPolicy": "Personal data processing policy",
+    "cookiePolicy": "Cookie policy",
+    "copyright": "Nemnovo",
+    "workingHours": "Working hours",
+    "workingHoursValue": "WED–SUN 8:00–22:00\nMON, TUE — CLOSED",
+    "phone": "Phone",
+    "phoneValue": "+375 29 123 45 67",
+    "phone1Label": "Administrator",
+    "phone2Label": "Tourism specialist",
     "legalAddressLabel": "Legal address:",
     "officeAddressLabel": "Office address:",
+    "addressLabel": "Address",
+    "requisites": "Company details",
     "unpLabel": "UNP",
-    "okpoLabel": "OKPO",
-    "loyaltySoon": "Loyalty program — coming soon",
-    "tourfirmSite": "Official website",
-    "phones": "Phones",
-    "phone1": "(8 0152) 49-07-29",
-    "phone2": "MTS (8 029) 780-13-04",
-    "phone3": "A1 (8 029) 601-16-37",
-    "workHours": "Working hours: 9:00–17:00"
+    "okpoLabel": "OKPO"
   },
   "cookie": {
     "text": "We use cookies for the site and analytics. By continuing, you agree to our",
@@ -190,7 +169,7 @@
     "yandex": "YANDEX MAPS",
     "google": "GOOGLE MAPS",
     "copy": "Copy address",
-    "mapTitle": "Map",
+    "mapTitle": "Tour base map",
     "mapHint": "Tap an object to enlarge the image"
   },
   "privacy": {
@@ -201,142 +180,67 @@
     "p3": "Data from contact forms is used only to respond to your message.",
     "p4": "For data processing enquiries: office@nemnovotour.by."
   },
+  "cookiePolicy": {
+    "title": "Cookie policy",
+    "p1": "The site uses cookies for operation, analytics and improving user experience.",
+    "p2": "By continuing to use the site, you agree to the use of cookies under this policy."
+  },
   "promosSection": {
-    "badge": "Hot offers",
-    "title": "Special offers"
-  },
-  "offers": {
-    "badge": "Services",
-    "title": "What we offer",
-    "items": [
-      {"title": "Grodno Visa Free", "desc": "Everything for foreign tourists", "href": "/visafree"},
-      {"title": "Active recreation", "desc": "Everything for active tourism lovers!", "href": "/services"},
-      {"title": "Rental", "desc": "Quality equipment at affordable prices!", "href": "/services"},
-      {"title": "Nemnovo Base", "desc": "Active tourism center on Augustow Canal!", "href": "/how-to-get"},
-      {"title": "Rope park", "desc": "We set up a rope park wherever you want!", "href": "/services"},
-      {"title": "For children", "desc": "Exciting programs and animation for children's parties", "href": "/services"},
-      {"title": "Corporate clients", "desc": "Unforgettable holiday for your company!", "href": "/agencies"},
-      {"title": "Training seminars", "desc": "We make your seminars convenient and comfortable", "href": "/services"},
-      {"title": "Sea holidays and Europe tours", "desc": "We arrange holidays to your taste!", "href": "/services"},
-      {"title": "Adventure projects", "desc": "We bring the boldest animation projects to life!", "href": "/services"},
-      {"title": "Hostel", "desc": "Comfortable accommodation at Nemnovo Base", "href": "/how-to-get"},
-      {"title": "Excursions", "desc": "We immerse you in the exciting world of the past!", "href": "/excursions"}
-    ]
-  },
-  "excursions": {
-    "badge": "Excursions",
-    "title": "Excursions in Belarus",
-    "intro": "Immerse yourself in the exciting world of the past of Grodno, Brest and all of Belarus. Guided and themed excursions for groups and individual tourists.",
-    "cta": "Want to book an excursion? Submit a request and we will select a route for you.",
-    "ctaButton": "Submit request",
-    "categories": [
-      {"name": "Grodno and Grodno region", "items": [{"title": "Grodno city tour", "desc": "Royal city, old castle, Farny church", "href": "https://nemnovotour.by"}, {"title": "Grodno region", "desc": "Augustow Canal, Neman, estates", "href": "https://nemnovotour.by"}]},
-      {"name": "Minsk and Belarus", "items": [{"title": "Minsk excursions", "desc": "Capital of Belarus", "href": "https://nemnovotour.by"}, {"title": "Belarus tours", "desc": "Mir Castle, Nesvizh, Brest Fortress", "href": "https://nemnovotour.by"}]}
-    ]
-  },
-  "visafree": {
-    "badge": "Brest Grodno Visa Free",
-    "title": "Brest Grodno Visa Free",
-    "p1": "Brest Grodno Visa Free is the territory of Brest city and districts of Brest and Grodno regions forming the visa-free zone. No visa required for entry.",
-    "p2": "Tourists from 73 countries can visit the territory for up to 15 days and enjoy unique historical and architectural monuments.",
-    "mapTitle": "Online map of the visa-free territory",
-    "applyButton": "Submit entry application",
-    "contactButton": "Contact us",
-    "linksList": "List of countries (73 countries)"
+    "badge": "Promos",
+    "title": "Special offers",
+    "prev": "Previous",
+    "next": "Next"
   },
   "portfolioSection": {
-    "badge": "Portfolio",
-    "title": "Event photo reports",
+    "badge": "Event photo reports",
+    "title": "Portfolio",
     "description": "Photos from events and trips. You can download an album using the button.",
     "button": "Download event photos",
     "pinnedBadge": "Pinned",
     "photos": "photos",
     "backToPortfolio": "Portfolio"
   },
+  "agencies": {
+    "badge": "Partners",
+    "title": "For agencies",
+    "intro": "Tour base «Nemnovo» invites travel agencies to partnership and offers favourable terms for cooperation. We organise rest and events in Belarus — you earn commission on every sale.",
+    "whyTitle": "Why choose us?",
+    "why1": "Official activity — we operate within the law and are ready for transparent cooperation with agencies.",
+    "why2": "Favourable terms — commission for partners and flexible offers for your clients.",
+    "why3": "Tours and events with minimal cancellations — reliability for your tourists.",
+    "why4": "Up-to-date availability and conditions — we respond quickly and help with selection.",
+    "why5": "Manager support — our team is on hand to answer questions and help with sales.",
+    "why6": "Small groups and individual approach — comfort and attention for every guest.",
+    "howTitle": "How to start cooperation?",
+    "howIntro": "If you are interested in partnership:",
+    "howStep1": "Contact us by phone or email to clarify details and terms.",
+    "howStep2": "Complete the required documents and send them to our address (we will send templates on request).",
+    "howOutro": "We value long-term and mutually beneficial relations and are ready to support your agency in growing revenue!",
+    "ctaTitle": "We look forward to your enquiries!",
+    "ctaPhone": "Phone",
+    "ctaEmail": "Email",
+    "phoneValue": "+375 29 123 45 67",
+    "emailValue": "office@nemnovotour.by"
+  },
+  "hotOffer": {
+    "close": "Close",
+    "closeAria": "Close offer popup",
+    "formTitle": "Leave a request",
+    "timerEndsIn": "Offer ends in",
+    "dayShort": "d",
+    "hourShort": "h",
+    "minShort": "m",
+    "secShort": "s"
+  },
   "common": {
     "allServices": "All services",
     "otherServices": "All services",
     "toServicesPage": "To «What we offer» page",
-    "close": "Close"
-  },
-  "accessibility": {
-    "ariaLabel": "Accessibility options",
-    "panelTitle": "Accessibility",
-    "fontSize": "Font size",
-    "fontSizeNormal": "A",
-    "fontSizeMedium": "A+",
-    "fontSizeLarge": "A++",
-    "highContrast": "High contrast"
-  },
-  "search": {
-    "ariaLabel": "Site search",
-    "placeholder": "Search services, promos, portfolio…",
-    "submit": "Search",
-    "noResults": "No results found",
-    "hint": "Enter your search query"
-  },
-  "home": {
-    "calendarBadge": "Calendar",
-    "calendarTitle": "Upcoming events",
-    "calendarIntro": "Dates and events from our photo reports.",
-    "calendarAll": "All events →",
-    "giftBadge": "Gift",
-    "giftTitle": "Gift certificate",
-    "giftIntro": "Give your loved ones a trip — choose a tour or contact us.",
-    "giftCta": "Choose service",
-    "giftContact": "Contact us",
-    "newsletterBadge": "Newsletter",
-    "newsletterTitle": "Subscribe to news",
-    "newsletterIntro": "Be the first to hear about promos and events.",
-    "newsletterSubmit": "Subscribe",
-    "newsletterThanks": "Thank you! You are subscribed.",
-    "hotOfferLabel": "Hot offer",
-    "hotOfferTitle": "Special offer",
-    "hotOfferCta": "Details",
-    "chatBotLabel": "Chat bot",
-    "chatBotTitle": "Chat with GPT",
-    "chatBotSoon": "Coming soon: GPT chat bot will be available here."
-  },
-  "events": {
-    "title": "Events calendar",
-    "description": "Upcoming tours, excursions and events. Pick a date and submit a request.",
-    "cta": "View excursions"
-  },
-  "gift": {
-    "title": "Gift certificate",
-    "description": "Give unforgettable experiences — a certificate for an excursion or tour.",
-    "cta": "Order certificate"
-  },
-  "promos": {
-    "title": "Hot offers",
-    "empty": "Promos coming soon.",
-    "badge": "Hot offer",
-    "popupText": "Special conditions for excursions!",
-    "cta": "View"
-  },
-  "newsletter": {
-    "title": "Subscribe to newsletter",
-    "description": "Get tour and excursion announcements by email.",
-    "placeholder": "email@example.com",
-    "submit": "Subscribe",
-    "sending": "…",
-    "success": "Thank you! You are subscribed.",
-    "error": "Error. Please try again later."
-  },
-  "partners": {
-    "title": "Our partners"
-  },
-  "map": {
-    "title": "How to find us",
-    "openInYandex": "Open in Yandex Maps"
-  },
-  "chat": {
-    "label": "Chat",
-    "placeholder": "Chat coming soon. Contact us via the contact form."
-  },
-  "empty": {
-    "title": "Nothing here yet",
-    "description": "This page has no content yet.",
-    "backHome": "Back to home"
+    "allEvents": "All events",
+    "otherEvents": "Other events",
+    "toEventsPage": "To «Events» page",
+    "allNews": "All news",
+    "otherNews": "Other news",
+    "toNewsPage": "To «News» page"
   }
 }

@@ -11,7 +11,7 @@ export function ServicesSection() {
   const t = useTranslations()
   const services = useServices()
   return (
-    <section id="services" className="scroll-mt-24 pt-12 md:pt-16 pb-24 md:pb-32 bg-primary">
+    <section id="services" className="scroll-mt-24 pt-12 md:pt-16 pb-6 md:pb-8 bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="section-title-main text-white">{t('servicesSection.title')}</h2>
         <div className="mt-12 md:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
@@ -31,7 +31,7 @@ export function ServicesSection() {
                 <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
                 <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
                   <h3 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">{item.title}</h3>
-                  <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">{item.excerpt}</p>
+                  <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">{item.short_desc}</p>
                   <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">{t('servicesSection.more')}</span>
                 </div>
               </Link>

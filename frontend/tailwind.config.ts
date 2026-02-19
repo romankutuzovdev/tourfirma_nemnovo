@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#5869A8',
-        secondary: '#8A97C4',
+        primary: '#F7B557', // Mimosa — основной
+        secondary: '#CDD0DB', // Cloud — второстепенный
         white: '#FFFFFF',
       },
       fontFamily: {

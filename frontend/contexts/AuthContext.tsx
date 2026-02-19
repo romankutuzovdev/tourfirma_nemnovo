@@ -1,12 +1,20 @@
 'use client'
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
-import { getStoredAuth, setStoredAuth, clearStoredAuth, type AuthTokens, type User } from '@/lib/auth'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import type { User, AuthTokens } from '@/lib/auth'
+import {
+  getStoredAuth,
+  setStoredAuth,
+  clearStoredAuth,
+  refreshTokens,
+  fetchMe,
+} from '@/lib/auth'
 
 type AuthContextValue = {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
+  setUser: (u: User | null) => void
   loginSuccess: (data: AuthTokens) => void
   logout: () => void
 }
@@ -14,27 +22,60 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUserState] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    const stored = getStoredAuth()
-    setUser(stored?.user ?? null)
-    setIsLoading(false)
-  }, [])
+  const setUser = (u: User | null) => {
+    setUserState(u)
+  }
 
-  const loginSuccess = useCallback((data: AuthTokens) => {
+  const loginSuccess = (data: AuthTokens) => {
     setStoredAuth(data)
-    setUser(data.user)
-  }, [])
+    setUserState(data.user)
+  }
 
-  const logout = useCallback(() => {
+  const logout = () => {
     clearStoredAuth()
-    setUser(null)
+    setUserState(null)
+  }
+
+  useEffect(() => {
+    let mounted = true
+    const init = async () => {
+      const stored = getStoredAuth()
+      if (!stored) {
+        setIsLoading(false)
+        return
+      }
+      setUserState(stored.user)
+      const refreshed = await refreshTokens()
+      if (!mounted) return
+      if (refreshed) {
+        setStoredAuth(refreshed)
+        setUserState(refreshed.user)
+      } else {
+        const me = await fetchMe()
+        if (!mounted) return
+        if (me) setUserState(me)
+        else logout()
+      }
+      setIsLoading(false)
+    }
+    init()
+    return () => { mounted = false }
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, loginSuccess, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        isAuthenticated: !!user,
+        setUser,
+        loginSuccess,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

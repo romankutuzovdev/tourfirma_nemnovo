@@ -2,16 +2,15 @@
 
 import React, { createContext, useContext } from 'react'
 import type { Locale } from '@/lib/i18n'
-import type { ServiceItem, PromoItem, PortfolioItem, ExcursionItem, EventItem, NewsItem } from '@/lib/api'
+import type { ServiceItem, EventItem, NewsItem, PromoItem, PortfolioItem } from '@/lib/api'
 
 type LocaleContextValue = {
   locale: Locale
   services: ServiceItem[]
-  promos: PromoItem[]
-  portfolio: PortfolioItem[]
-  excursions: ExcursionItem[]
   events: EventItem[]
   news: NewsItem[]
+  promos: PromoItem[]
+  portfolio: PortfolioItem[]
 }
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
@@ -19,20 +18,18 @@ const LocaleContext = createContext<LocaleContextValue | null>(null)
 export function LocaleProvider({
   locale,
   initialServices,
-  initialPromos,
-  initialPortfolio,
-  initialExcursions,
   initialEvents,
   initialNews,
+  initialPromos,
+  initialPortfolio,
   children,
 }: {
   locale: Locale
   initialServices: ServiceItem[]
-  initialPromos: PromoItem[]
-  initialPortfolio: PortfolioItem[]
-  initialExcursions: ExcursionItem[]
   initialEvents: EventItem[]
   initialNews: NewsItem[]
+  initialPromos: PromoItem[]
+  initialPortfolio: PortfolioItem[]
   children: React.ReactNode
 }) {
   return (
@@ -40,11 +37,10 @@ export function LocaleProvider({
       value={{
         locale,
         services: initialServices,
-        promos: initialPromos,
-        portfolio: initialPortfolio,
-        excursions: initialExcursions,
         events: initialEvents,
         news: initialNews,
+        promos: initialPromos,
+        portfolio: initialPortfolio,
       }}
     >
       {children}
@@ -60,36 +56,30 @@ export function useLocale(): Locale {
 
 export function useServices(): ServiceItem[] {
   const ctx = useContext(LocaleContext)
-  if (!ctx) return []
+  if (!ctx) throw new Error('useServices must be used within LocaleProvider')
   return ctx.services
-}
-
-export function usePromos(): PromoItem[] {
-  const ctx = useContext(LocaleContext)
-  if (!ctx) return []
-  return ctx.promos
-}
-
-export function usePortfolio(): PortfolioItem[] {
-  const ctx = useContext(LocaleContext)
-  if (!ctx) return []
-  return ctx.portfolio
-}
-
-export function useExcursions(): ExcursionItem[] {
-  const ctx = useContext(LocaleContext)
-  if (!ctx) return []
-  return ctx.excursions
 }
 
 export function useEvents(): EventItem[] {
   const ctx = useContext(LocaleContext)
-  if (!ctx) return []
+  if (!ctx) throw new Error('useEvents must be used within LocaleProvider')
   return ctx.events
 }
 
 export function useNews(): NewsItem[] {
   const ctx = useContext(LocaleContext)
-  if (!ctx) return []
+  if (!ctx) throw new Error('useNews must be used within LocaleProvider')
   return ctx.news
+}
+
+export function usePromos(): PromoItem[] {
+  const ctx = useContext(LocaleContext)
+  if (!ctx) throw new Error('usePromos must be used within LocaleProvider')
+  return ctx.promos
+}
+
+export function usePortfolio(): PortfolioItem[] {
+  const ctx = useContext(LocaleContext)
+  if (!ctx) throw new Error('usePortfolio must be used within LocaleProvider')
+  return ctx.portfolio
 }
