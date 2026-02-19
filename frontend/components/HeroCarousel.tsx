@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 
 const SLIDES = [
   { titleKey: 'hero.slide1Title', subtitleKey: 'hero.slide1Subtitle' },
@@ -13,7 +11,6 @@ const SLIDES = [
 
 export function HeroCarousel() {
   const t = useTranslations()
-  const locale = useLocale()
   const [active, setActive] = useState(0)
 
   useEffect(() => {
@@ -64,14 +61,6 @@ export function HeroCarousel() {
               aria-label={`Слайд ${i + 1}`}
             />
           ))}
-        </div>
-        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href={`/${locale}/services`} className="inline-flex items-center justify-center px-8 py-4 bg-primary text-black font-sans text-sm tracking-wide hover:bg-primary/90 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
-            {t('hero.cta1')}
-          </Link>
-          <Link href={`/${locale}/contact`} className="inline-flex items-center justify-center px-8 py-4 border border-secondary/30 text-black font-sans text-sm tracking-wide hover:border-secondary/50 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
-            {t('hero.cta2')}
-          </Link>
         </div>
       </div>
     </section>

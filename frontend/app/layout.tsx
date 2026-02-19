@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { LocaleProvider } from '@/contexts/LocaleContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { NextIntlClientProvider } from 'next-intl';
@@ -22,9 +20,7 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <LocaleProvider locale="ru" initialServices={[]} initialPromos={[]} initialPortfolio={[]} initialExcursions={[]} initialEvents={[]} initialNews={[]}>
             <AuthProvider>
-              <Header />
-              <main>{children}</main>
-              <Footer />
+              {children}
             </AuthProvider>
           </LocaleProvider>
         </NextIntlClientProvider>
