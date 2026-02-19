@@ -1,30 +1,40 @@
 'use client'
 
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { getStoredAuth, setStoredAuth, clearStoredAuth, type AuthTokens, type User } from '@/lib/auth'
 
 type AuthContextValue = {
+  user: User | null
+  isLoading: boolean
   isAuthenticated: boolean
-  login: (token: string) => void
+  loginSuccess: (data: AuthTokens) => void
   logout: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null)
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const login = useCallback((t: string) => {
-    setToken(t)
-    if (typeof window !== 'undefined') localStorage.setItem('auth_token', t)
+  useEffect(() => {
+    const stored = getStoredAuth()
+    setUser(stored?.user ?? null)
+    setIsLoading(false)
+  }, [])
+
+  const loginSuccess = useCallback((data: AuthTokens) => {
+    setStoredAuth(data)
+    setUser(data.user)
   }, [])
 
   const logout = useCallback(() => {
-    setToken(null)
-    if (typeof window !== 'undefined') localStorage.removeItem('auth_token')
+    clearStoredAuth()
+    setUser(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated: !!token, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, loginSuccess, logout }}>
       {children}
     </AuthContext.Provider>
   )

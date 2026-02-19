@@ -11,7 +11,7 @@ import { LocaleProvider } from '@/contexts/LocaleContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { isValidLocale, type Locale } from '@/lib/i18n'
 import { LocaleSetter } from '@/components/LocaleSetter'
-import { fetchServices, fetchPromos, fetchPortfolio, fetchExcursions } from '@/lib/api'
+import { fetchServices, fetchPromos, fetchPortfolio, fetchExcursions, fetchEvents, fetchNews } from '@/lib/api'
 
 type Props = { children: React.ReactNode; params: Promise<{ locale: string }> }
 
@@ -37,17 +37,23 @@ export default async function LocaleLayout({ children, params }: Props) {
   let initialPromos: Awaited<ReturnType<typeof fetchPromos>> = []
   let initialPortfolio: Awaited<ReturnType<typeof fetchPortfolio>> = []
   let initialExcursions: Awaited<ReturnType<typeof fetchExcursions>> = []
+  let initialEvents: Awaited<ReturnType<typeof fetchEvents>> = []
+  let initialNews: Awaited<ReturnType<typeof fetchNews>> = []
   try {
-    const [services, promos, portfolio, excursions] = await Promise.all([
+    const [services, promos, portfolio, excursions, events, news] = await Promise.all([
       fetchServices(loc),
       fetchPromos(loc),
       fetchPortfolio(loc),
       fetchExcursions(loc),
+      fetchEvents(loc),
+      fetchNews(loc),
     ])
     initialServices = services
     initialPromos = promos
     initialPortfolio = portfolio
     initialExcursions = excursions
+    initialEvents = events
+    initialNews = news
   } catch {
     // leave empty
   }
@@ -62,6 +68,8 @@ export default async function LocaleLayout({ children, params }: Props) {
         initialPromos={initialPromos}
         initialPortfolio={initialPortfolio}
         initialExcursions={initialExcursions}
+        initialEvents={initialEvents}
+        initialNews={initialNews}
       >
         <AuthProvider>
         <LocaleSetter locale={locale} />

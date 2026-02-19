@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext } from 'react'
 import type { Locale } from '@/lib/i18n'
-import type { ServiceItem, PromoItem, PortfolioItem, ExcursionItem } from '@/lib/api'
+import type { ServiceItem, PromoItem, PortfolioItem, ExcursionItem, EventItem, NewsItem } from '@/lib/api'
 
 type LocaleContextValue = {
   locale: Locale
@@ -10,6 +10,8 @@ type LocaleContextValue = {
   promos: PromoItem[]
   portfolio: PortfolioItem[]
   excursions: ExcursionItem[]
+  events: EventItem[]
+  news: NewsItem[]
 }
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
@@ -20,6 +22,8 @@ export function LocaleProvider({
   initialPromos,
   initialPortfolio,
   initialExcursions,
+  initialEvents,
+  initialNews,
   children,
 }: {
   locale: Locale
@@ -27,6 +31,8 @@ export function LocaleProvider({
   initialPromos: PromoItem[]
   initialPortfolio: PortfolioItem[]
   initialExcursions: ExcursionItem[]
+  initialEvents: EventItem[]
+  initialNews: NewsItem[]
   children: React.ReactNode
 }) {
   return (
@@ -37,6 +43,8 @@ export function LocaleProvider({
         promos: initialPromos,
         portfolio: initialPortfolio,
         excursions: initialExcursions,
+        events: initialEvents,
+        news: initialNews,
       }}
     >
       {children}
@@ -72,4 +80,16 @@ export function useExcursions(): ExcursionItem[] {
   const ctx = useContext(LocaleContext)
   if (!ctx) return []
   return ctx.excursions
+}
+
+export function useEvents(): EventItem[] {
+  const ctx = useContext(LocaleContext)
+  if (!ctx) return []
+  return ctx.events
+}
+
+export function useNews(): NewsItem[] {
+  const ctx = useContext(LocaleContext)
+  if (!ctx) return []
+  return ctx.news
 }
