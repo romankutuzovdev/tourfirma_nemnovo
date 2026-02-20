@@ -8,12 +8,12 @@
     "portfolio": "Portfolio",
     "reviews": "Reviews",
     "contact": "Contact",
-    "agencies": "For agencies",
     "promos": "Promos",
     "news": "News",
-    "howToGet": "How to get there",
+    "calendar": "Calendar",
+    "floats": "Float trips",
     "cabinet": "Account",
-    "tourfirm": "TOUR OPERATOR",
+    "tourfirm": "TOUR BASE",
     "login": "Log in",
     "logout": "Log out",
     "register": "Sign up"
@@ -59,9 +59,9 @@
   },
   "about": {
     "badge": "About",
-    "title": "Nemnovo — tour base for your rest",
-    "p1": "We create conditions for a quiet rest in Belarus: nature, silence and everything you need on the territory.",
-    "p2": "We focus on guests from Grodno, Minsk and all of Belarus — families, groups of friends and those who value simplicity and closeness to nature."
+    "title": "Active recreation with \"Nemnovo Tour\" travel agency!",
+    "p1": "Travel company \"Nemnovo Tour\" – 11 years of successfully organising water trips, hiking and cycling tours. We help you discover active tourism from a new perspective!",
+    "p2": "\"Nemnovo Tour\"! Recreation for everyone, experiences for each!"
   },
   "servicesSection": {
     "badge": "What we offer",
@@ -80,6 +80,46 @@
     "title": "News",
     "more": "Learn more →",
     "noNews": "No news yet."
+  },
+  "floatsSection": {
+    "title": "Float trips",
+    "selectTrip": "Select trip",
+    "description": "Water routes with distance, price and route map.",
+    "empty": "No float trips yet.",
+    "km": "km",
+    "priceFrom": "from",
+    "byr": "BYN",
+    "perPerson": "person",
+    "more": "Details",
+    "mapTitle": "Route on map",
+    "notFound": "Float trip not found",
+    "backToList": "Back to float trips",
+    "allTrips": "All float trips"
+  },
+  "eventsSection": {
+    "badge": "Events in",
+    "allEvents": "All events"
+  },
+  "calendarPage": {
+    "title": "Events calendar",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "empty": "No events scheduled for this month",
+    "more": "More details",
+    "book": "Book",
+    "backToCalendar": "Back to calendar",
+    "notFound": "Event not found",
+    "notFoundDesc": "The requested event was not found or is no longer available.",
+    "slots": "slots",
+    "priceFrom": "from",
+    "byr": "BYN",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "participants": "Participants",
+    "submit": "Submit request",
+    "success": "Request sent! We will contact you shortly.",
+    "close": "Close"
   },
   "reviewsSection": {
     "badge": "Reviews",
@@ -139,11 +179,11 @@
     "slogan": "Close. Unfamiliar. Belarus.\nCreate vivid memories with us!",
     "address": "Belarus, Grodno region, Grodno district, Sopotskin s/s, Nemnovo village, 15. GPS: 53°51′47″N, 23°45′44″E",
     "addressShort": "Belarus, Grodno region, Grodno district, Sopotskin s/s, Nemnovo village, 15",
-    "howToGet": "How to get there",
+    "yandexMaps": "Yandex Maps",
     "privacy": "Privacy policy",
     "personalDataPolicy": "Personal data processing policy",
     "cookiePolicy": "Cookie policy",
-    "copyright": "Nemnovo",
+    "copyright": "NemnovoTour",
     "workingHours": "Working hours",
     "workingHoursValue": "WED–SUN 8:00–22:00\nMON, TUE — CLOSED",
     "phone": "Phone",
@@ -161,16 +201,6 @@
     "text": "We use cookies for the site and analytics. By continuing, you agree to our",
     "link": "privacy policy",
     "accept": "Accept"
-  },
-  "howToGet": {
-    "title": "HOW TO GET THERE",
-    "empty": "The «How to get there» section is not filled yet. Add cities in the admin.",
-    "addressLabel": "ADDRESS",
-    "yandex": "YANDEX MAPS",
-    "google": "GOOGLE MAPS",
-    "copy": "Copy address",
-    "mapTitle": "Tour base map",
-    "mapHint": "Tap an object to enlarge the image"
   },
   "privacy": {
     "title": "Privacy policy",
@@ -200,27 +230,26 @@
     "photos": "photos",
     "backToPortfolio": "Portfolio"
   },
-  "agencies": {
-    "badge": "Partners",
-    "title": "For agencies",
-    "intro": "Tour base «Nemnovo» invites travel agencies to partnership and offers favourable terms for cooperation. We organise rest and events in Belarus — you earn commission on every sale.",
-    "whyTitle": "Why choose us?",
-    "why1": "Official activity — we operate within the law and are ready for transparent cooperation with agencies.",
-    "why2": "Favourable terms — commission for partners and flexible offers for your clients.",
-    "why3": "Tours and events with minimal cancellations — reliability for your tourists.",
-    "why4": "Up-to-date availability and conditions — we respond quickly and help with selection.",
-    "why5": "Manager support — our team is on hand to answer questions and help with sales.",
-    "why6": "Small groups and individual approach — comfort and attention for every guest.",
-    "howTitle": "How to start cooperation?",
-    "howIntro": "If you are interested in partnership:",
-    "howStep1": "Contact us by phone or email to clarify details and terms.",
-    "howStep2": "Complete the required documents and send them to our address (we will send templates on request).",
-    "howOutro": "We value long-term and mutually beneficial relations and are ready to support your agency in growing revenue!",
-    "ctaTitle": "We look forward to your enquiries!",
-    "ctaPhone": "Phone",
-    "ctaEmail": "Email",
-    "phoneValue": "+375 29 123 45 67",
-    "emailValue": "office@nemnovotour.by"
+  "faq": {
+    "title": "Frequently asked questions",
+    "items": {
+      "sup": {
+        "question": "What is SUP?",
+        "answer": "SUP (Stand Up Paddle) is stand-up paddleboarding — riding a board on the water using a paddle. It's an active water activity: you stand on a wide, stable board and paddle. Suitable for all fitness levels; we teach beginners."
+      },
+      "firstTime": {
+        "question": "It's my first time, will I manage?",
+        "answer": "Yes. SUP boards are stable, and our instructor will show you the basics in minutes. Most guests get up on the board on their first ride. We welcome beginners and pick a route to match your level."
+      },
+      "fall": {
+        "question": "What if I fall off the SUP?",
+        "answer": "Falling is normal and not dangerous. You'll wear a life vest, and the water is usually shallow and warm. The board floats — it's easy to climb back on. The instructor is always nearby and will help."
+      },
+      "children": {
+        "question": "Can I bring children?",
+        "answer": "Yes. We have kids' SUP boards and safe routes. Please check age requirements when booking. Family trips are one of our most popular formats."
+      }
+    }
   },
   "hotOffer": {
     "close": "Close",

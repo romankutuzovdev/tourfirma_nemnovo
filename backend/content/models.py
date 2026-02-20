@@ -42,37 +42,6 @@ class ServiceTranslation(models.Model):
         return f'{self.service.slug} ({self.locale})'
 
 
-class Event(models.Model):
-    """Мероприятие (Марафоны, Турслёт): slug и изображение общие, тексты — по локалям."""
-    slug = models.SlugField(max_length=120, unique=True)
-    image = models.ImageField(upload_to='events/', blank=True, null=True)
-    image_url = models.URLField(blank=True, help_text='Если нет загрузки файла')
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order', 'id']
-        verbose_name = 'Мероприятие'
-        verbose_name_plural = 'Мероприятия'
-
-    def __str__(self):
-        return self.slug
-
-
-class EventTranslation(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='translations')
-    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
-    title = models.CharField(max_length=200)
-    short_desc = models.TextField(blank=True)
-    long_desc = models.TextField(blank=True, help_text='Расширенное описание для страницы мероприятия')
-
-    class Meta:
-        unique_together = [('event', 'locale')]
-        ordering = ['event', 'locale']
-
-    def __str__(self):
-        return f'{self.event.slug} ({self.locale})'
-
-
 class Promo(models.Model):
     """Акция: изображение и порядок общие, тексты — по локалям."""
     slug = models.SlugField(max_length=120, unique=True)
@@ -189,52 +158,6 @@ class Partner(models.Model):
         return self.name
 
 
-TRANSPORT_TYPE_CHOICES = [
-    ('plane', 'На самолёте'),
-    ('bus', 'На автобусе'),
-    ('train', 'На поезде'),
-    ('car', 'На собственном транспорте'),
-]
-
-
-class HowToGetRoute(models.Model):
-    """
-    Один маршрут «как добраться»: город + способ (на самолёте, автобусе и т.д.).
-    Одна запись = одна связка «Из Москвы — на самолёте» с описанием. Переводы — в HowToGetRouteTranslation.
-    """
-    city_slug = models.SlugField('Код города', max_length=80)
-    transport_type = models.CharField(
-        'Способ',
-        max_length=20,
-        choices=TRANSPORT_TYPE_CHOICES,
-    )
-    order = models.PositiveIntegerField('Порядок', default=0)
-
-    class Meta:
-        ordering = ['city_slug', 'order', 'id']
-        unique_together = [('city_slug', 'transport_type')]
-        verbose_name = 'Маршрут (как добраться)'
-        verbose_name_plural = 'Маршруты (как добраться)'
-
-    def __str__(self):
-        return f'{self.city_slug} — {self.get_transport_type_display()}'
-
-
-class HowToGetRouteTranslation(models.Model):
-    route = models.ForeignKey(HowToGetRoute, on_delete=models.CASCADE, related_name='translations')
-    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
-    city_name = models.CharField('Название кнопки города', max_length=120)
-    title = models.CharField('Заголовок способа', max_length=200)
-    content = models.TextField('Описание', blank=True)
-
-    class Meta:
-        unique_together = [('route', 'locale')]
-        ordering = ['route', 'locale']
-
-    def __str__(self):
-        return f'{self.route} ({self.locale})'
-
-
 class News(models.Model):
     """Новость: slug и изображение общие, тексты — по локалям в NewsTranslation."""
     slug = models.SlugField(max_length=120, unique=True)
@@ -315,6 +238,113 @@ class HotOfferTranslation(models.Model):
         return f'{self.hot_offer.slug} ({self.locale})'
 
 
+class CalendarEvent(models.Model):
+    """Событие в календаре: дата, цена, слоты. Переводы в CalendarEventTranslation."""
+    date = models.DateField('Дата')
+    price = models.DecimalField('Цена (BYN)', max_digits=10, decimal_places=2, default=0)
+    max_slots = models.PositiveIntegerField('Макс. мест', default=20)
+    image = models.ImageField(upload_to='calendar/', blank=True, null=True)
+    image_url = models.URLField(blank=True, help_text='Если нет загрузки')
+    is_active = models.BooleanField('Активно', default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['date', 'order', 'id']
+        verbose_name = 'Событие в календаре'
+        verbose_name_plural = 'События в календаре'
+
+    def __str__(self):
+        t = self.translations.filter(locale='ru').first()
+        return f'{self.date} — {t.title if t else "event"}'
+
+    def get_booked_slots(self):
+        from django.db.models import Sum
+        r = self.bookings.filter(status__in=('pending', 'confirmed')).aggregate(total=Sum('participants_count'))
+        return r['total'] or 0
+
+    def get_available_slots(self):
+        return max(0, self.max_slots - self.get_booked_slots())
+
+
+class CalendarEventTranslation(models.Model):
+    calendar_event = models.ForeignKey(CalendarEvent, on_delete=models.CASCADE, related_name='translations')
+    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
+    title = models.CharField('Заголовок', max_length=200)
+    long_desc = models.TextField('Полное описание (страница подробнее)', blank=True)
+
+    class Meta:
+        unique_together = [('calendar_event', 'locale')]
+        ordering = ['calendar_event', 'locale']
+
+    def __str__(self):
+        return f'{self.calendar_event} ({self.locale})'
+
+
+class CalendarBooking(models.Model):
+    """Бронирование события в календаре."""
+    STATUS_CHOICES = [
+        ('pending', 'Ожидает'),
+        ('confirmed', 'Подтверждено'),
+        ('cancelled', 'Отменено'),
+    ]
+    calendar_event = models.ForeignKey(
+        CalendarEvent,
+        on_delete=models.CASCADE,
+        related_name='bookings',
+    )
+    name = models.CharField('Имя', max_length=200)
+    email = models.EmailField('Email')
+    phone = models.CharField('Телефон', max_length=50, blank=True)
+    participants_count = models.PositiveIntegerField('Количество участников', default=1)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Бронирование'
+        verbose_name_plural = 'Бронирования'
+
+    def __str__(self):
+        return f'{self.calendar_event.date} — {self.name}'
+
+
+class FloatTrip(models.Model):
+    """Сплав: название, километраж, цена за человека, описание, ссылка на карту."""
+    slug = models.SlugField(max_length=120, unique=True)
+    distance_km = models.DecimalField('Километраж (км)', max_digits=8, decimal_places=2, default=0)
+    price_per_person = models.DecimalField('Цена за человека (BYN)', max_digits=10, decimal_places=2, default=0)
+    order = models.PositiveIntegerField('Порядок', default=0)
+    map_embed_url = models.TextField(
+        'Ссылка на карту (iframe src)',
+        blank=True,
+        default='',
+        help_text='URL из кода вставки Яндекс.Карт — атрибут src тега iframe (только ссылка, не весь iframe)',
+    )
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Сплав'
+        verbose_name_plural = 'Сплавы'
+
+    def __str__(self):
+        t = self.translations.filter(locale='ru').first()
+        return t.title if t else self.slug
+
+
+class FloatTripTranslation(models.Model):
+    float_trip = models.ForeignKey(FloatTrip, on_delete=models.CASCADE, related_name='translations')
+    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
+    title = models.CharField('Название', max_length=200)
+    description = models.TextField('Описание', blank=True)
+
+    class Meta:
+        unique_together = [('float_trip', 'locale')]
+        ordering = ['float_trip', 'locale']
+
+    def __str__(self):
+        return f'{self.float_trip} ({self.locale})'
+
+
 class CompanyInfo(models.Model):
     """Одна запись — контактные/юридические данные для футера и страниц (редактируются в админке)."""
     company_name = models.CharField('Название', max_length=200, default='ООО «Немново Тур»')
@@ -326,9 +356,6 @@ class CompanyInfo(models.Model):
     trade_register = models.CharField('Регистрация в торговом реестре', max_length=200, blank=True)
     services_register = models.CharField('Регистрация в реестре бытовых услуг', max_length=200, blank=True)
     contact_email = models.EmailField('Email для контакта', blank=True, default='office@nemnovotour.by')
-    destination_address = models.TextField('Адрес назначения (как добраться)', blank=True)
-    destination_gps_lat = models.FloatField('GPS широта', null=True, blank=True)
-    destination_gps_lon = models.FloatField('GPS долгота', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Реквизиты компании'

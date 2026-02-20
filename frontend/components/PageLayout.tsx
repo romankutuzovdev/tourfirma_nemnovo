@@ -16,11 +16,10 @@ const SEGMENT_TO_KEY: Record<string, string> = {
   portfolio: 'nav.portfolio',
   promos: 'nav.promos',
   news: 'nav.news',
-  events: 'nav.events',
-  'how-to-get': 'nav.howToGet',
+  calendar: 'nav.calendar',
+  floats: 'nav.floats',
   reviews: 'nav.reviews',
   contact: 'nav.contact',
-  agencies: 'nav.agencies',
   'cookie-policy': 'footer.cookiePolicy',
   privacy: 'footer.privacy',
 }

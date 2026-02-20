@@ -1,15 +1,15 @@
 from django.contrib import admin
 from .models import (
     Service, ServiceTranslation,
-    Event, EventTranslation,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
     PortfolioItem, PortfolioItemImage, PortfolioItemTranslation,
     Review,
     Partner,
-    HowToGetRoute, HowToGetRouteTranslation,
     CompanyInfo,
+    CalendarEvent, CalendarEventTranslation, CalendarBooking,
+    FloatTrip, FloatTripTranslation,
 )
 
 
@@ -22,17 +22,6 @@ class ServiceTranslationInline(admin.TabularInline):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ['slug', 'order']
     inlines = [ServiceTranslationInline]
-
-
-class EventTranslationInline(admin.TabularInline):
-    model = EventTranslation
-    extra = 0
-
-
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'order']
-    inlines = [EventTranslationInline]
 
 
 class NewsTranslationInline(admin.TabularInline):
@@ -177,17 +166,42 @@ class PartnerAdmin(admin.ModelAdmin):
     list_editable = ['order']
 
 
-class HowToGetRouteTranslationInline(admin.TabularInline):
-    model = HowToGetRouteTranslation
+class CalendarEventTranslationInline(admin.TabularInline):
+    model = CalendarEventTranslation
     extra = 0
 
 
-@admin.register(HowToGetRoute)
-class HowToGetRouteAdmin(admin.ModelAdmin):
-    list_display = ['city_slug', 'transport_type', 'order']
-    list_filter = ['city_slug', 'transport_type']
-    list_editable = ['order']
-    inlines = [HowToGetRouteTranslationInline]
+@admin.register(CalendarEvent)
+class CalendarEventAdmin(admin.ModelAdmin):
+    list_display = ['date', 'price', 'max_slots', '_available', 'is_active', 'order']
+    list_filter = ['date', 'is_active']
+    list_editable = ['is_active', 'order', 'price', 'max_slots']
+    date_hierarchy = 'date'
+    inlines = [CalendarEventTranslationInline]
+
+    def _available(self, obj):
+        return obj.get_available_slots()
+    _available.short_description = 'Свободно мест'
+
+
+@admin.register(CalendarBooking)
+class CalendarBookingAdmin(admin.ModelAdmin):
+    list_display = ['calendar_event', 'name', 'email', 'participants_count', 'status', 'created_at']
+    list_filter = ['status', 'calendar_event__date']
+    search_fields = ['name', 'email']
+
+
+class FloatTripTranslationInline(admin.TabularInline):
+    model = FloatTripTranslation
+    extra = 0
+
+
+@admin.register(FloatTrip)
+class FloatTripAdmin(admin.ModelAdmin):
+    list_display = ['slug', 'distance_km', 'price_per_person', 'order']
+    list_editable = ['order', 'distance_km', 'price_per_person']
+    fields = ['slug', 'distance_km', 'price_per_person', 'order', 'map_embed_url']
+    inlines = [FloatTripTranslationInline]
 
 
 @admin.register(CompanyInfo)
@@ -196,7 +210,6 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     fields = [
         'company_name', 'legal_address', 'office_address',
         'unp', 'okpo', 'trade_register', 'services_register', 'contact_email',
-        'destination_address', 'destination_gps_lat', 'destination_gps_lon',
     ]
 
 

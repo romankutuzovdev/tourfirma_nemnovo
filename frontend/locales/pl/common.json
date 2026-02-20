@@ -8,12 +8,12 @@
     "portfolio": "Portfolio",
     "reviews": "Opinie",
     "contact": "Kontakt",
-    "agencies": "Dla agencji",
     "promos": "Promocje",
     "news": "Aktualności",
-    "howToGet": "Jak dojechać",
+    "calendar": "Kalendarz",
+    "floats": "Spływy",
     "cabinet": "Konto",
-    "tourfirm": "BIURO PODRÓŻY",
+    "tourfirm": "BAZA TURYSTYCZNA",
     "login": "Zaloguj się",
     "logout": "Wyloguj",
     "register": "Rejestracja"
@@ -59,9 +59,9 @@
   },
   "about": {
     "badge": "O nas",
-    "title": "Nemnovo — baza turystyczna na Twój wypoczynek",
-    "p1": "Tworzymy warunki do spokojnego wypoczynku na Białorusi: natura, cisza i wszystko, czego potrzeba na terenie.",
-    "p2": "Zapraszamy gości z Grodna, Mińska i całej Białorusi — rodziny, grupy przyjaciół i tych, którzy cenią prostotę i bliskość natury."
+    "title": "Aktywny wypoczynek z biurem podróży \"Nemnovo Tour\"!",
+    "p1": "Firma turystyczna \"Nemnovo Tour\" – 11 lat udanej organizacji wypraw wodnych, wędrówek i przejazdów rowerowych. Pomagamy odkryć aktywny turystyzm z nowej strony!",
+    "p2": "\"Nemnovo Tour\"! Wypoczynek dla wszystkich, wrażenia dla każdego!"
   },
   "servicesSection": {
     "badge": "Usługi",
@@ -80,6 +80,46 @@
     "title": "Aktualności",
     "more": "Czytaj więcej →",
     "noNews": "Brak aktualności."
+  },
+  "floatsSection": {
+    "title": "Spływy",
+    "selectTrip": "Wybierz spływ",
+    "description": "Trasy wodne z kilometrażem, ceną i mapą trasy.",
+    "empty": "Brak spływów.",
+    "km": "km",
+    "priceFrom": "od",
+    "byr": "BYN",
+    "perPerson": "os.",
+    "more": "Szczegóły",
+    "mapTitle": "Trasa na mapie",
+    "notFound": "Spływ nie znaleziony",
+    "backToList": "Powrót do spływów",
+    "allTrips": "Wszystkie spływy"
+  },
+  "eventsSection": {
+    "badge": "Wydarzenia w",
+    "allEvents": "Wszystkie wydarzenia"
+  },
+  "calendarPage": {
+    "title": "Kalendarz wydarzeń",
+    "prevMonth": "Poprzedni miesiąc",
+    "nextMonth": "Następny miesiąc",
+    "empty": "Brak zaplanowanych wydarzeń w tym miesiącu",
+    "more": "Więcej",
+    "book": "Rezerwuj",
+    "backToCalendar": "Powrót do kalendarza",
+    "notFound": "Wydarzenie nie znalezione",
+    "notFoundDesc": "Żądane wydarzenie nie zostało znalezione lub nie jest już dostępne.",
+    "slots": "miejsc",
+    "priceFrom": "od",
+    "byr": "BYN",
+    "name": "Imię",
+    "email": "Email",
+    "phone": "Telefon",
+    "participants": "Uczestników",
+    "submit": "Wyślij zapytanie",
+    "success": "Zapytanie wysłane! Skontaktujemy się wkrótce.",
+    "close": "Zamknij"
   },
   "reviewsSection": {
     "badge": "Opinie",
@@ -146,11 +186,11 @@
     "slogan": "Bliska. Nieznana. Białoruś.\nTwórz z nami wspomnienia!",
     "address": "Białoruś, obw. grodzieński, rej. grodzieński, Sopockin s/s, wieś Nemnovo, 15. GPS: 53°51′47″N, 23°45′44″E",
     "addressShort": "Białoruś, obw. grodzieński, rej. grodzieński, Sopockin s/s, wieś Nemnovo, 15",
-    "howToGet": "Dojazd",
+    "yandexMaps": "Yandex Mapy",
     "privacy": "Polityka prywatności",
     "personalDataPolicy": "Polityka przetwarzania danych osobowych",
     "cookiePolicy": "Polityka dotycząca plików cookie",
-    "copyright": "Nemnovo",
+    "copyright": "NemnovoTour",
     "workingHours": "Godziny pracy",
     "workingHoursValue": "ŚR–ND 8:00–22:00\nPN, WT — ZAMKNIĘTE",
     "phone": "Telefon",
@@ -168,16 +208,6 @@
     "text": "Używamy plików cookies. Kontynuując, zgadzasz się na",
     "link": "politykę prywatności",
     "accept": "Akceptuj"
-  },
-  "howToGet": {
-    "title": "DOJAZD",
-    "empty": "Sekcja «Dojazd» nie jest jeszcze wypełniona. Dodaj miasta w panelu admina.",
-    "addressLabel": "ADRES",
-    "yandex": "YANDEX MAPY",
-    "google": "GOOGLE MAPS",
-    "copy": "Kopiuj adres",
-    "mapTitle": "Mapa bazy turystycznej",
-    "mapHint": "Kliknij obiekt, aby powiększyć zdjęcie"
   },
   "privacy": {
     "title": "Polityka prywatności",
@@ -207,27 +237,26 @@
     "photos": "zdjęć",
     "backToPortfolio": "Portfolio"
   },
-  "agencies": {
-    "badge": "Dla partnerów",
-    "title": "Dla agencji",
-    "intro": "Baza turystyczna «Nemnovo» zaprasza biura podróży do współpracy i oferuje korzystne warunki. Organizujemy wypoczynek i wydarzenia na Białorusi — otrzymujesz prowizję od każdej sprzedaży.",
-    "whyTitle": "Dlaczego wybierają nas?",
-    "why1": "Oficjalna działalność — działamy w ramach prawa, gotowi do przejrzystej współpracy z agencjami.",
-    "why2": "Korzystne warunki — prowizja dla partnerów i elastyczne oferty dla Twoich klientów.",
-    "why3": "Wycieczki i wydarzenia bez zbędnych odwołań — niezawodność dla Twoich turystów.",
-    "why4": "Aktualne informacje o dostępności i warunkach — szybko odpowiadamy i pomagamy w doborze.",
-    "why5": "Wsparcie menedżerów — nasz zespół jest w kontakcie, gotowy odpowiedzieć na pytania i pomóc w sprzedaży.",
-    "why6": "Małe grupy i indywidualne podejście — komfort i uwaga dla każdego gościa.",
-    "howTitle": "Jak rozpocząć współpracę?",
-    "howIntro": "Jeśli jesteś zainteresowany partnerstwem:",
-    "howStep1": "Skontaktuj się z nami telefonicznie lub mailowo, aby uzyskać szczegóły i warunki.",
-    "howStep2": "Wypełnij wymagane dokumenty i wyślij na nasz adres (na życzenie prześlemy szablony).",
-    "howOutro": "Cenimy długoterminowe i mutually beneficial relacje i jesteśmy gotowi wspierać Twoje biuro w zwiększaniu przychodów!",
-    "ctaTitle": "Czekamy na Twoje zapytania!",
-    "ctaPhone": "Telefon",
-    "ctaEmail": "Email",
-    "phoneValue": "+375 29 123 45 67",
-    "emailValue": "office@nemnovotour.by"
+  "faq": {
+    "title": "Często zadawane pytania",
+    "items": {
+      "sup": {
+        "question": "Co to jest SUP?",
+        "answer": "SUP (Stand Up Paddle) to pływanie na desce z wiosłem na stojąco. Aktywny wypoczynek na wodzie: stoisz na szerokiej stabilnej desce i wiosłujesz. Nadaje się dla każdego poziomu — uczymy od zera."
+      },
+      "firstTime": {
+        "question": "Jestem pierwszy raz, dam radę?",
+        "answer": "Tak. Deski SUP są stabilne, instruktor pokaże podstawy w kilka minut. Większość gości wstaje na deskę już przy pierwszej przejażdżce. Zapraszamy początkujących i dobieramy trasę do poziomu."
+      },
+      "fall": {
+        "question": "Co jeśli spadnę z SUP?",
+        "answer": "Upadki są normalne i bezpieczne. Masz kamizelkę ratunkową, woda jest zwykle płytka i ciepła. Deska nie tonie — łatwo się na nią wrócić. Instruktor jest zawsze blisko i pomoże."
+      },
+      "children": {
+        "question": "Czy można z dziećmi?",
+        "answer": "Tak. Mamy SUP dla dzieci i bezpieczne trasy. Warunki wiekowe sprawdź przy rezerwacji. Wycieczki rodzinne to jeden z najpopularniejszych formatów."
+      }
+    }
   },
   "hotOffer": {
     "close": "Zamknij",

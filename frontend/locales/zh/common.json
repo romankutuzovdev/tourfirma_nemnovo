@@ -8,12 +8,12 @@
     "portfolio": "作品集",
     "reviews": "评价",
     "contact": "联系方式",
-    "agencies": "旅行社",
     "promos": "优惠",
     "news": "新闻",
-    "howToGet": "如何到达",
+    "calendar": "日历",
+    "floats": "漂流",
     "cabinet": "个人中心",
-    "tourfirm": "旅行社",
+    "tourfirm": "旅游基地",
     "login": "登录",
     "logout": "退出",
     "register": "注册"
@@ -59,9 +59,9 @@
   },
   "about": {
     "badge": "关于我们",
-    "title": "Nemnovo — 您的休闲旅游基地",
-    "p1": "我们在白俄罗斯为您营造宁静的休息环境：自然、宁静与所需设施。",
-    "p2": "面向格罗德诺、明斯克及白俄罗斯各地的客人 — 家庭、朋友聚会及喜爱简约与自然的人们。"
+    "title": "与「Nemnovo Tour」旅行社一起享受户外休闲！",
+    "p1": "旅游公司「Nemnovo Tour」——11年成功组织水上旅行、徒步和骑行活动。我们帮助您从全新角度体验户外旅游！",
+    "p2": "「Nemnovo Tour」！为所有人提供休闲，为每个人创造回忆！"
   },
   "servicesSection": {
     "badge": "服务",
@@ -80,6 +80,46 @@
     "title": "新闻",
     "more": "了解更多 →",
     "noNews": "暂无新闻。"
+  },
+  "floatsSection": {
+    "title": "漂流线路",
+    "selectTrip": "选择线路",
+    "description": "水上线路，含公里数、价格和路线图。",
+    "empty": "暂无漂流线路。",
+    "km": "公里",
+    "priceFrom": "起",
+    "byr": "BYN",
+    "perPerson": "人",
+    "more": "详情",
+    "mapTitle": "路线图",
+    "notFound": "未找到该漂流线路",
+    "backToList": "返回漂流列表",
+    "allTrips": "全部漂流线路"
+  },
+  "eventsSection": {
+    "badge": "活动：",
+    "allEvents": "查看全部活动"
+  },
+  "calendarPage": {
+    "title": "活动日历",
+    "prevMonth": "上一月",
+    "nextMonth": "下一月",
+    "empty": "本月暂无活动",
+    "more": "详情",
+    "book": "预约",
+    "backToCalendar": "返回日历",
+    "notFound": "未找到活动",
+    "notFoundDesc": "未找到该活动或已不可用。",
+    "slots": "名额",
+    "priceFrom": "起",
+    "byr": "BYN",
+    "name": "姓名",
+    "email": "邮箱",
+    "phone": "电话",
+    "participants": "人数",
+    "submit": "提交申请",
+    "success": "申请已提交！我们将尽快与您联系。",
+    "close": "关闭"
   },
   "reviewsSection": {
     "badge": "评价",
@@ -139,11 +179,11 @@
     "slogan": "亲近。陌生。白俄罗斯。\n与我们共创美好回忆！",
     "address": "白俄罗斯，格罗德诺州，格罗德诺区，索波茨金乡，Nemnovo村15号。GPS: 53°51′47″N, 23°45′44″E",
     "addressShort": "白俄罗斯，格罗德诺州，格罗德诺区，索波茨金乡，Nemnovo村15号",
-    "howToGet": "如何到达",
+    "yandexMaps": "Yandex 地图",
     "privacy": "隐私政策",
     "personalDataPolicy": "个人数据处理政策",
     "cookiePolicy": "Cookie政策",
-    "copyright": "Nemnovo",
+    "copyright": "NemnovoTour",
     "workingHours": "营业时间",
     "workingHoursValue": "周三至周日 8:00–22:00\n周一、周二 休息",
     "phone": "电话",
@@ -161,16 +201,6 @@
     "text": "我们使用 cookies 用于网站与统计。继续即表示您同意",
     "link": "隐私政策",
     "accept": "接受"
-  },
-  "howToGet": {
-    "title": "如何到达",
-    "empty": "「如何到达」部分尚未填写。请在管理后台添加城市。",
-    "addressLabel": "地址",
-    "yandex": "YANDEX 地图",
-    "google": "GOOGLE 地图",
-    "copy": "复制地址",
-    "mapTitle": "基地地图",
-    "mapHint": "点击对象以放大图像"
   },
   "privacy": {
     "title": "隐私政策",
@@ -200,27 +230,26 @@
     "photos": "张照片",
     "backToPortfolio": "作品集"
   },
-  "agencies": {
-    "badge": "合作伙伴",
-    "title": "旅行社",
-    "intro": "涅姆诺沃旅游基地诚邀旅行社合作，提供优惠合作条件。我们组织白俄罗斯的休闲与活动 — 您可从每笔销售获得佣金。",
-    "whyTitle": "为什么选择我们？",
-    "why1": "正规经营 — 在法律框架内运营，愿与旅行社透明合作。",
-    "why2": "优惠条件 — 合作伙伴佣金及针对您客户的灵活方案。",
-    "why3": "行程与活动尽量减少取消 — 为您的游客提供可靠服务。",
-    "why4": "及时提供空位与条件信息 — 快速回复并协助选择。",
-    "why5": "客户经理支持 — 团队随时在线，解答问题并协助销售。",
-    "why6": "小团与个性化服务 — 为每位客人提供舒适与关注。",
-    "howTitle": "如何开始合作？",
-    "howIntro": "若您有意合作：",
-    "howStep1": "请通过电话或邮件联系我们以确认细节与条款。",
-    "howStep2": "填写所需文件并寄至我方地址（可应要求提供模板）。",
-    "howOutro": "我们重视长期互利关系，愿支持贵社提升收入！",
-    "ctaTitle": "期待您的咨询！",
-    "ctaPhone": "电话",
-    "ctaEmail": "邮箱",
-    "phoneValue": "+375 29 123 45 67",
-    "emailValue": "office@nemnovotour.by"
+  "faq": {
+    "title": "常见问题",
+    "items": {
+      "sup": {
+        "question": "什么是SUP？",
+        "answer": "SUP（Stand Up Paddle）即站立式桨板：站在宽大的浮板上用桨划水。适合任何体能水平，我们从零基础教起。"
+      },
+      "firstTime": {
+        "question": "我是第一次，能行吗？",
+        "answer": "可以。SUP板稳定性好，教练几分钟就能教会基本动作。多数客人在第一次就能站上板。我们欢迎新手，并根据您的水平选择路线。"
+      },
+      "fall": {
+        "question": "如果从板上掉下去怎么办？",
+        "answer": "掉水里很正常，也不危险。您会穿救生衣，水通常较浅且温暖。板不会沉，很容易再爬上去。教练始终在附近并可帮助您。"
+      },
+      "children": {
+        "question": "可以带孩子吗？",
+        "answer": "可以。我们有儿童SUP板和安全路线。预订时请确认年龄和条件。家庭游是最受欢迎的项目之一。"
+      }
+    }
   },
   "hotOffer": {
     "close": "关闭",

@@ -12,12 +12,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Service, Event, News, Promo, HotOffer, PortfolioItem, Review, Partner, HowToGetRoute, CompanyInfo
+from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip
 from .serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
-    EventListSerializer,
-    EventDetailSerializer,
     NewsListSerializer,
     NewsDetailSerializer,
     PromoListSerializer,
@@ -28,8 +26,11 @@ from .serializers import (
     _portfolio_image_urls,
     ReviewSerializer,
     PartnerSerializer,
-    how_to_get_cities_from_routes,
     CompanyInfoSerializer,
+    CalendarEventListSerializer,
+    CalendarEventDetailSerializer,
+    FloatTripListSerializer,
+    FloatTripDetailSerializer,
 )
 
 VALID_LOCALES = {'ru', 'be', 'en', 'pl', 'zh'}
@@ -60,26 +61,6 @@ def company_info(request):
 
 
 @api_view(['GET'])
-def how_to_get(request):
-    """Как добраться: маршруты сгруппированы по городу; адрес и GPS из реквизитов."""
-    locale = get_locale(request)
-    routes = HowToGetRoute.objects.all()
-    cities_data = how_to_get_cities_from_routes(routes, locale)
-    info = CompanyInfo.objects.first()
-    payload = {
-        'cities': cities_data,
-        'address': '',
-        'gps_lat': None,
-        'gps_lon': None,
-    }
-    if info:
-        payload['address'] = info.destination_address or ''
-        payload['gps_lat'] = info.destination_gps_lat
-        payload['gps_lon'] = info.destination_gps_lon
-    return Response(payload)
-
-
-@api_view(['GET'])
 def service_list(request):
     locale = get_locale(request)
     qs = Service.objects.all()
@@ -95,25 +76,6 @@ def service_detail(request, slug):
     except Service.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = ServiceDetailSerializer(service, context={'locale': locale, 'request': request})
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def event_list(request):
-    locale = get_locale(request)
-    qs = Event.objects.all()
-    serializer = EventListSerializer(qs, many=True, context={'locale': locale, 'request': request})
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def event_detail(request, slug):
-    locale = get_locale(request)
-    try:
-        event = Event.objects.get(slug=slug)
-    except Event.DoesNotExist:
-        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-    serializer = EventDetailSerializer(event, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
 
@@ -231,6 +193,115 @@ def contact_submit(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'ok': True})
+
+
+@api_view(['GET'])
+def calendar_events_list(request):
+    """Список событий календаря за месяц. Параметры: year, month, locale."""
+    locale = get_locale(request)
+    try:
+        year = int(request.query_params.get('year', 0))
+        month = int(request.query_params.get('month', 0))
+    except (TypeError, ValueError):
+        from django.utils import timezone
+        now = timezone.now().date()
+        year, month = now.year, now.month
+    if not (1 <= month <= 12) or year < 2000 or year > 2100:
+        from django.utils import timezone
+        now = timezone.now().date()
+        year, month = now.year, now.month
+    from datetime import date
+    from calendar import monthrange
+    _, last_day = monthrange(year, month)
+    start = date(year, month, 1)
+    end = date(year, month, last_day)
+    qs = CalendarEvent.objects.filter(date__gte=start, date__lte=end, is_active=True)
+    serializer = CalendarEventListSerializer(
+        qs,
+        many=True,
+        context={'locale': locale, 'request': request},
+    )
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def calendar_event_detail(request, pk):
+    """Детали события в календаре."""
+    locale = get_locale(request)
+    try:
+        ev = CalendarEvent.objects.get(pk=pk, is_active=True)
+    except CalendarEvent.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = CalendarEventDetailSerializer(ev, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def float_trip_list(request):
+    """Список сплавов: название, километраж, цена."""
+    locale = get_locale(request)
+    qs = FloatTrip.objects.all()
+    serializer = FloatTripListSerializer(qs, many=True, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def float_trip_detail(request, slug):
+    """Детали сплава: описание, точки маршрута для карты."""
+    locale = get_locale(request)
+    try:
+        trip = FloatTrip.objects.get(slug=slug)
+    except FloatTrip.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = FloatTripDetailSerializer(trip, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def calendar_event_book(request, pk):
+    """Бронирование события: name, email, phone (опц.), participants_count."""
+    try:
+        ev = CalendarEvent.objects.get(pk=pk, is_active=True)
+    except CalendarEvent.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+    name = (request.data.get('name') or '').strip()
+    email = (request.data.get('email') or '').strip()
+    phone = (request.data.get('phone') or '').strip()
+    participants_count = request.data.get('participants_count', 1)
+    try:
+        participants_count = max(1, int(participants_count))
+    except (TypeError, ValueError):
+        participants_count = 1
+    if not name or not email:
+        return Response({'error': 'name and email required'}, status=status.HTTP_400_BAD_REQUEST)
+    available = ev.get_available_slots()
+    if participants_count > available:
+        return Response(
+            {'error': f'Not enough slots. Available: {available}'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    booking = CalendarBooking.objects.create(
+        calendar_event=ev,
+        name=name,
+        email=email,
+        phone=phone,
+        participants_count=participants_count,
+        status='pending',
+    )
+    to_email = getattr(settings, 'CONTACT_TEST_EMAIL', 'roman.kutuzov.dev@gmail.com')
+    subject = f'[Бронирование] {ev.date} — {name}'
+    body = (
+        f"Событие: {ev.date}\n"
+        f"Имя: {name}\n"
+        f"Email: {email}\n"
+        f"Телефон: {phone}\n"
+        f"Участников: {participants_count}\n"
+    )
+    try:
+        send_mail(subject=subject, message=body, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[to_email], fail_silently=False)
+    except Exception:
+        pass
+    return Response({'ok': True, 'id': booking.id})
 
 
 def portfolio_download(request, slug):

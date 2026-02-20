@@ -8,7 +8,7 @@ export function VideoSection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <AnimateOnScroll variant="fade-up">
           <h2 className="font-serif text-3xl md:text-4xl font-medium text-black tracking-tight">
-            Презентация турбазы
+            Презентация турфирмы
           </h2>
         </AnimateOnScroll>
         <AnimateOnScroll variant="scale" delay={80}>

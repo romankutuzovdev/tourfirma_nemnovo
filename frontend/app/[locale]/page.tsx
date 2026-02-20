@@ -1,20 +1,22 @@
 import { Hero } from '@/components/Hero'
 import { AboutSection } from '@/components/AboutSection'
-import { ServicesSection } from '@/components/ServicesSection'
-import { EventsSection } from '@/components/EventsSection'
-import { ReviewsSection } from '@/components/ReviewsSection'
 import { PromosSection } from '@/components/PromosSection'
+import { ServicesSection } from '@/components/ServicesSection'
+import { CalendarSection } from '@/components/CalendarSection'
+import { FAQSection } from '@/components/FAQSection'
+import { FloatsSection } from '@/components/FloatsSection'
 import { PartnersSection } from '@/components/PartnersSection'
 
 export default function HomePage() {
   return (
     <>
       <Hero />
+      <CalendarSection />
+      <FloatsSection />
       <AboutSection />
-      <ReviewsSection />
       <PromosSection />
       <ServicesSection />
-      <EventsSection />
+      <FAQSection />
       <PartnersSection />
     </>
   )

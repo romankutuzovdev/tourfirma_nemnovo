@@ -23,13 +23,6 @@ const IconPhone = () => (
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
   </svg>
 )
-const IconDirections = () => (
-  <svg className="w-5 h-5 shrink-0 text-primary/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-)
-
 export function ContactSection() {
   const t = useTranslations()
   const locale = useLocale()
@@ -58,7 +51,7 @@ export function ContactSection() {
         <h2 className="font-serif text-3xl md:text-4xl font-medium text-black tracking-tight">{t('contact.title')}</h2>
 
         <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
-          {/* Контактная информация: адрес, время, телефоны, как добраться */}
+          {/* Контактная информация: адрес, время, телефоны */}
           <div className="lg:col-span-2 space-y-5">
             <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20">
               <div className="flex gap-4">
@@ -89,16 +82,6 @@ export function ContactSection() {
                 </div>
               </div>
             </div>
-            <Link
-              href={`/${locale}/how-to-get`}
-              className="flex items-center gap-4 p-5 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/15 hover:border-primary/30 transition-colors group"
-            >
-              <IconDirections />
-              <span className="font-sans text-sm font-semibold text-black group-hover:text-primary transition-colors">{t('footer.howToGet')}</span>
-              <svg className="w-4 h-4 ml-auto text-black/60 group-hover:text-primary group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
           </div>
 
           {/* Форма */}

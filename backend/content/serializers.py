@@ -2,15 +2,15 @@ from django.conf import settings as django_settings
 from rest_framework import serializers
 from .models import (
     Service, ServiceTranslation,
-    Event, EventTranslation,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
     PortfolioItem, PortfolioItemImage, PortfolioItemTranslation,
     Review,
     Partner,
-    HowToGetRoute, HowToGetRouteTranslation,
     CompanyInfo,
+    CalendarEvent, CalendarEventTranslation, CalendarBooking,
+    FloatTrip, FloatTripTranslation,
 )
 
 
@@ -114,57 +114,6 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
 def _locale_translation(queryset, locale):
     t = queryset.filter(locale=locale).first()
     return t or queryset.filter(locale='ru').first()
-
-
-class EventListSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-    short_desc = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Event
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc']
-
-    def get_title(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.title if t else obj.slug
-
-    def get_short_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.short_desc if t else ''
-
-    def get_image(self, obj):
-        if obj.image:
-            return _build_media_url(self.context.get('request'), obj.image)
-        return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
-
-
-class EventDetailSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-    short_desc = serializers.SerializerMethodField()
-    long_desc = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Event
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc']
-
-    def get_title(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.title if t else obj.slug
-
-    def get_short_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.short_desc if t else ''
-
-    def get_long_desc(self, obj):
-        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
-        return t.long_desc if t else ''
-
-    def get_image(self, obj):
-        if obj.image:
-            return _build_media_url(self.context.get('request'), obj.image)
-        return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
 
 
 class NewsListSerializer(serializers.ModelSerializer):
@@ -391,34 +340,6 @@ class PartnerSerializer(serializers.ModelSerializer):
         return _build_media_url(self.context.get('request'), obj.logo) if obj.logo else None
 
 
-def _locale_translation_how(queryset, locale):
-    t = queryset.filter(locale=locale).first()
-    return t or queryset.filter(locale='ru').first()
-
-
-def how_to_get_cities_from_routes(routes_queryset, locale):
-    """Группирует маршруты по city_slug в структуру cities с blocks для API."""
-    from collections import OrderedDict
-    cities = OrderedDict()
-    for route in routes_queryset:
-        t = _locale_translation_how(route.translations, locale)
-        slug = route.city_slug
-        if slug not in cities:
-            cities[slug] = {
-                'slug': slug,
-                'name': t.city_name if t else slug,
-                'order': route.order,
-                'blocks': [],
-            }
-        cities[slug]['name'] = t.city_name if t else slug
-        cities[slug]['blocks'].append({
-            'transport_type': route.transport_type,
-            'title': t.title if t else route.get_transport_type_display(),
-            'content': t.content if t else '',
-        })
-    return sorted(cities.values(), key=lambda c: (c['order'], c['slug']))
-
-
 class CompanyInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInfo
@@ -426,3 +347,82 @@ class CompanyInfoSerializer(serializers.ModelSerializer):
             'company_name', 'legal_address', 'office_address',
             'unp', 'okpo', 'state_registration', 'trade_register', 'services_register', 'contact_email',
         ]
+
+
+class CalendarEventListSerializer(serializers.ModelSerializer):
+    """Событие календаря для списка по месяцам."""
+    title = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    available_slots = serializers.SerializerMethodField()
+    price_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CalendarEvent
+        fields = [
+            'id', 'date', 'title', 'image',
+            'price', 'price_display', 'max_slots', 'available_slots', 'is_active',
+        ]
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else str(obj.date)
+
+    def get_image(self, obj):
+        if obj.image:
+            return _build_media_url(self.context.get('request'), obj.image)
+        return obj.image_url or None
+
+    def get_available_slots(self, obj):
+        return obj.get_available_slots()
+
+    def get_price_display(self, obj):
+        return str(obj.price)
+
+
+class CalendarEventDetailSerializer(CalendarEventListSerializer):
+    """Детальная информация о событии в календаре (страница «подробнее»)."""
+    long_desc = serializers.SerializerMethodField()
+
+    class Meta(CalendarEventListSerializer.Meta):
+        fields = CalendarEventListSerializer.Meta.fields + ['long_desc']
+
+    def get_long_desc(self, obj):
+        t = self._get_translation(obj)
+        if not t:
+            return ''
+        return getattr(t, 'long_desc', '') or ''
+
+
+class FloatTripListSerializer(serializers.ModelSerializer):
+    """Сплав для списка: название, километраж, цена, slug."""
+    title = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FloatTrip
+        fields = ['slug', 'title', 'distance_km', 'price_per_person', 'order']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else obj.slug
+
+
+class FloatTripDetailSerializer(FloatTripListSerializer):
+    """Сплав с полным описанием и ссылкой на карту."""
+    description = serializers.SerializerMethodField()
+
+    class Meta(FloatTripListSerializer.Meta):
+        fields = FloatTripListSerializer.Meta.fields + ['description', 'map_embed_url']
+
+    def get_description(self, obj):
+        t = self._get_translation(obj)
+        return t.description if t else ''

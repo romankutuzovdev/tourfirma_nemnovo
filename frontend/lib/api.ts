@@ -7,10 +7,13 @@ import type { Locale } from './i18n'
 const LOCALES: Locale[] = ['ru', 'be', 'en', 'pl', 'zh']
 
 export function getApiUrl(): string {
+  // В браузере используем '' чтобы fetch шёл на тот же origin → Next.js rewrite → backend
+  if (typeof window !== 'undefined') return ''
   const raw = process.env.NEXT_PUBLIC_API_URL
+  if (raw === undefined || raw === null) return ''
   if (raw === '' || (typeof raw === 'string' && raw.trim() === '')) return ''
-  const url = (raw || 'http://127.0.0.1:8000').trim().replace(/\/$/, '')
-  return url
+  const url = String(raw).trim().replace(/\/$/, '')
+  return url || ''
 }
 
 /** Элемент из /api/services/?locale= */
@@ -42,19 +45,6 @@ export function getServiceImageSrc(item: { image: string | null; image_url: stri
   return item.image_url || ''
 }
 
-/** Элемент из /api/events/?locale= */
-export type EventItem = {
-  slug: string
-  image: string | null
-  image_url: string
-  order: number
-  title: string
-  short_desc: string
-}
-
-/** Ответ /api/events/<slug>/?locale= */
-export type EventDetail = EventItem & { long_desc: string }
-
 /** Элемент из /api/news/?locale= */
 export type NewsItem = {
   slug: string
@@ -71,12 +61,6 @@ export type NewsDetail = NewsItem & { long_desc: string }
 
 /** URL картинки новости: приоритет у загруженного image, иначе image_url */
 export function getNewsImageSrc(item: { image: string | null; image_url: string }): string {
-  if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
-}
-
-/** URL картинки мероприятия: приоритет у загруженного image, иначе image_url */
-export function getEventImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
   return item.image_url || ''
 }
@@ -181,22 +165,6 @@ export async function fetchServiceBySlug(slug: string, locale: Locale): Promise<
   return res.json().catch(() => null)
 }
 
-export async function fetchEvents(locale: Locale): Promise<EventItem[]> {
-  const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/events/?locale=${loc}`)
-  if (!res?.ok) return []
-  return res.json().catch(() => [])
-}
-
-export async function fetchEventBySlug(slug: string, locale: Locale): Promise<EventDetail | null> {
-  const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/events/${encodeURIComponent(slug)}/?locale=${loc}`)
-  if (!res) return null
-  if (res.status === 404) return null
-  if (!res.ok) return null
-  return res.json().catch(() => null)
-}
-
 export async function fetchNews(locale: Locale): Promise<NewsItem[]> {
   const loc = LOCALES.includes(locale) ? locale : 'ru'
   const res = await apiFetch(`${getApiUrl()}/api/news/?locale=${loc}`)
@@ -257,38 +225,6 @@ export function getPortfolioDownloadUrl(slug: string): string {
   return `${getApiUrl()}/api/portfolio/${encodeURIComponent(slug)}/download/`
 }
 
-/** Блок способа из /api/how-to-get/ (на самолёте, автобусе и т.д.) */
-export type HowToGetBlockItem = {
-  transport_type: string
-  title: string
-  content: string
-}
-
-/** Город из /api/how-to-get/ (Из Минска, Из Москвы и т.д.) */
-export type HowToGetCityItem = {
-  slug: string
-  name: string
-  order: number
-  blocks: HowToGetBlockItem[]
-}
-
-/** Ответ /api/how-to-get/?locale= */
-export type HowToGetResponse = {
-  cities: HowToGetCityItem[]
-  address: string
-  gps_lat: number | null
-  gps_lon: number | null
-}
-
-const DEFAULT_HOW_TO_GET: HowToGetResponse = { cities: [], address: '', gps_lat: null, gps_lon: null }
-
-export async function fetchHowToGet(locale: Locale): Promise<HowToGetResponse> {
-  const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/how-to-get/?locale=${loc}`)
-  if (!res?.ok) return DEFAULT_HOW_TO_GET
-  return res.json().catch(() => DEFAULT_HOW_TO_GET)
-}
-
 /** Элемент из /api/partners/ */
 export type PartnerItem = {
   id: number
@@ -338,8 +274,105 @@ export async function fetchCompanyInfo(): Promise<CompanyInfo | null> {
   return res.json().catch(() => null)
 }
 
+/** Событие календаря из /api/calendar-events/?year=&month=&locale= */
+export type CalendarEventItem = {
+  id: number
+  date: string
+  title: string
+  image: string | null
+  price: string
+  price_display: string
+  max_slots: number
+  available_slots: number
+  is_active: boolean
+}
+
+/** Детальная информация (страница «подробнее») — включает long_desc */
+export type CalendarEventDetailItem = CalendarEventItem & { long_desc: string }
+
+export async function fetchCalendarEvents(
+  locale: Locale,
+  year: number,
+  month: number
+): Promise<CalendarEventItem[]> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(
+    `${getApiUrl()}/api/calendar-events/?year=${year}&month=${month}&locale=${loc}`
+  )
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
+}
+
+export async function fetchCalendarEventDetail(
+  id: number,
+  locale: Locale
+): Promise<CalendarEventDetailItem | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/calendar-events/${id}/?locale=${loc}`)
+  if (!res || res.status === 404 || !res.ok) return null
+  return res.json().catch(() => null)
+}
+
+export async function bookCalendarEvent(
+  id: number,
+  payload: { name: string; email: string; phone?: string; participants_count?: number }
+): Promise<{ ok: true; id?: number } | { error: string }> {
+  const res = await fetch(`${getApiUrl()}/api/calendar-events/${id}/book/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) return { error: (data as { error?: string }).error || `Ошибка ${res.status}` }
+  if ((data as { ok?: boolean }).ok) return { ok: true, id: (data as { id?: number }).id }
+  return { error: (data as { error?: string }).error || 'Неизвестная ошибка' }
+}
+
+/** URL картинки события календаря */
+export function getCalendarEventImageSrc(item: { image: string | null }): string {
+  const raw = item.image || ''
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  const path = raw.startsWith('/') ? raw : `/${raw}`
+  const mediaPath = path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
+  const base = getApiUrl()
+  return base ? `${base}${mediaPath}` : mediaPath
+}
+
 /** Отправка формы контакта (заявка, претензия или обратная связь из горячего предложения). */
 export type ContactFormType = 'main' | 'complaint' | 'hot_offer'
+
+/** Элемент сплава из /api/float-trips/?locale= */
+export type FloatTripItem = {
+  slug: string
+  title: string
+  distance_km: string
+  price_per_person: string
+  order: number
+}
+
+/** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием и ссылкой на карту */
+export type FloatTripDetail = FloatTripItem & {
+  description: string
+  map_embed_url: string  // URL для iframe (Яндекс.Карты)
+}
+
+export async function fetchFloatTrips(locale: Locale): Promise<FloatTripItem[]> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/float-trips/?locale=${loc}`)
+  if (!res?.ok) return []
+  return res.json().catch(() => [])
+}
+
+export async function fetchFloatTripBySlug(
+  slug: string,
+  locale: Locale
+): Promise<FloatTripDetail | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/float-trips/${encodeURIComponent(slug)}/?locale=${loc}`)
+  if (!res || res.status === 404 || !res.ok) return null
+  return res.json().catch(() => null)
+}
 
 export async function sendContactForm(
   type: ContactFormType,

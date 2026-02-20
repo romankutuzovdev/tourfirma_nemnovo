@@ -2,12 +2,11 @@
 
 import React, { createContext, useContext } from 'react'
 import type { Locale } from '@/lib/i18n'
-import type { ServiceItem, EventItem, NewsItem, PromoItem, PortfolioItem } from '@/lib/api'
+import type { ServiceItem, NewsItem, PromoItem, PortfolioItem } from '@/lib/api'
 
 type LocaleContextValue = {
   locale: Locale
   services: ServiceItem[]
-  events: EventItem[]
   news: NewsItem[]
   promos: PromoItem[]
   portfolio: PortfolioItem[]
@@ -18,7 +17,6 @@ const LocaleContext = createContext<LocaleContextValue | null>(null)
 export function LocaleProvider({
   locale,
   initialServices,
-  initialEvents,
   initialNews,
   initialPromos,
   initialPortfolio,
@@ -26,7 +24,6 @@ export function LocaleProvider({
 }: {
   locale: Locale
   initialServices: ServiceItem[]
-  initialEvents: EventItem[]
   initialNews: NewsItem[]
   initialPromos: PromoItem[]
   initialPortfolio: PortfolioItem[]
@@ -37,7 +34,6 @@ export function LocaleProvider({
       value={{
         locale,
         services: initialServices,
-        events: initialEvents,
         news: initialNews,
         promos: initialPromos,
         portfolio: initialPortfolio,
@@ -58,12 +54,6 @@ export function useServices(): ServiceItem[] {
   const ctx = useContext(LocaleContext)
   if (!ctx) throw new Error('useServices must be used within LocaleProvider')
   return ctx.services
-}
-
-export function useEvents(): EventItem[] {
-  const ctx = useContext(LocaleContext)
-  if (!ctx) throw new Error('useEvents must be used within LocaleProvider')
-  return ctx.events
 }
 
 export function useNews(): NewsItem[] {

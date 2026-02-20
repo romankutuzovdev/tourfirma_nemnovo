@@ -35,9 +35,6 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   ),
 }
 
-/** Ссылка на карточку турбазы в Яндекс.Картах */
-const YANDEX_MAPS_URL = 'https://yandex.by/maps/?ll=23.762146%2C53.863078&mode=poi&poi%5Bpoint%5D=23.762041%2C53.863286&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D192681682562&pt=23.762146%2C53.863078&z=16'
-
 const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICONS }[] = [
   { href: 'https://t.me/nemnovo', label: 'Telegram', icon: 'telegram' },
   { href: 'https://instagram.com/nemnovotour', label: 'Instagram', icon: 'instagram' },
@@ -83,12 +80,13 @@ export function Header() {
   const nav = [
     { href: `/${locale}/about`, label: t('nav.about') },
     { href: `/${locale}/services`, label: t('nav.services') },
+    { href: `/${locale}/calendar`, label: t('nav.calendar') },
+    { href: `/${locale}/floats`, label: t('nav.floats') },
     { href: `/${locale}/portfolio`, label: t('nav.portfolio') },
     { href: `/${locale}/promos`, label: t('nav.promos') },
     { href: `/${locale}/news`, label: t('nav.news') },
     { href: `/${locale}/reviews`, label: t('nav.reviews') },
     { href: `/${locale}/contact`, label: t('nav.contact') },
-    { href: `/${locale}/agencies`, label: t('nav.agencies') },
   ]
   const authLink = isAuthenticated
     ? { href: `/${locale}/cabinet`, label: t('nav.cabinet') }
@@ -98,30 +96,13 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-sm">
-      {/* Полоса: слева адрес с иконкой карты, справа соцсети — скрывается при скролле */}
+      {/* Полоса: соцсети — скрывается при скролле */}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out ${
           scrolled ? 'max-h-0 opacity-0' : 'max-h-16 opacity-100'
         }`}
       >
-        <div className="w-full bg-primary flex items-center justify-between gap-4 px-4 sm:px-6 py-2.5">
-        <a
-          href={YANDEX_MAPS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 min-w-0 shrink text-white/95 hover:text-white transition-colors"
-          title={t('howToGet.yandex')}
-        >
-          <span className="shrink-0" aria-hidden>
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden>
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-          </span>
-          <span className="font-sans text-[10px] sm:text-xs leading-tight truncate max-w-[180px] sm:max-w-[240px] md:max-w-none">
-            {t('footer.addressShort')}
-          </span>
-
-        </a>
+        <div className="w-full bg-primary flex items-center justify-end gap-4 px-4 sm:px-6 py-2.5">
         <div className="flex items-center gap-3 shrink-0">
           {socialLinksNoMax.map(({ href, label, icon }) => (
             <a
