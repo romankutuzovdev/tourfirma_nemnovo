@@ -7,13 +7,14 @@ import type { Locale } from './i18n'
 const LOCALES: Locale[] = ['ru', 'be', 'en', 'pl', 'zh']
 
 export function getApiUrl(): string {
-  // В браузере используем '' чтобы fetch шёл на тот же origin → Next.js rewrite → backend
-  if (typeof window !== 'undefined') return ''
   const raw = process.env.NEXT_PUBLIC_API_URL
   if (raw === undefined || raw === null) return ''
   if (raw === '' || (typeof raw === 'string' && raw.trim() === '')) return ''
   const url = String(raw).trim().replace(/\/$/, '')
-  return url || ''
+  if (!url) return ''
+  // Если задан NEXT_PUBLIC_API_URL — используем его (для статического экспорта и продакшена)
+  // Иначе в браузере '' → same origin → Next.js rewrite (при запущенном сервере)
+  return url
 }
 
 /** Элемент из /api/services/?locale= */
