@@ -52,7 +52,7 @@ const SOCIAL_LINKS = [
 
 const defaultCompany: CompanyInfo = {
   company_name: 'ООО «Немново Тур»',
-  legal_address: '231734, Гродненская область, Гродненский район д. Немново, 15 – 7',
+  legal_address: 'Республика Беларусь, 231734, Гродненская область, Гродненский район д. Немново, 15 – 7',
   office_address: 'Республика Беларусь, 230002 г. Гродно, ул. Богуцкого, 2/1',
   unp: '591535043',
   okpo: '508605124000',
@@ -76,7 +76,7 @@ export function Footer() {
   const info = company ?? defaultCompany
 
   return (
-    <footer className="bg-secondary/60 border-t border-secondary/10">
+    <footer className="bg-[#e4a245] border-t border-black/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12">
           {/* Колонка 1: лого, подпись, соцсети */}
@@ -118,7 +118,7 @@ export function Footer() {
             </div>
             <div>
               <p className="font-medium text-black mb-1">{t('footer.workingHours')}</p>
-              <p className="whitespace-pre-line uppercase">{t('footer.workingHoursValue')}</p>
+              <p className="whitespace-pre-line">{t('footer.workingHoursValue')}</p>
             </div>
             <div className="space-y-3">
               <div>
@@ -172,7 +172,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-secondary/10">
+        <div className="mt-12 pt-8 border-t border-black/10">
           <p className="font-sans text-xs text-black/80" suppressHydrationWarning>
             © {new Date().getFullYear()} {t('footer.copyright')}
           </p>
