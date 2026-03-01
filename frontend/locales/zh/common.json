@@ -13,6 +13,8 @@
     "calendar": "日历",
     "floats": "漂流",
     "cabinet": "个人中心",
+    "more": "更多",
+    "payment": "支付",
     "tourfirm": "旅游基地",
     "login": "登录",
     "logout": "退出",
@@ -262,6 +264,10 @@
     "hourShort": "时",
     "minShort": "分",
     "secShort": "秒"
+  },
+  "payment": {
+    "title": "支付条款",
+    "content": "通过 WebPay 支付的相关信息将很快补充。"
   },
   "common": {
     "allServices": "全部服务",

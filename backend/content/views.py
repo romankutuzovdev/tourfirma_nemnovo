@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip
+from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent
 from .serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
@@ -31,6 +31,9 @@ from .serializers import (
     CalendarEventDetailSerializer,
     FloatTripListSerializer,
     FloatTripDetailSerializer,
+    HeroContentSerializer,
+    LegalPageSerializer,
+    AboutContentSerializer,
 )
 
 VALID_LOCALES = {'ru', 'be', 'en', 'pl', 'zh'}
@@ -333,5 +336,46 @@ def portfolio_download(request, slug):
     response = HttpResponse(buf.getvalue(), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename="{slug}.zip"'
     return response
+
+
+@api_view(['GET'])
+def hero_content(request):
+    """Контент главного блока (hero): картинка и переводы текстов."""
+    locale = get_locale(request)
+    obj = HeroContent.objects.prefetch_related('translations').first()
+    if not obj:
+        return Response({
+            'image': None,
+            'image_url': '',
+            'badge': '',
+            'title1': '',
+            'title2': '',
+            'subtitle': '',
+        })
+    serializer = HeroContentSerializer(obj, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def about_content(request):
+    """Контент блока «О нас»: заголовок и абзацы."""
+    locale = get_locale(request)
+    obj = AboutContent.objects.prefetch_related('translations').first()
+    if not obj:
+        return Response({'title': '', 'paragraphs': []})
+    serializer = AboutContentSerializer(obj, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def legal_page(request, page_key):
+    """Юридическая страница (privacy, cookie-policy)."""
+    locale = get_locale(request)
+    try:
+        page = LegalPage.objects.prefetch_related('translations').get(page_key=page_key)
+    except LegalPage.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=404)
+    serializer = LegalPageSerializer(page, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
 
 

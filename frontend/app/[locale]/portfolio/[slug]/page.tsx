@@ -30,7 +30,7 @@ export default async function PortfolioItemPage({ params }: Props) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={`/${locale}/portfolio`}
-          className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black mb-10"
+          className="inline-flex items-center gap-2 font-sans text-sm text-primary hover:text-primary/80 mb-10"
         >
           ← {t('portfolioSection.backToPortfolio')}
         </Link>

@@ -13,6 +13,8 @@
     "calendar": "Kalendarz",
     "floats": "Spływy",
     "cabinet": "Konto",
+    "more": "Więcej",
+    "payment": "Płatność",
     "tourfirm": "BAZA TURYSTYCZNA",
     "login": "Zaloguj się",
     "logout": "Wyloguj",
@@ -269,6 +271,10 @@
     "hourShort": "g",
     "minShort": "m",
     "secShort": "s"
+  },
+  "payment": {
+    "title": "Warunki płatności",
+    "content": "Informacja o warunkach płatności przez WebPay zostanie dodana w najbliższym czasie."
   },
   "common": {
     "allServices": "Wszystkie usługi",

@@ -1,4 +1,5 @@
 from django.conf import settings as django_settings
+from urllib.parse import quote
 from rest_framework import serializers
 from .models import (
     Service, ServiceTranslation,
@@ -11,6 +12,9 @@ from .models import (
     CompanyInfo,
     CalendarEvent, CalendarEventTranslation, CalendarBooking,
     FloatTrip, FloatTripTranslation,
+    HeroContent,
+    LegalPage,
+    AboutContent,
 )
 
 
@@ -30,7 +34,8 @@ def _build_media_url(request, image_field):
     if not name:
         return None
     media = django_settings.MEDIA_URL.strip('/')
-    path = '/' + media + '/' + name
+    # Encode non-ASCII filenames (e.g. Cyrillic) to a valid URL path.
+    path = '/' + media + '/' + quote(name, safe='/%')
     if request:
         return request.build_absolute_uri(path)
     return path
@@ -426,3 +431,90 @@ class FloatTripDetailSerializer(FloatTripListSerializer):
     def get_description(self, obj):
         t = self._get_translation(obj)
         return t.description if t else ''
+
+
+class HeroContentSerializer(serializers.ModelSerializer):
+    """Контент главного блока: картинка и переводы badge/title1/title2/subtitle."""
+    image = serializers.SerializerMethodField()
+    badge = serializers.SerializerMethodField()
+    title1 = serializers.SerializerMethodField()
+    title2 = serializers.SerializerMethodField()
+    subtitle = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HeroContent
+        fields = ['image', 'image_url', 'badge', 'title1', 'title2', 'subtitle']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_image(self, obj):
+        if obj.image:
+            return _build_media_url(self.context.get('request'), obj.image)
+        return obj.image_url or None
+
+    def get_badge(self, obj):
+        t = self._get_translation(obj)
+        return t.badge if t else ''
+
+    def get_title1(self, obj):
+        t = self._get_translation(obj)
+        return t.title1 if t else ''
+
+    def get_title2(self, obj):
+        t = self._get_translation(obj)
+        return t.title2 if t else ''
+
+    def get_subtitle(self, obj):
+        t = self._get_translation(obj)
+        return t.subtitle if t else ''
+
+
+class LegalPageSerializer(serializers.ModelSerializer):
+    """Юридическая страница: заголовок и содержание для заданной локали."""
+    title = serializers.SerializerMethodField()
+    content = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LegalPage
+        fields = ['page_key', 'title', 'content']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else ''
+
+    def get_content(self, obj):
+        t = self._get_translation(obj)
+        return t.content if t else ''
+
+
+class AboutContentSerializer(serializers.ModelSerializer):
+    """Блок «О нас»: заголовок и абзацы для заданной локали."""
+    title = serializers.SerializerMethodField()
+    paragraphs = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AboutContent
+        fields = ['title', 'paragraphs']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else ''
+
+    def get_paragraphs(self, obj):
+        t = self._get_translation(obj)
+        if not t or not t.paragraphs:
+            return []
+        return [p.strip() for p in t.paragraphs.split('\n\n') if p.strip()]

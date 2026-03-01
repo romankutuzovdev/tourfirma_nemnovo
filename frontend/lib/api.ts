@@ -375,6 +375,50 @@ export async function fetchFloatTripBySlug(
   return res.json().catch(() => null)
 }
 
+/** Юридическая страница из /api/legal/<page_key>/?locale= */
+export type LegalPageContent = {
+  page_key: string
+  title: string
+  content: string
+}
+
+export async function fetchLegalPage(pageKey: string, locale: Locale): Promise<LegalPageContent | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/legal/${encodeURIComponent(pageKey)}/?locale=${loc}`)
+  if (!res?.ok) return null
+  return res.json().catch(() => null)
+}
+
+/** Блок «О нас» из /api/about-content/?locale= */
+export type AboutContent = {
+  title: string
+  paragraphs: string[]
+}
+
+export async function fetchAboutContent(locale: Locale): Promise<AboutContent | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/about-content/?locale=${loc}`)
+  if (!res?.ok) return null
+  return res.json().catch(() => null)
+}
+
+/** Контент главного блока (GET /api/hero/?locale=) */
+export type HeroContent = {
+  image: string | null
+  image_url: string
+  badge: string
+  title1: string
+  title2: string
+  subtitle: string
+}
+
+export async function fetchHeroContent(locale: Locale): Promise<HeroContent | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/hero/?locale=${loc}`)
+  if (!res?.ok) return null
+  return res.json().catch(() => null)
+}
+
 export async function sendContactForm(
   type: ContactFormType,
   payload: { name: string; email: string; message: string }

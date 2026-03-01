@@ -10,6 +10,8 @@ from .models import (
     CompanyInfo,
     CalendarEvent, CalendarEventTranslation, CalendarBooking,
     FloatTrip, FloatTripTranslation,
+    HeroContent, HeroContentTranslation,
+    AboutContent, AboutContentTranslation,
 )
 
 
@@ -202,6 +204,28 @@ class FloatTripAdmin(admin.ModelAdmin):
     list_editable = ['order', 'distance_km', 'price_per_person']
     fields = ['slug', 'distance_km', 'price_per_person', 'order', 'map_embed_url']
     inlines = [FloatTripTranslationInline]
+
+
+class HeroContentTranslationInline(admin.TabularInline):
+    model = HeroContentTranslation
+    extra = 0
+
+
+@admin.register(HeroContent)
+class HeroContentAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
+    inlines = [HeroContentTranslationInline]
+
+
+class AboutContentTranslationInline(admin.StackedInline):
+    model = AboutContentTranslation
+    extra = 0
+
+
+@admin.register(AboutContent)
+class AboutContentAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
+    inlines = [AboutContentTranslationInline]
 
 
 @admin.register(CompanyInfo)

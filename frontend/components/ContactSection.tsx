@@ -48,7 +48,7 @@ export function ContactSection() {
   return (
     <section id="contact" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h2 className="font-serif text-3xl md:text-4xl font-medium text-black tracking-tight">{t('contact.title')}</h2>
+        <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
 
         <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
           {/* Контактная информация: адрес, время, телефоны */}
@@ -97,22 +97,22 @@ export function ContactSection() {
           {/* Форма */}
           <div className="lg:col-span-3">
             <div className="max-w-xl">
-              <h3 className="font-serif text-xl font-medium text-black mb-6">{t('contact.formMain')}</h3>
+              <h3 className="font-serif text-xl font-medium text-primary mb-6">{t('contact.formMain')}</h3>
               {sent ? (
                 <p className="font-sans text-black/80">{t('contact.thanks')}</p>
               ) : (
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(e.currentTarget) }} action="#" method="post">
                   <input type="hidden" name="_to" value="office@nemnovotour.by" />
                   <div>
-                    <label htmlFor="main-name" className="block font-sans text-sm text-black/80 mb-1">{t('contact.nameLabel')}</label>
+                    <label htmlFor="main-name" className="block font-sans text-sm text-primary mb-1">{t('contact.nameLabel')}</label>
                     <input id="main-name" name="name" type="text" required className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg" placeholder={t('contact.namePlaceholder')} />
                   </div>
                   <div>
-                    <label htmlFor="main-email" className="block font-sans text-sm text-black/80 mb-1">{t('contact.emailLabel')}</label>
+                    <label htmlFor="main-email" className="block font-sans text-sm text-primary mb-1">{t('contact.emailLabel')}</label>
                     <input id="main-email" name="email" type="email" required className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg" placeholder={t('contact.emailPlaceholder')} />
                   </div>
                   <div>
-                    <label htmlFor="main-msg" className="block font-sans text-sm text-black/80 mb-1">{t('contact.messageLabel')}</label>
+                    <label htmlFor="main-msg" className="block font-sans text-sm text-primary mb-1">{t('contact.messageLabel')}</label>
                     <textarea id="main-msg" name="message" rows={3} className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg resize-none" placeholder={t('contact.messagePlaceholder')} />
                   </div>
                   {error && <p className="font-sans text-sm text-red-600">{error}</p>}

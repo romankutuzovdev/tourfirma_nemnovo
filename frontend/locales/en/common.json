@@ -13,6 +13,8 @@
     "calendar": "Calendar",
     "floats": "Float trips",
     "cabinet": "Account",
+    "more": "More",
+    "payment": "Payment",
     "tourfirm": "TOUR BASE",
     "login": "Log in",
     "logout": "Log out",
@@ -262,6 +264,10 @@
     "hourShort": "h",
     "minShort": "m",
     "secShort": "s"
+  },
+  "payment": {
+    "title": "Payment terms",
+    "content": "Information about payment terms via WebPay will be added soon."
   },
   "common": {
     "allServices": "All services",

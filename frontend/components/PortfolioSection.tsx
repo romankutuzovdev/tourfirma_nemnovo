@@ -25,12 +25,9 @@ export function PortfolioSection() {
     <section id="portfolio" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <AnimateOnScroll variant="fade-up">
-          <h2 className="font-serif text-3xl md:text-4xl font-medium text-black tracking-tight max-w-2xl">
+          <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight max-w-2xl">
             {t('portfolioSection.title')}
           </h2>
-          <p className="mt-4 font-sans text-black/80 max-w-xl">
-            {t('portfolioSection.description')}
-          </p>
         </AnimateOnScroll>
         <div className="mt-12 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {portfolio.map((item, i) => {

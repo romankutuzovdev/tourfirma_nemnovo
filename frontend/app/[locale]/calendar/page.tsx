@@ -78,7 +78,7 @@ export default function CalendarPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h2 className="font-serif text-2xl md:text-3xl font-medium text-black capitalize">
+          <h2 className="font-serif text-2xl md:text-3xl font-medium text-primary capitalize">
             {monthName}
           </h2>
           <button

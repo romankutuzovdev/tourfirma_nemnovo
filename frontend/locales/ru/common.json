@@ -13,6 +13,8 @@
     "calendar": "Календарь",
     "floats": "Сплавы",
     "cabinet": "Личный кабинет",
+    "more": "Ещё",
+    "payment": "Оплата",
     "tourfirm": "ТУРБАЗА",
     "login": "Войти",
     "logout": "Выйти",
@@ -261,6 +263,10 @@
     "hourShort": "ч",
     "minShort": "м",
     "secShort": "с"
+  },
+  "payment": {
+    "title": "Условия оплаты",
+    "content": "Информация об условиях оплаты через WebPay будет добавлена в ближайшее время."
   },
   "common": {
     "allServices": "Все услуги",

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -61,8 +61,10 @@ export function Header() {
   const { isAuthenticated } = useAuth()
   const [open, setOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const moreRef = useRef<HTMLDivElement>(null)
 
   const pathForLocale = (loc: string) => `/${loc}${pathWithoutLocale(pathname ?? '', locale)}`
 
@@ -77,6 +79,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [mounted])
 
+  useEffect(() => {
+    if (!moreOpen) return
+    const onMouseDown = (event: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+        setMoreOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener('mousedown', onMouseDown)
+  }, [moreOpen])
+
   const nav = [
     { href: `/${locale}/about`, label: t('nav.about') },
     { href: `/${locale}/services`, label: t('nav.services') },
@@ -84,9 +97,12 @@ export function Header() {
     { href: `/${locale}/floats`, label: t('nav.floats') },
     { href: `/${locale}/portfolio`, label: t('nav.portfolio') },
     { href: `/${locale}/promos`, label: t('nav.promos') },
+    { href: `/${locale}/contact`, label: t('nav.contact') },
+  ]
+  const moreNav = [
     { href: `/${locale}/news`, label: t('nav.news') },
     { href: `/${locale}/reviews`, label: t('nav.reviews') },
-    { href: `/${locale}/contact`, label: t('nav.contact') },
+    { href: `/${locale}/payment`, label: t('nav.payment') },
   ]
   const authLink = isAuthenticated
     ? { href: `/${locale}/cabinet`, label: t('nav.cabinet') }
@@ -137,9 +153,9 @@ export function Header() {
             <span className="truncate">{t('footer.copyright')}</span>
           </Link>
         </div>
-        {/* Десктоп (≥1580px): все пункты меню в один ряд; уже — бургер (ниже 1580 «О нас» залазит на лого из‑за 2xl отступов) */}
-        <div className="flex-1 min-w-0 hidden min-[1580px]:flex flex-col h-full justify-center items-end">
-          <div className="flex items-center justify-end min-w-0 overflow-x-auto overflow-y-hidden pr-0.5 scrollbar-none w-full">
+        {/* Десктоп (≥1280px): все пункты меню в один ряд; уже — бургер */}
+        <div className="flex-1 min-w-0 hidden min-[1280px]:flex items-center justify-end gap-2 xl:gap-3 2xl:gap-4 h-full">
+          <div className="flex items-center min-w-0 overflow-x-auto overflow-y-visible pr-0.5 scrollbar-none">
             <nav className="flex items-center gap-2 xl:gap-3 2xl:gap-4 flex-nowrap shrink-0 min-w-max">
               {nav.map((item) =>
                 (item as { external?: boolean }).external ? (
@@ -164,9 +180,42 @@ export function Header() {
               )}
             </nav>
           </div>
+          <div className="relative shrink-0" ref={moreRef}>
+            <button
+              type="button"
+              onClick={() => setMoreOpen(!moreOpen)}
+              className="flex items-center gap-1 font-sans text-xs xl:text-sm font-semibold tracking-wide text-black/80 hover:text-black transition-colors whitespace-nowrap py-0.5"
+              aria-expanded={moreOpen}
+              aria-haspopup="true"
+            >
+              {t('nav.more')}
+              <svg
+                viewBox="0 0 12 12"
+                fill="currentColor"
+                className={`w-3 h-3 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`}
+              >
+                <path d="M6 8L1 3h10L6 8z" />
+              </svg>
+            </button>
+            {moreOpen && (
+              <ul className="absolute right-0 top-full mt-1 py-1 bg-white border border-secondary/20 rounded shadow-lg z-50 min-w-[160px]">
+                {moreNav.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="block px-4 py-2.5 font-sans text-sm font-semibold text-black/80 hover:text-black hover:bg-secondary/30 transition-colors whitespace-nowrap"
+                      onClick={() => setMoreOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-        {/* Свёрнутое меню (<1580px): лого + язык + гамбургер */}
-        <div className="flex-1 min-w-0 flex min-[1580px]:hidden items-center justify-end">
+        {/* Свёрнутое меню (<1280px): лого + язык + гамбургер */}
+        <div className="flex-1 min-w-0 flex min-[1280px]:hidden items-center justify-end">
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <div className="relative">
                 <button
@@ -207,8 +256,8 @@ export function Header() {
               </button>
             </div>
         </div>
-        {/* Справа: Войти, язык, ТУРФИРМА (при ≥1580px) */}
-        <div className="hidden min-[1580px]:flex items-center gap-2 min-[1580px]:gap-3 2xl:gap-4 shrink-0 pl-4 min-[1580px]:pl-5 2xl:pl-6">
+        {/* Справа: Войти, язык, ТУРФИРМА (при ≥1280px) */}
+        <div className="hidden min-[1280px]:flex items-center gap-2 min-[1280px]:gap-3 2xl:gap-4 shrink-0 pl-4 min-[1280px]:pl-5 2xl:pl-6">
           <Link
             href={authLink.href}
             className="font-sans text-[10px] sm:text-xs lg:text-sm font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors whitespace-nowrap shrink-0"
@@ -263,7 +312,7 @@ export function Header() {
         </div>
       </div>
       {open && (
-        <div className="min-[1580px]:hidden bg-white border-t border-secondary/10 py-6 px-6 flex flex-col gap-4">
+        <div className="min-[1280px]:hidden bg-white border-t border-secondary/10 py-6 px-6 flex flex-col gap-4">
             {nav.map((item) =>
               (item as { external?: boolean }).external ? (
                 <a
@@ -287,6 +336,16 @@ export function Header() {
                 </Link>
               )
             )}
+            {moreNav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-sans font-semibold text-black/80 hover:text-black"
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
               href={authLink.href}
               className="font-sans font-semibold px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 text-center"

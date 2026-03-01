@@ -32,7 +32,7 @@ export default function FloatsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/30 via-white to-primary/20">
-      <header className="pt-44 md:pt-32 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-48 md:pt-44 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={`/${locale}`}
           className="lg:hidden inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-6"
@@ -42,9 +42,6 @@ export default function FloatsPage() {
         <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-primary tracking-tight max-w-2xl">
           {t('floatsSection.title')}
         </h1>
-        <p className="mt-4 font-sans text-black/80 max-w-xl">
-          {t('floatsSection.description')}
-        </p>
       </header>
 
       <section className="pt-6 md:pt-10 pb-16 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6">

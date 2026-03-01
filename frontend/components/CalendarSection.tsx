@@ -60,25 +60,25 @@ export function CalendarSection() {
   })
 
   return (
-    <section id="calendar" className="scroll-mt-24 pt-12 md:pt-16 pb-6 md:pb-8 bg-secondary/40 border-t border-secondary/10">
+    <section id="calendar" className="scroll-mt-24 pt-12 md:pt-16 pb-6 md:pb-8 bg-[#f8bd69]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="section-title-main text-primary">{t('calendarPage.title')}</h2>
+        <h2 className="section-title-main text-white">{t('calendarPage.title')}</h2>
         <div className="mt-4 flex items-center justify-between gap-4">
           <button
             type="button"
             onClick={prevMonth}
-            className="p-2.5 rounded-full border-2 border-primary/40 text-primary hover:bg-primary/10 hover:border-primary transition-colors shrink-0"
+            className="p-2.5 rounded-full border-2 border-white/60 text-white hover:bg-white/20 hover:border-white transition-colors shrink-0"
             aria-label={t('calendarPage.prevMonth')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <p className="font-sans text-xl md:text-2xl font-medium text-black capitalize">{monthName}</p>
+          <p className="font-sans text-xl md:text-2xl font-medium text-white capitalize">{monthName}</p>
           <button
             type="button"
             onClick={nextMonth}
-            className="p-2.5 rounded-full border-2 border-primary/40 text-primary hover:bg-primary/10 hover:border-primary transition-colors shrink-0"
+            className="p-2.5 rounded-full border-2 border-white/60 text-white hover:bg-white/20 hover:border-white transition-colors shrink-0"
             aria-label={t('calendarPage.nextMonth')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,11 +90,11 @@ export function CalendarSection() {
         {loading ? (
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="aspect-[4/3] rounded-xl bg-secondary/20 animate-pulse" />
+              <div key={i} className="aspect-[4/3] rounded-xl bg-white/20 animate-pulse" />
             ))}
           </div>
         ) : events.length === 0 ? (
-          <p className="mt-8 font-sans text-lg text-black/70 py-8 text-center">
+          <p className="mt-8 font-sans text-lg text-white/80 py-8 text-center">
             {t('calendarPage.empty')}
           </p>
         ) : (
@@ -165,7 +165,7 @@ export function CalendarSection() {
         <div className="mt-10 text-center">
           <Link
             href={`/${locale}/calendar`}
-            className="inline-flex items-center px-6 py-3 border-2 border-primary text-primary font-sans text-sm font-semibold tracking-wide hover:bg-primary hover:text-white transition-colors rounded-lg"
+            className="inline-flex items-center px-6 py-3 border-2 border-white text-white font-sans text-sm font-semibold tracking-wide hover:bg-white hover:text-[#f8bd69] transition-colors rounded-lg"
           >
             {t('eventsSection.allEvents')}
           </Link>

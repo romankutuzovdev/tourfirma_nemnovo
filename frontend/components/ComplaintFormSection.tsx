@@ -28,7 +28,7 @@ export function ComplaintFormSection() {
   return (
     <section className="bg-white border-t border-secondary/10">
       <div>
-        <h2 className="font-serif text-2xl md:text-3xl font-medium text-black tracking-tight">{t('contact.formComplaint')}</h2>
+        <h2 className="font-serif text-2xl md:text-3xl font-medium !text-primary tracking-tight">{t('contact.formComplaint')}</h2>
         <p className="mt-2 font-sans text-sm text-black/80 mb-8 max-w-xl">{t('contact.complaintIntro')}</p>
         <div className="mt-6">
         {sent ? (
