@@ -31,7 +31,7 @@ export default function FloatsPage() {
   }, [selectedSlug, locale])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-secondary/30 via-white to-primary/20">
+    <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
       <header className="pt-48 md:pt-44 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={`/${locale}`}

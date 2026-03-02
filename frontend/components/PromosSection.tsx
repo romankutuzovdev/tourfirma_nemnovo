@@ -89,7 +89,7 @@ export function PromosSection() {
               >
                 <article className="h-full min-h-[140px] bg-secondary/50 border border-secondary/10 rounded-sm flex flex-col md:flex-row gap-4 overflow-hidden transition-all duration-300 hover:border-secondary/20 hover:shadow-md">
                   {src && (
-                    <div className="relative w-full md:w-36 h-36 shrink-0">
+                    <div className="relative w-full md:w-36 h-36 md:h-auto md:self-stretch shrink-0">
                       <Image
                         src={src}
                         alt={p.title}

@@ -74,21 +74,18 @@ export function ContactSection() {
             <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 space-y-4">
               <div className="flex gap-4">
                 <IconPhone />
-                <div className="space-y-4 min-w-0 flex-1">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
-                    <div>
-                      <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70">{t('footer.phone1Label')}</p>
-                      <a href="tel:+375291792539" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 179 25 39</a>
-                    </div>
-                    <p className="font-sans text-sm text-black/80 shrink-0 whitespace-pre-line">{t('footer.phone1Hours')}</p>
+                <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-y-4 sm:gap-x-6">
+                  <div className="min-w-0">
+                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 whitespace-pre-line">{t('footer.phone1Label')}</p>
+                    <a href="tel:+375291792539" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 179 25 39</a>
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
-                    <div>
-                      <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70">{t('footer.phone2Label')}</p>
-                      <a href="tel:+375297801304" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 780 13 04</a>
-                    </div>
-                    <p className="font-sans text-sm text-black/80 shrink-0 whitespace-pre-line">{t('footer.phone2Hours')}</p>
+                  <p className="font-sans text-sm text-black/80 whitespace-pre-line">{t('footer.phone1Hours')}</p>
+
+                  <div className="min-w-0">
+                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70">{t('footer.phone2Label')}</p>
+                    <a href="tel:+375297801304" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 780 13 04</a>
                   </div>
+                  <p className="font-sans text-sm text-black/80 whitespace-pre-line">{t('footer.phone2Hours')}</p>
                 </div>
               </div>
             </div>

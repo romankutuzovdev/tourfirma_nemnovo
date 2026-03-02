@@ -59,7 +59,7 @@ export default function CalendarPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-secondary/30 via-white to-primary/20">
+    <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
       <header className="pt-52 md:pt-40 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-primary tracking-tight max-w-2xl">
           {t('calendarPage.title')}

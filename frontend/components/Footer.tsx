@@ -76,7 +76,7 @@ export function Footer() {
   const info = company ?? defaultCompany
 
   return (
-    <footer className="bg-[#e4a245] border-t border-black/10">
+    <footer className="bg-[#f1cd99] border-t border-black/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12">
           {/* Колонка 1: лого, подпись, соцсети */}
@@ -172,7 +172,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-black/10">
+        <div className="mt-12 pt-8">
           <p className="font-sans text-xs text-black/80" suppressHydrationWarning>
             © {new Date().getFullYear()} {t('footer.copyright')}
           </p>

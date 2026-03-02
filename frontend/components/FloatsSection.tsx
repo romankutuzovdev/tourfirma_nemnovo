@@ -31,7 +31,7 @@ export function FloatsSection() {
   }, [selectedSlug, locale])
 
   return (
-    <section id="floats" className="scroll-mt-24 pt-12 md:pt-16 pb-12 md:pb-16 bg-secondary/40 border-t border-secondary/10">
+    <section id="floats" className="scroll-mt-24 pt-12 md:pt-16 pb-12 md:pb-16 bg-white border-t border-secondary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="section-title-main text-primary">{t('floatsSection.title')}</h2>
 
