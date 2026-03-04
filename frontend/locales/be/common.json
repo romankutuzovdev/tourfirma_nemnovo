@@ -18,7 +18,8 @@
     "tourfirm": "ТУРБАЗА",
     "login": "Увайсці",
     "logout": "Выйсці",
-    "register": "Рэгістрацыя"
+    "register": "Рэгістрацыя",
+    "translateLabel": "Мова старонкі"
   },
   "auth": {
     "loginTitle": "Уваход",

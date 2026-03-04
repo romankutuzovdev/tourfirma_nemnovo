@@ -18,7 +18,8 @@
     "tourfirm": "BAZA TURYSTYCZNA",
     "login": "Zaloguj się",
     "logout": "Wyloguj",
-    "register": "Rejestracja"
+    "register": "Rejestracja",
+    "translateLabel": "Język strony"
   },
   "auth": {
     "loginTitle": "Logowanie",

@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { locales, localeNames } from '@/lib/i18n'
+import { GoogleTranslateWidget } from '@/components/GoogleTranslateWidget'
 
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   telegram: (
@@ -35,6 +36,8 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   ),
 }
 
+const SCROLL_THRESHOLD = 60
+
 const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICONS }[] = [
   { href: 'https://t.me/nemnovo', label: 'Telegram', icon: 'telegram' },
   { href: 'https://instagram.com/nemnovotour', label: 'Instagram', icon: 'instagram' },
@@ -42,8 +45,6 @@ const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICO
   { href: 'https://facebook.com/nemnovotour', label: 'Facebook', icon: 'facebook' },
   { href: 'https://max.ru/', label: 'MAX', icon: 'max' },
 ]
-
-const SCROLL_THRESHOLD = 60
 
 /** Текущий путь без сегмента локали (например, /services/foo). */
 function pathWithoutLocale(pathname: string, locale: string): string {
@@ -78,7 +79,30 @@ export function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [mounted])
-
+  useEffect(() => {
+    if (!mounted) return
+    document.body.classList.toggle('header-scrolled', scrolled)
+    return () => document.body.classList.remove('header-scrolled')
+  }, [mounted, scrolled])
+  useEffect(() => {
+    if (!mounted) return
+    const checkBanner = () => {
+      const translated = document.documentElement.classList.contains('translated-ltr') ||
+        document.documentElement.classList.contains('translated-rtl')
+      const banner = document.querySelector('.goog-te-banner-frame, iframe.goog-te-banner-frame')
+      document.body.classList.toggle('google-translate-visible', translated || !!banner)
+    }
+    checkBanner()
+    const obs = new MutationObserver(checkBanner)
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    obs.observe(document.body, { childList: true, subtree: true })
+    const interval = window.setInterval(checkBanner, 500)
+    return () => {
+      obs.disconnect()
+      clearInterval(interval)
+      document.body.classList.remove('google-translate-visible')
+    }
+  }, [mounted])
   useEffect(() => {
     if (!moreOpen) return
     const onMouseDown = (event: MouseEvent) => {
@@ -111,15 +135,24 @@ export function Header() {
   const socialLinksNoMax = SOCIAL_LINKS.filter(({ icon }) => icon !== 'max')
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 shadow-sm">
-      {/* Полоса: соцсети — скрывается при скролле */}
+    <header className="fixed left-0 right-0 z-50 shadow-sm w-full flex flex-col transition-[top] duration-300 ease-out site-header">
+      {/* Верхняя полоса: плашка перевода + соцсети — скрывается при скролле */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-out ${
-          scrolled ? 'max-h-0 opacity-0' : 'max-h-16 opacity-100'
+        className={`overflow-hidden transition-all duration-300 ease-out shrink-0 ${
+          scrolled ? 'max-h-0 opacity-0' : 'max-h-14 sm:max-h-16 opacity-100'
         }`}
       >
-        <div className="w-full bg-primary flex items-center justify-end gap-4 px-4 sm:px-6 py-2.5">
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="translate-banner w-full flex flex-row items-center justify-between gap-4 px-4 sm:px-6 py-2 sm:py-2.5 min-h-[40px]">
+          <div className="flex flex-row items-center gap-2 sm:gap-3">
+            <span className="flex items-center gap-1.5 text-white/95 font-sans text-xs sm:text-sm font-medium">
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+              </svg>
+              {t('nav.translateLabel')}
+            </span>
+            <GoogleTranslateWidget />
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {socialLinksNoMax.map(({ href, label, icon }) => (
             <a
               key={href}
@@ -136,7 +169,7 @@ export function Header() {
         </div>
         </div>
       </div>
-      <div className="w-full bg-white/90 backdrop-blur-md border-b border-secondary/10 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 min-h-14 h-14 sm:h-16 md:h-[4.25rem] lg:h-20 flex items-center">
+      <div className="w-full bg-white/90 backdrop-blur-md border-b border-secondary/10 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 min-h-14 h-14 sm:h-16 md:h-[4.25rem] lg:h-20 flex items-center shrink-0 relative z-10">
         {/* Слева: лого + Немново */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 shrink-0 min-w-0 border-b border-secondary/10 md:border-b-0 pr-2 sm:pr-3 md:pr-4 lg:pr-5 h-full">
           <Link

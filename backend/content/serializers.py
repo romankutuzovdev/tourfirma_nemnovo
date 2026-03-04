@@ -1,6 +1,7 @@
 from django.conf import settings as django_settings
 from urllib.parse import quote
 from rest_framework import serializers
+from .translate_utils import translate_text, _auto_translate_enabled
 from .models import (
     Service, ServiceTranslation,
     News, NewsTranslation,
@@ -61,10 +62,27 @@ class ServiceListSerializer(serializers.ModelSerializer):
         return self.context.get('locale', 'ru')
 
     def _get_translation(self, obj):
-        trans = obj.translations.filter(locale=self._get_locale()).first()
-        if not trans:
-            trans = obj.translations.filter(locale='ru').first()
-        return trans
+        locale = self._get_locale()
+        trans = obj.translations.filter(locale=locale).first()
+        if trans:
+            return trans
+        ru = obj.translations.filter(locale='ru').first()
+        if not ru or locale == 'ru':
+            return ru
+        if _auto_translate_enabled():
+            try:
+                trans = ServiceTranslation(
+                    service=obj,
+                    locale=locale,
+                    title=translate_text(ru.title, locale),
+                    short_desc=translate_text(ru.short_desc or '', locale),
+                    long_desc=translate_text(ru.long_desc or '', locale),
+                )
+                trans.save()
+                return trans
+            except Exception:
+                pass
+        return ru
 
     def get_title(self, obj):
         t = self._get_translation(obj)
@@ -95,8 +113,27 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
         return self.context.get('locale', 'ru')
 
     def _get_translation(self, obj):
-        t = obj.translations.filter(locale=self._get_locale()).first()
-        return t or obj.translations.filter(locale='ru').first()
+        locale = self._get_locale()
+        t = obj.translations.filter(locale=locale).first()
+        if t:
+            return t
+        ru = obj.translations.filter(locale='ru').first()
+        if not ru or locale == 'ru':
+            return ru
+        if _auto_translate_enabled():
+            try:
+                t = ServiceTranslation(
+                    service=obj,
+                    locale=locale,
+                    title=translate_text(ru.title, locale),
+                    short_desc=translate_text(ru.short_desc or '', locale),
+                    long_desc=translate_text(ru.long_desc or '', locale),
+                )
+                t.save()
+                return t
+            except Exception:
+                pass
+        return ru
 
     def get_title(self, obj):
         t = self._get_translation(obj)
@@ -414,7 +451,26 @@ class FloatTripListSerializer(serializers.ModelSerializer):
     def _get_translation(self, obj):
         locale = self.context.get('locale', 'ru')
         t = obj.translations.filter(locale=locale).first()
-        return t or obj.translations.filter(locale='ru').first()
+        if t:
+            return t
+        ru = obj.translations.filter(locale='ru').first()
+        if not ru:
+            return None
+        if locale == 'ru':
+            return ru
+        if _auto_translate_enabled():
+            try:
+                t = FloatTripTranslation(
+                    float_trip=obj,
+                    locale=locale,
+                    title=translate_text(ru.title, locale),
+                    description=translate_text(ru.description or '', locale),
+                )
+                t.save()
+                return t
+            except Exception:
+                pass
+        return ru
 
     def get_title(self, obj):
         t = self._get_translation(obj)

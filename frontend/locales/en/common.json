@@ -18,7 +18,8 @@
     "tourfirm": "TOUR BASE",
     "login": "Log in",
     "logout": "Log out",
-    "register": "Sign up"
+    "register": "Sign up",
+    "translateLabel": "Page language"
   },
   "auth": {
     "loginTitle": "Log in",

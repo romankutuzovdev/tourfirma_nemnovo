@@ -120,6 +120,10 @@ CKEDITOR_5_CONFIGS = {
     },
 }
 
+# Автоперевод: при отсутствии перевода для локали — переводить из ru и сохранять (Google Translate / DeepL)
+AUTO_TRANSLATE_MISSING = os.environ.get('AUTO_TRANSLATE_MISSING', '1') == '1'
+# DEEPL_AUTH_KEY = os.environ.get('DEEPL_AUTH_KEY', '')  # опционально: для DeepL вместо Google
+
 # Ссылка на фронтенд для писем (сброс пароля)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 

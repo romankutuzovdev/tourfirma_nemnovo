@@ -18,7 +18,8 @@
     "tourfirm": "旅游基地",
     "login": "登录",
     "logout": "退出",
-    "register": "注册"
+    "register": "注册",
+    "translateLabel": "页面语言"
   },
   "auth": {
     "loginTitle": "登录",
