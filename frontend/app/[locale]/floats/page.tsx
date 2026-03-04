@@ -1,34 +1,24 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
-import { fetchFloatTrips, fetchFloatTripBySlug, type FloatTripItem, type FloatTripDetail } from '@/lib/api'
+import { fetchFloatTrips, getFloatImageSrc, type FloatTripItem } from '@/lib/api'
 
 export default function FloatsPage() {
   const locale = useLocale()
   const t = useTranslations()
   const [trips, setTrips] = useState<FloatTripItem[]>([])
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
-  const [selectedTrip, setSelectedTrip] = useState<FloatTripDetail | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchFloatTrips(locale).then((data) => {
       setTrips(data)
       setLoading(false)
-      if (data.length > 0 && !selectedSlug) setSelectedSlug(data[0].slug)
     })
   }, [locale])
-
-  useEffect(() => {
-    if (!selectedSlug) {
-      setSelectedTrip(null)
-      return
-    }
-    fetchFloatTripBySlug(selectedSlug, locale).then(setSelectedTrip)
-  }, [selectedSlug, locale])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
@@ -46,75 +36,49 @@ export default function FloatsPage() {
 
       <section className="pt-6 md:pt-10 pb-16 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6">
         {loading ? (
-          <div className="space-y-6">
-            <div className="h-12 w-64 bg-secondary/20 rounded animate-pulse" />
-            <div className="h-96 rounded-xl bg-secondary/20 animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="aspect-square rounded-lg bg-secondary/20 animate-pulse" />
+            ))}
           </div>
         ) : trips.length === 0 ? (
           <p className="font-sans text-lg text-black/70 py-12">
             {t('floatsSection.empty')}
           </p>
         ) : (
-          <div className="space-y-6 md:space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <label htmlFor="float-select" className="font-sans font-medium text-black shrink-0">
-                {t('floatsSection.selectTrip')}:
-              </label>
-              <select
-                id="float-select"
-                value={selectedSlug ?? ''}
-                onChange={(e) => setSelectedSlug(e.target.value || null)}
-                className="font-sans px-4 py-2.5 rounded-lg border-2 border-secondary/30 bg-white text-black focus:border-primary focus:outline-none min-w-[200px]"
-              >
-                {trips.map((trip) => (
-                  <option key={trip.slug} value={trip.slug}>
-                    {trip.title} — {trip.distance_km} км
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {selectedTrip && (
-              <>
-                <div className="p-6 rounded-xl border border-secondary/20 bg-white shadow-sm">
-                  <h2 className="font-serif text-xl md:text-2xl font-medium text-primary">
-                    {selectedTrip.title}
-                  </h2>
-                  <div className="mt-2 flex flex-wrap gap-4 font-sans text-sm text-black/70">
-                    <span>{selectedTrip.distance_km} {t('floatsSection.km')}</span>
-                    <span>
-                      {t('floatsSection.priceFrom')} {selectedTrip.price_per_person} {t('floatsSection.byr')} / {t('floatsSection.perPerson')}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {trips.map((trip) => (
+              <div key={trip.slug} className="min-w-0">
+                <Link
+                  href={`/${locale}/floats/${trip.slug}`}
+                  className="group relative block aspect-square w-full rounded-lg overflow-hidden border border-secondary/30 bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                >
+                  {getFloatImageSrc(trip) ? (
+                    <Image
+                      src={getFloatImageSrc(trip)!}
+                      alt={trip.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-primary" aria-hidden />
+                  )}
+                  <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
+                    <h2 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">
+                      {trip.title}
+                    </h2>
+                    <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug">
+                      {trip.distance_km} {t('floatsSection.km')} · {t('floatsSection.priceFrom')} {trip.price_per_person} {t('floatsSection.byr')} / {t('floatsSection.perPerson')}
+                    </p>
+                    <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">
+                      {t('floatsSection.more')}
                     </span>
                   </div>
-                  {selectedTrip.description && (
-                    <p className="mt-4 font-sans text-black/80 leading-relaxed whitespace-pre-line">
-                      {selectedTrip.description}
-                    </p>
-                  )}
-                  <Link
-                    href={`/${locale}/floats/${selectedTrip.slug}`}
-                    className="mt-4 inline-block font-sans text-sm font-semibold text-primary hover:underline"
-                  >
-                    {t('floatsSection.more')} →
-                  </Link>
-                </div>
-
-                {selectedTrip.map_embed_url && (
-                  <div className="rounded-xl overflow-hidden border border-secondary/20 bg-secondary/10" style={{ height: 400 }}>
-                    <iframe
-                      src={selectedTrip.map_embed_url}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title={selectedTrip.title}
-                    />
-                  </div>
-                )}
-              </>
-            )}
+                </Link>
+              </div>
+            ))}
           </div>
         )}
       </section>

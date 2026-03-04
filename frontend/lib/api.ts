@@ -40,6 +40,15 @@ function toAbsoluteImageUrl(value: string): string {
   return `${base}${mediaPath}`
 }
 
+/** Преобразует относительный /media/ URL в абсолютный для запросов к бэкенду */
+export function toAbsoluteMediaUrl(value: string): string {
+  if (value.startsWith('http://') || value.startsWith('https://')) return value
+  const path = value.startsWith('/') ? value : `/${value}`
+  const base = getApiUrl()
+  if (base === '') return path
+  return `${base}${path}`
+}
+
 /** URL картинки услуги: приоритет у загруженного image, иначе image_url */
 export function getServiceImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
@@ -347,15 +356,23 @@ export type ContactFormType = 'main' | 'complaint' | 'hot_offer'
 export type FloatTripItem = {
   slug: string
   title: string
+  image: string | null
+  image_url: string
   distance_km: string
   price_per_person: string
   order: number
 }
 
-/** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием и ссылкой на карту */
+/** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием и картой */
 export type FloatTripDetail = FloatTripItem & {
   description: string
   map_embed_url: string  // URL для iframe (Яндекс.Карты)
+}
+
+/** URL картинки сплава: приоритет у загруженного image, иначе image_url */
+export function getFloatImageSrc(item: { image: string | null; image_url: string }): string {
+  if (item.image) return toAbsoluteImageUrl(item.image)
+  return item.image_url || ''
 }
 
 export async function fetchFloatTrips(locale: Locale): Promise<FloatTripItem[]> {

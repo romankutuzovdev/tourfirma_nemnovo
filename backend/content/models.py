@@ -1,4 +1,5 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
 
 LOCALE_CHOICES = [
     ('ru', 'Русский'),
@@ -314,8 +315,10 @@ class CalendarBooking(models.Model):
 
 
 class FloatTrip(models.Model):
-    """Сплав: название, километраж, цена за человека, описание, ссылка на карту."""
+    """Сплав: название, километраж, цена, описание, картинка, карта."""
     slug = models.SlugField(max_length=120, unique=True)
+    image = models.ImageField('Изображение', upload_to='floats/', blank=True, null=True)
+    image_url = models.URLField('URL изображения (если нет загрузки)', blank=True)
     distance_km = models.DecimalField('Километраж (км)', max_digits=8, decimal_places=2, default=0)
     price_per_person = models.DecimalField('Цена за человека (BYN)', max_digits=10, decimal_places=2, default=0)
     order = models.PositiveIntegerField('Порядок', default=0)
@@ -340,7 +343,7 @@ class FloatTripTranslation(models.Model):
     float_trip = models.ForeignKey(FloatTrip, on_delete=models.CASCADE, related_name='translations')
     locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
     title = models.CharField('Название', max_length=200)
-    description = models.TextField('Описание', blank=True)
+    description = CKEditor5Field('Описание', blank=True, config_name='default')
 
     class Meta:
         unique_together = [('float_trip', 'locale')]

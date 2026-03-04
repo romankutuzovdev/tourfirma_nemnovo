@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'django_ckeditor_5',
     'content',
     'accounts',
 ]
@@ -98,6 +99,25 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'link', '|',
+            'bulletedList', 'numberedList', 'blockQuote', '|',
+            'uploadImage', 'insertTable', '|',
+            'undo', 'redo',
+        ],
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Параграф', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Заголовок 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Заголовок 3', 'class': 'ck-heading_heading3'},
+            ]
+        },
+    },
 }
 
 # Ссылка на фронтенд для писем (сброс пароля)

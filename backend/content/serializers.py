@@ -404,12 +404,12 @@ class CalendarEventDetailSerializer(CalendarEventListSerializer):
 
 
 class FloatTripListSerializer(serializers.ModelSerializer):
-    """Сплав для списка: название, километраж, цена, slug."""
+    """Сплав для списка: название, картинка, километраж, цена, slug."""
     title = serializers.SerializerMethodField()
 
     class Meta:
         model = FloatTrip
-        fields = ['slug', 'title', 'distance_km', 'price_per_person', 'order']
+        fields = ['slug', 'title', 'image', 'image_url', 'distance_km', 'price_per_person', 'order']
 
     def _get_translation(self, obj):
         locale = self.context.get('locale', 'ru')
