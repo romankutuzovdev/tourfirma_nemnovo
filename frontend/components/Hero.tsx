@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { ContactFormModal } from '@/components/ContactFormModal'
 import type { HeroContent } from '@/lib/api'
 
@@ -13,7 +12,6 @@ interface HeroProps {
 
 export function Hero({ content }: HeroProps) {
   const t = useTranslations()
-  const locale = useLocale()
   const [modalOpen, setModalOpen] = useState(false)
 
   const image = content?.image || null

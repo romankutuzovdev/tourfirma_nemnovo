@@ -4,7 +4,7 @@
 
 import type { Locale } from './i18n'
 
-const LOCALES: Locale[] = ['ru', 'be', 'en', 'pl', 'zh']
+const LOCALES: Locale[] = ['ru']
 
 export function getApiUrl(): string {
   const raw = process.env.NEXT_PUBLIC_API_URL

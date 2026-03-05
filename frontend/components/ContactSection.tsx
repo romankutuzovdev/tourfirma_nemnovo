@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { sendContactForm } from '@/lib/api'
 
 const IconAddress = () => (
@@ -25,7 +24,6 @@ const IconPhone = () => (
 )
 export function ContactSection() {
   const t = useTranslations()
-  const locale = useLocale()
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)

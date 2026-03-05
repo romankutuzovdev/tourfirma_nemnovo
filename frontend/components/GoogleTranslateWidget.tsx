@@ -1,14 +1,25 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { localeNames, type Locale } from '@/lib/i18n'
 
-const GOOGLE_LANG_MAP: Record<Locale, string> = {
+/** Языки для Google Translate (виджет) */
+const TRANSLATE_LANGS = ['ru', 'be', 'en', 'pl', 'zh'] as const
+type TranslateLang = (typeof TRANSLATE_LANGS)[number]
+
+const GOOGLE_LANG_MAP: Record<TranslateLang, string> = {
   ru: 'ru',
   be: 'be',
   en: 'en',
   pl: 'pl',
   zh: 'zh-CN',
+}
+
+const TRANSLATE_LANG_NAMES: Record<TranslateLang, string> = {
+  ru: 'Русский',
+  be: 'Беларуская',
+  en: 'English',
+  pl: 'Polski',
+  zh: '中文',
 }
 
 const SCRIPT_URL = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
@@ -82,7 +93,7 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
     return () => document.removeEventListener('click', onClick)
   }, [open])
 
-  const handleSelect = (code: Locale) => {
+  const handleSelect = (code: TranslateLang) => {
     const googleCode = GOOGLE_LANG_MAP[code]
     setOpen(false)
     setCurrent(googleCode)
@@ -115,7 +126,7 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
       >
         <span>
           {ready
-            ? localeNames[(Object.entries(GOOGLE_LANG_MAP).find(([, v]) => v === current)?.[0] ?? 'ru') as Locale]
+            ? TRANSLATE_LANG_NAMES[(Object.entries(GOOGLE_LANG_MAP).find(([, v]) => v === current)?.[0] ?? 'ru') as TranslateLang]
             : 'Язык'}
         </span>
         <svg viewBox="0 0 12 12" className={`w-3 h-3 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
@@ -127,7 +138,7 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
           className="absolute right-0 top-full mt-1 py-1 bg-white border border-secondary/20 rounded shadow-lg z-[100] min-w-[120px] min-[1280px]:min-w-[140px]"
           role="listbox"
         >
-          {(Object.keys(GOOGLE_LANG_MAP) as Locale[]).map((loc) => (
+          {TRANSLATE_LANGS.map((loc) => (
             <li key={loc}>
               <button
                 type="button"
@@ -137,7 +148,7 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
                 }`}
                 onClick={() => handleSelect(loc)}
               >
-                {localeNames[loc]}
+                {TRANSLATE_LANG_NAMES[loc]}
               </button>
             </li>
           ))}

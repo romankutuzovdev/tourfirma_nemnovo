@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { GoogleTranslateWidget } from '@/components/GoogleTranslateWidget'
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
@@ -44,7 +43,6 @@ const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICO
 ]
 
 export function Header() {
-  const locale = useLocale()
   const t = useTranslations()
   const { isAuthenticated } = useAuth()
   const [open, setOpen] = useState(false)
@@ -80,22 +78,22 @@ export function Header() {
   }, [moreOpen])
 
   const nav = [
-    { href: `/${locale}/about`, label: t('nav.about') },
-    { href: `/${locale}/services`, label: t('nav.services') },
-    { href: `/${locale}/calendar`, label: t('nav.calendar') },
-    { href: `/${locale}/floats`, label: t('nav.floats') },
-    { href: `/${locale}/portfolio`, label: t('nav.portfolio') },
-    { href: `/${locale}/promos`, label: t('nav.promos') },
-    { href: `/${locale}/contact`, label: t('nav.contact') },
+    { href: '/about', label: t('nav.about') },
+    { href: '/services', label: t('nav.services') },
+    { href: '/calendar', label: t('nav.calendar') },
+    { href: '/floats', label: t('nav.floats') },
+    { href: '/portfolio', label: t('nav.portfolio') },
+    { href: '/promos', label: t('nav.promos') },
+    { href: '/contact', label: t('nav.contact') },
   ]
   const moreNav = [
-    { href: `/${locale}/news`, label: t('nav.news') },
-    { href: `/${locale}/reviews`, label: t('nav.reviews') },
-    { href: `/${locale}/payment`, label: t('nav.payment') },
+    { href: '/news', label: t('nav.news') },
+    { href: '/reviews', label: t('nav.reviews') },
+    { href: '/payment', label: t('nav.payment') },
   ]
   const authLink = isAuthenticated
-    ? { href: `/${locale}/cabinet`, label: t('nav.cabinet') }
-    : { href: `/${locale}/login`, label: t('nav.login') }
+    ? { href: '/cabinet', label: t('nav.cabinet') }
+    : { href: '/login', label: t('nav.login') }
 
   const socialLinksNoMax = SOCIAL_LINKS.filter(({ icon }) => icon !== 'max')
 
@@ -129,7 +127,7 @@ export function Header() {
         {/* Слева: лого + Немново */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 shrink-0 min-w-0 border-b border-secondary/10 md:border-b-0 pr-2 sm:pr-3 md:pr-4 lg:pr-5 h-full">
           <Link
-            href={`/${locale}`}
+            href="/"
             className="flex items-center gap-1 sm:gap-1.5 md:gap-2 lg:gap-3 font-serif-legacy text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold text-primary tracking-tight shrink-0 min-w-0"
           >
             <Image

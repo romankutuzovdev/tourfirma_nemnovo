@@ -4,11 +4,10 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { fetchFloatTrips, getFloatImageSrc, type FloatTripItem } from '@/lib/api'
 
 export function FloatsSection() {
-  const locale = useLocale()
+  const locale = 'ru'
   const t = useTranslations()
   const [trips, setTrips] = useState<FloatTripItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,7 +40,7 @@ export function FloatsSection() {
               {trips.map((trip) => (
                 <div key={trip.slug} className="min-w-0">
                   <Link
-                    href={`/${locale}/floats/${trip.slug}`}
+                    href={`/floats/${trip.slug}`}
                     className="group relative block aspect-square w-full rounded-lg overflow-hidden border border-secondary/30 bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   >
                     {getFloatImageSrc(trip) ? (
@@ -73,7 +72,7 @@ export function FloatsSection() {
             </div>
             <div className="mt-10 text-center">
               <Link
-                href={`/${locale}/floats`}
+                href="/floats"
                 className="inline-flex items-center px-6 py-3 border-2 border-primary text-primary font-sans text-sm font-semibold tracking-wide hover:bg-primary hover:text-white transition-colors rounded-lg"
               >
                 {t('floatsSection.allTrips')}

@@ -1,18 +1,3 @@
-# Редиректы без локали → /ru (для статического экспорта)
-/    /ru   302
-/about    /ru/about   302
-/contact    /ru/contact   302
-/portfolio    /ru/portfolio   302
-/promos    /ru/promos   302
-/reviews    /ru/reviews   302
-/privacy    /ru/privacy   302
-/services    /ru/services   302
-/services/*    /ru/services/:splat   302
-/calendar    /ru/calendar   302
-/floats    /ru/floats   302
-/floats/*    /ru/floats/:splat   302
-/register    /ru/register   302
-/login    /ru/login   302
-/forgot-password    /ru/forgot-password   302
-/reset-password    /ru/reset-password   302
-/cabinet    /ru/cabinet   302
+# Редиректы /ru/* → /* (обратная совместимость со старыми ссылками)
+/ru    /   302
+/ru/*    /:splat   302

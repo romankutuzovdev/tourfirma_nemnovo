@@ -6,7 +6,7 @@ export default function NotFound() {
       <h1 className="font-sans text-4xl font-bold text-black mb-2">404</h1>
       <p className="font-sans text-black/80 mb-6">Страница не найдена</p>
       <Link
-        href="/ru"
+        href="/"
         className="font-sans text-sm font-medium text-black hover:underline"
       >
         На главную

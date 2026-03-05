@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { fetchCompanyInfo, type CompanyInfo } from '@/lib/api'
 
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
@@ -63,7 +62,6 @@ const defaultCompany: CompanyInfo = {
 }
 
 export function Footer() {
-  const locale = useLocale()
   const t = useTranslations()
   const [company, setCompany] = useState<CompanyInfo | null>(null)
 
@@ -82,7 +80,7 @@ export function Footer() {
           {/* Колонка 1: лого, подпись, соцсети */}
           <div className="flex flex-col">
             <Link
-              href={`/${locale}`}
+              href="/"
               className="inline-flex items-center gap-3 font-serif-legacy text-2xl font-medium text-black transition-opacity duration-200 hover:opacity-80 w-fit"
             >
               <Image
@@ -157,13 +155,13 @@ export function Footer() {
             </a>
             <div className="flex flex-col gap-2 pt-2">
               <Link
-                href={`/${locale}/privacy`}
+                href="/privacy"
                 className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
               >
                 {t('footer.personalDataPolicy')}
               </Link>
               <Link
-                href={`/${locale}/cookie-policy`}
+                href="/cookie-policy"
                 className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
               >
                 {t('footer.cookiePolicy')}

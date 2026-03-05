@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { fetchHotOffers, getHotOfferImageSrc, sendContactForm, type HotOfferItem } from '@/lib/api'
 
 const HOT_OFFER_SEEN_KEY = 'nemnovo-hot-offer-seen'
@@ -44,7 +43,6 @@ function useCountdown(validUntil: string | null): { days: number; hours: number;
 }
 
 export function HotOfferPopup() {
-  const locale = useLocale()
   const t = useTranslations('hotOffer')
   const tContact = useTranslations('contact')
   const [offer, setOffer] = useState<HotOfferItem | null>(null)
@@ -77,7 +75,7 @@ export function HotOfferPopup() {
     if (seen === '1') return
 
     cancelledRef.current = false
-    fetchHotOffers(locale)
+    fetchHotOffers('ru')
       .then((list) => {
         if (cancelledRef.current || !mountedRef.current || list.length === 0) return
         const first = list[0]
@@ -99,7 +97,7 @@ export function HotOfferPopup() {
         timerRef.current = null
       }
     }
-  }, [locale])
+  }, [])
 
   const close = () => {
     sessionStorage.setItem(HOT_OFFER_SEEN_KEY, '1')
