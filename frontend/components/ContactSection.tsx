@@ -48,66 +48,65 @@ export function ContactSection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
 
-        <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
+        <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start">
           {/* Контактная информация: адрес, время, телефоны */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 space-y-5 min-w-0">
             <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20">
               <div className="flex gap-4">
                 <IconAddress />
-                <div>
-                  <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1">{t('footer.addressLabel')}</p>
-                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line">{t('footer.address')}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1 break-words">{t('footer.addressLabel')}</p>
+                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line break-words">{t('footer.address')}</p>
                 </div>
               </div>
             </div>
             <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20">
               <div className="flex gap-4">
                 <IconClock />
-                <div>
-                  <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1">{t('footer.workingHours')}</p>
-                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line uppercase">{t('footer.workingHoursValue')}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1 break-words">{t('footer.workingHours')}</p>
+                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line uppercase break-words">{t('footer.workingHoursValue')}</p>
                 </div>
               </div>
             </div>
-            <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 space-y-4">
+            <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 space-y-6">
               <div className="flex gap-4">
                 <IconPhone />
-                <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-y-4 sm:gap-x-6">
-                  <div className="min-w-0">
-                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 whitespace-pre-line">{t('footer.phone1Label')}</p>
-                    <a href="tel:+375291792539" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 179 25 39</a>
+                <div className="min-w-0 flex-1 space-y-4">
+                  <div>
+                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 whitespace-pre-line break-words">{t('footer.phone1Label')}</p>
+                    <a href="tel:+375291792539" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 179 25 39</a>
+                    <p className="font-sans text-sm text-black/80 whitespace-pre-line break-words mt-1">{t('footer.phone1Hours')}</p>
                   </div>
-                  <p className="font-sans text-sm text-black/80 whitespace-pre-line">{t('footer.phone1Hours')}</p>
-
-                  <div className="min-w-0">
-                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70">{t('footer.phone2Label')}</p>
-                    <a href="tel:+375297801304" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors">+375 29 780 13 04</a>
+                  <div>
+                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 break-words">{t('footer.phone2Label')}</p>
+                    <a href="tel:+375297801304" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 780 13 04</a>
+                    <p className="font-sans text-sm text-black/80 whitespace-pre-line break-words mt-1">{t('footer.phone2Hours')}</p>
                   </div>
-                  <p className="font-sans text-sm text-black/80 whitespace-pre-line">{t('footer.phone2Hours')}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Форма */}
-          <div className="lg:col-span-3">
-            <div className="max-w-xl">
-              <h3 className="font-serif text-xl font-medium text-primary mb-6">{t('contact.formMain')}</h3>
+          <div className="lg:col-span-3 min-w-0">
+            <div className="w-full min-w-0 max-w-xl">
+              <h3 className="font-serif text-xl font-medium text-primary mb-6 break-words">{t('contact.formMain')}</h3>
               {sent ? (
                 <p className="font-sans text-black/80">{t('contact.thanks')}</p>
               ) : (
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(e.currentTarget) }} action="#" method="post">
                   <input type="hidden" name="_to" value="office@nemnovotour.by" />
-                  <div>
-                    <label htmlFor="main-name" className="block font-sans text-sm text-primary mb-1">{t('contact.nameLabel')}</label>
+                  <div className="min-w-0">
+                    <label htmlFor="main-name" className="block font-sans text-sm text-primary mb-1 break-words">{t('contact.nameLabel')}</label>
                     <input id="main-name" name="name" type="text" required className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg" placeholder={t('contact.namePlaceholder')} />
                   </div>
-                  <div>
-                    <label htmlFor="main-email" className="block font-sans text-sm text-primary mb-1">{t('contact.emailLabel')}</label>
+                  <div className="min-w-0">
+                    <label htmlFor="main-email" className="block font-sans text-sm text-primary mb-1 break-words">{t('contact.emailLabel')}</label>
                     <input id="main-email" name="email" type="email" required className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg" placeholder={t('contact.emailPlaceholder')} />
                   </div>
-                  <div>
-                    <label htmlFor="main-msg" className="block font-sans text-sm text-primary mb-1">{t('contact.messageLabel')}</label>
+                  <div className="min-w-0">
+                    <label htmlFor="main-msg" className="block font-sans text-sm text-primary mb-1 break-words">{t('contact.messageLabel')}</label>
                     <textarea id="main-msg" name="message" rows={3} className="w-full px-4 py-3 bg-transparent border border-secondary/30 font-sans text-black placeholder:text-black/80/60 focus:outline-none focus:border-primary/50 rounded-lg resize-none" placeholder={t('contact.messagePlaceholder')} />
                   </div>
                   {error && <p className="font-sans text-sm text-red-600">{error}</p>}
