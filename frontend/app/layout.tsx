@@ -12,7 +12,9 @@ const ptSerif = PT_Serif({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={ptSerif.variable}>
-      <body className="font-sans antialiased min-h-screen flex flex-col text-base font-medium">{children}</body>
+      <body className="font-sans antialiased min-h-screen flex flex-col text-base font-medium">
+        {children}
+      </body>
     </html>
   )
 }

@@ -66,7 +66,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <AuthProvider>
         <LocaleSetter locale={locale} />
         <Header />
-        {/* Spacer: высота плашки Google (если видна) + наш хедер */}
+        {/* Spacer под фиксированный хедер */}
         <div className="shrink-0 header-spacer h-[6.25rem] sm:h-[6.75rem] md:h-[7rem] lg:h-[7.75rem]" aria-hidden />
         <main className="flex-1">{children}</main>
         <Footer />

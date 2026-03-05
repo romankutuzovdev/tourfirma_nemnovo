@@ -2,14 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { useAuth } from '@/contexts/AuthContext'
-import { locales, localeNames } from '@/lib/i18n'
 import { GoogleTranslateWidget } from '@/components/GoogleTranslateWidget'
-
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   telegram: (
     <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
@@ -46,28 +43,15 @@ const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICO
   { href: 'https://max.ru/', label: 'MAX', icon: 'max' },
 ]
 
-/** Текущий путь без сегмента локали (например, /services/foo). */
-function pathWithoutLocale(pathname: string, locale: string): string {
-  const prefix = `/${locale}`
-  if (pathname === prefix || pathname.startsWith(prefix + '/')) {
-    return pathname.slice(prefix.length) || '/'
-  }
-  return '/'
-}
-
 export function Header() {
   const locale = useLocale()
-  const pathname = usePathname()
   const t = useTranslations()
   const { isAuthenticated } = useAuth()
   const [open, setOpen] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
   const moreRef = useRef<HTMLDivElement>(null)
-
-  const pathForLocale = (loc: string) => `/${loc}${pathWithoutLocale(pathname ?? '', locale)}`
 
   useEffect(() => {
     setMounted(true)
@@ -84,25 +68,6 @@ export function Header() {
     document.body.classList.toggle('header-scrolled', scrolled)
     return () => document.body.classList.remove('header-scrolled')
   }, [mounted, scrolled])
-  useEffect(() => {
-    if (!mounted) return
-    const checkBanner = () => {
-      const translated = document.documentElement.classList.contains('translated-ltr') ||
-        document.documentElement.classList.contains('translated-rtl')
-      const banner = document.querySelector('.goog-te-banner-frame, iframe.goog-te-banner-frame')
-      document.body.classList.toggle('google-translate-visible', translated || !!banner)
-    }
-    checkBanner()
-    const obs = new MutationObserver(checkBanner)
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    obs.observe(document.body, { childList: true, subtree: true })
-    const interval = window.setInterval(checkBanner, 500)
-    return () => {
-      obs.disconnect()
-      clearInterval(interval)
-      document.body.classList.remove('google-translate-visible')
-    }
-  }, [mounted])
   useEffect(() => {
     if (!moreOpen) return
     const onMouseDown = (event: MouseEvent) => {
@@ -136,22 +101,13 @@ export function Header() {
 
   return (
     <header className="fixed left-0 right-0 z-50 shadow-sm w-full flex flex-col transition-[top] duration-300 ease-out site-header">
-      {/* Верхняя полоса: плашка перевода + соцсети — скрывается при скролле */}
+      {/* Верхняя полоса: соцсети — скрывается при скролле */}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out shrink-0 ${
           scrolled ? 'max-h-0 opacity-0' : 'max-h-14 sm:max-h-16 opacity-100'
         }`}
       >
-        <div className="translate-banner w-full flex flex-row items-center justify-between gap-4 px-4 sm:px-6 py-2 sm:py-2.5 min-h-[40px]">
-          <div className="flex flex-row items-center gap-2 sm:gap-3">
-            <span className="flex items-center gap-1.5 text-white/95 font-sans text-xs sm:text-sm font-medium">
-              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-              </svg>
-              {t('nav.translateLabel')}
-            </span>
-            <GoogleTranslateWidget />
-          </div>
+        <div className="top-banner w-full flex flex-row items-center justify-end gap-4 px-4 sm:px-6 py-2 sm:py-2.5 min-h-[40px]">
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {socialLinksNoMax.map(({ href, label, icon }) => (
             <a
@@ -247,36 +203,10 @@ export function Header() {
             )}
           </div>
         </div>
-        {/* Свёрнутое меню (<1280px): лого + язык + гамбургер */}
+        {/* Свёрнутое меню (<1280px): Переводчик + гамбургер */}
         <div className="flex-1 min-w-0 flex min-[1280px]:hidden items-center justify-end">
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setLangOpen(!langOpen)}
-                  className="font-sans text-[10px] sm:text-xs text-black/80 px-1.5 sm:px-2 py-1 border-2 border-primary rounded"
-                >
-                  {locale.toUpperCase()}
-                </button>
-                {langOpen && (
-                  <>
-                    <div className="fixed inset-0 z-10" aria-hidden onClick={() => setLangOpen(false)} />
-                    <ul className="absolute right-0 top-full mt-1 py-1 bg-white border border-secondary/20 rounded shadow-lg z-20 min-w-[120px]">
-                      {locales.map((loc) => (
-                        <li key={loc}>
-                          <Link
-                            href={pathForLocale(loc)}
-                            className={`block px-3 py-2 font-sans text-sm ${locale === loc ? 'text-black font-medium' : 'text-black/80'}`}
-                            onClick={() => setLangOpen(false)}
-                          >
-                            {localeNames[loc]}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
+              <GoogleTranslateWidget variant="mobile" />
               <button
                 type="button"
                 aria-label={t('nav.menuOpen')}
@@ -289,7 +219,7 @@ export function Header() {
               </button>
             </div>
         </div>
-        {/* Справа: Войти, язык, ТУРФИРМА (при ≥1280px) */}
+        {/* Справа: Войти, Переводчик, ТУРФИРМА (при ≥1280px) */}
         <div className="hidden min-[1280px]:flex items-center gap-2 min-[1280px]:gap-3 2xl:gap-4 shrink-0 pl-4 min-[1280px]:pl-5 2xl:pl-6">
           <Link
             href={authLink.href}
@@ -297,43 +227,7 @@ export function Header() {
           >
             {authLink.label}
           </Link>
-          <div className="relative">
-              <button
-                type="button"
-                onClick={() => setLangOpen(!langOpen)}
-                className="font-sans text-[10px] sm:text-xs lg:text-sm font-semibold tracking-wide text-black/80 hover:text-black px-1.5 sm:px-2 py-1 border-2 border-primary rounded"
-                aria-expanded={langOpen}
-                aria-haspopup="true"
-              >
-                {localeNames[locale]}
-              </button>
-            {langOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  aria-hidden
-                  onClick={() => setLangOpen(false)}
-                />
-                <ul
-                  className="absolute right-0 top-full mt-1 py-1 bg-white border border-secondary/20 rounded shadow-lg z-20 min-w-[140px]"
-                  role="menu"
-                >
-                  {locales.map((loc) => (
-                    <li key={loc} role="none">
-                      <Link
-                        href={pathForLocale(loc)}
-                        role="menuitem"
-                        className={`block px-4 py-2 font-sans text-sm hover:bg-secondary/50 ${locale === loc ? 'text-black font-medium' : 'text-black/80'}`}
-                        onClick={() => setLangOpen(false)}
-                      >
-                        {localeNames[loc]}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
+          <GoogleTranslateWidget variant="desktop" />
           <a
             href="https://nemnovotour.by/"
             target="_blank"
@@ -386,17 +280,8 @@ export function Header() {
             >
               {authLink.label}
             </Link>
-            <div className="pt-2 border-t border-secondary/10 flex flex-wrap gap-2">
-              {locales.map((loc) => (
-                <Link
-                  key={loc}
-                  href={pathForLocale(loc)}
-                  className={`font-sans text-sm px-3 py-1.5 rounded border ${locale === loc ? 'border-primary text-black' : 'border-secondary/30 text-black/80'}`}
-                  onClick={() => setOpen(false)}
-                >
-                  {localeNames[loc]}
-                </Link>
-              ))}
+            <div className="pt-2 border-t border-secondary/10">
+              <GoogleTranslateWidget variant="mobile" />
             </div>
             <a
               href="https://nemnovotour.by/"
