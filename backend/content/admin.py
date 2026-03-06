@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from .models import (
     Service, ServiceTranslation,
     News, NewsTranslation,
@@ -150,9 +150,35 @@ class PortfolioItemImageInline(admin.TabularInline):
 
 @admin.register(PortfolioItem)
 class PortfolioItemAdmin(admin.ModelAdmin):
+    change_form_template = 'admin/content/portfolioitem/change_form.html'
+    add_form_template = 'admin/content/portfolioitem/change_form.html'
     list_display = ['slug', 'event_date', 'order', 'is_pinned']
     list_filter = ['is_pinned']
     inlines = [PortfolioItemTranslationInline, PortfolioItemImageInline]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        files = request.FILES.getlist('bulk_images')
+        if files:
+            max_order = (
+                PortfolioItemImage.objects.filter(portfolio_item=obj)
+                .order_by('-order')
+                .values_list('order', flat=True)
+                .first()
+                or 0
+            )
+            added = 0
+            for i, f in enumerate(files):
+                if not f.content_type.startswith('image/'):
+                    continue
+                PortfolioItemImage.objects.create(
+                    portfolio_item=obj,
+                    image=f,
+                    order=max_order + i + 1,
+                )
+                added += 1
+            if added:
+                messages.success(request, f'Загружено {added} фото.')
 
 
 @admin.register(Review)

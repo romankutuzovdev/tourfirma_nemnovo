@@ -1,0 +1,13 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+<div class="module aligned" style="margin: 20px 0; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6;">
+  <h2 style="margin-top: 0;">📷 Загрузить много фото сразу</h2>
+  <p class="help">Удерживайте Ctrl (Windows) или Cmd (Mac) для выбора нескольких файлов. Можно также выделить диапазон через Shift.</p>
+  <p>
+    <input type="file" name="bulk_images" id="bulk_images" multiple accept="image/*" />
+  </p>
+</div>
+{{ block.super }}
+{% endblock %}
