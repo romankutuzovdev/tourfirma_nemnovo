@@ -482,7 +482,7 @@ class FloatTripDetailSerializer(FloatTripListSerializer):
     description = serializers.SerializerMethodField()
 
     class Meta(FloatTripListSerializer.Meta):
-        fields = FloatTripListSerializer.Meta.fields + ['description', 'map_embed_url']
+        fields = FloatTripListSerializer.Meta.fields + ['description', 'video_url', 'map_embed_url']
 
     def get_description(self, obj):
         t = self._get_translation(obj)

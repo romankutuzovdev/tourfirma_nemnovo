@@ -363,9 +363,10 @@ export type FloatTripItem = {
   order: number
 }
 
-/** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием и картой */
+/** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием, видео и картой */
 export type FloatTripDetail = FloatTripItem & {
   description: string
+  video_url: string  // YouTube, Vimeo или прямой URL видео
   map_embed_url: string  // URL для iframe (Яндекс.Карты)
 }
 

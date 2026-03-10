@@ -228,7 +228,7 @@ class FloatTripTranslationInline(admin.TabularInline):
 class FloatTripAdmin(admin.ModelAdmin):
     list_display = ['slug', 'distance_km', 'price_per_person', 'order']
     list_editable = ['order', 'distance_km', 'price_per_person']
-    fields = ['slug', 'image', 'image_url', 'distance_km', 'price_per_person', 'order', 'map_embed_url']
+    fields = ['slug', 'image', 'image_url', 'video_url', 'distance_km', 'price_per_person', 'order', 'map_embed_url']
     inlines = [FloatTripTranslationInline]
 
 

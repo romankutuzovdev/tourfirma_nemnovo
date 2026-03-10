@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { fetchFloatTripBySlug, fetchFloatTrips, getFloatImageSrc } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
+import { FloatVideoPlayer } from '@/components/FloatVideoPlayer'
 import type { FloatTripDetail, FloatTripItem } from '@/lib/api'
 
 export default function FloatDetailPage() {
@@ -55,6 +56,7 @@ export default function FloatDetailPage() {
   }
 
   const hasMap = !!trip.map_embed_url?.trim()
+  const hasVideo = !!trip.video_url?.trim()
   const imageSrc = getFloatImageSrc(trip)
 
   return (
@@ -103,6 +105,15 @@ export default function FloatDetailPage() {
           {trip.description && (
             <div className="mt-8">
               <FloatDescription text={trip.description} />
+            </div>
+          )}
+
+          {hasVideo && (
+            <div className="mt-12">
+              <h2 className="font-serif text-2xl font-medium text-black mb-4">
+                {t('floatsSection.videoTitle')}
+              </h2>
+              <FloatVideoPlayer videoUrl={trip.video_url} title={trip.title} />
             </div>
           )}
 

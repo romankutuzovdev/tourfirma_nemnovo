@@ -1,8 +1,8 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { fetchPortfolioItem, getPortfolioDownloadUrl } from '@/lib/api'
+import { fetchPortfolioItem } from '@/lib/api'
+import { PortfolioGallery } from '@/components/PortfolioGallery'
 function formatEventDate(isoDate: string): string {
   const d = new Date(isoDate)
   const day = String(d.getDate()).padStart(2, '0')
@@ -48,43 +48,14 @@ export default async function PortfolioItemPage({ params }: Props) {
         </header>
 
         {images.length > 0 && (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {images.map((url, i) => (
-                <a
-                  key={i}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative block aspect-square rounded-lg overflow-hidden bg-secondary/30 border border-secondary/10 hover:border-primary/40 transition-colors group"
-                >
-                  <Image
-                    src={url}
-                    alt={`${item.title} — ${i + 1}`}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/60 text-white font-sans text-xs rounded">
-                    {i + 1} / {images.length}
-                  </span>
-                </a>
-              ))}
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href={getPortfolioDownloadUrl(slug)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-sans text-sm font-medium hover:bg-primary/90 transition-colors rounded"
-                download
-              >
-                {t('portfolioSection.button')}
-              </a>
-              <span className="font-sans text-sm text-black/60">
-                {images.length} {t('portfolioSection.photos')}
-              </span>
-            </div>
-          </>
+          <PortfolioGallery
+            images={images}
+            title={item.title}
+            slug={slug}
+            photosLabel={t('portfolioSection.photos')}
+            buttonLabel={t('portfolioSection.button')}
+            backLabel={t('portfolioSection.backToPortfolio')}
+          />
         )}
 
         {images.length === 0 && (

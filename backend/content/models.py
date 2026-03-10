@@ -315,10 +315,15 @@ class CalendarBooking(models.Model):
 
 
 class FloatTrip(models.Model):
-    """Сплав: название, километраж, цена, описание, картинка, карта."""
+    """Сплав: название, километраж, цена, описание, картинка, карта, видео."""
     slug = models.SlugField(max_length=120, unique=True)
     image = models.ImageField('Изображение', upload_to='floats/', blank=True, null=True)
     image_url = models.URLField('URL изображения (если нет загрузки)', blank=True)
+    video_url = models.URLField(
+        'Видео',
+        blank=True,
+        help_text='Ссылка на YouTube (youtube.com/watch?v=... или youtube.com/embed/...), Vimeo (vimeo.com/...) или прямой URL видео (.mp4)',
+    )
     distance_km = models.DecimalField('Километраж (км)', max_digits=8, decimal_places=2, default=0)
     price_per_person = models.DecimalField('Цена за человека (BYN)', max_digits=10, decimal_places=2, default=0)
     order = models.PositiveIntegerField('Порядок', default=0)
