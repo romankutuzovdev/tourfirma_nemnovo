@@ -1,0 +1,96 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Главная</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label='content' %}">Content</a>
+  &rsaquo; <a href="{% url 'admin:content_calendarevent_changelist' %}">События в календаре</a>
+  &rsaquo; Создать несколько событий
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Создать несколько событий в календаре</h1>
+<p class="help">Выберите сплав, диапазон дат, дни недели и время — будут созданы все комбинации (дата × время).</p>
+
+{% if errors %}
+<ul class="messagelist" style="background:#f8d7da; color:#721c24;">
+  {% for err in errors %}
+  <li>{{ err }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if created_count %}
+<ul class="messagelist" style="background:#d4edda; color:#155724;">
+  <li>Создано событий: {{ created_count }}</li>
+</ul>
+<p><a href="{% url 'admin:content_calendarevent_changelist' %}">← К списку событий</a></p>
+{% else %}
+
+<form method="post" action="">
+  {% csrf_token %}
+  <fieldset class="module aligned">
+    <h2>Параметры</h2>
+    <div class="form-row">
+      <div>
+        <label for="id_float_trip">Сплав *</label>
+        <select name="float_trip" id="id_float_trip" required style="min-width: 300px;">
+          <option value="">---------</option>
+          {% for ft in float_trips %}
+          <option value="{{ ft.pk }}" {% if form.float_trip and form.float_trip == ft.pk %}selected{% endif %}>{{ ft }}</option>
+          {% endfor %}
+        </select>
+        <p class="help">Название, описание и фото будут взяты из сплава.</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="id_date_from">Дата с *</label>
+        <input type="date" name="date_from" id="id_date_from" value="{{ form.date_from }}" required />
+      </div>
+      <div>
+        <label for="id_date_to">Дата по *</label>
+        <input type="date" name="date_to" id="id_date_to" value="{{ form.date_to }}" required />
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>Дни недели</label>
+        <div class="weekdays" style="margin-top: 8px;">
+          {% for wd in weekdays %}
+          <label style="margin-right: 12px;">
+            <input type="checkbox" name="weekdays" value="{{ wd.0 }}" {% if wd.0 in form.weekdays %}checked{% endif %} />
+            {{ wd.1 }}
+          </label>
+          {% endfor %}
+        </div>
+        <p class="help">Оставьте все отмеченными для каждого дня в диапазоне.</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="id_times">Время (по одному на строку или через запятую) *</label>
+        <textarea name="times" id="id_times" rows="3" cols="40" required>{{ form.times }}</textarea>
+        <p class="help">Например: 9:30, 11:00, 13:30, 15:00 — или каждое время на отдельной строке.</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="id_price">Цена (BYN) *</label>
+        <input type="number" name="price" id="id_price" step="0.01" min="0" value="{{ form.price }}" required />
+      </div>
+      <div>
+        <label for="id_max_slots">Макс. мест *</label>
+        <input type="number" name="max_slots" id="id_max_slots" min="1" value="{{ form.max_slots }}" required />
+      </div>
+    </div>
+  </fieldset>
+  <div class="submit-row">
+    <input type="submit" value="Создать события" class="default" />
+    <a href="{% url 'admin:content_calendarevent_changelist' %}" class="button cancel-link">Отмена</a>
+  </div>
+</form>
+{% endif %}
+{% endblock %}

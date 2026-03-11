@@ -55,6 +55,8 @@ const defaultCompany: CompanyInfo = {
   office_address: 'Республика Беларусь, 230002 г. Гродно, ул. Богуцкого, 2/1',
   unp: '591535043',
   okpo: '508605124000',
+  bank_account: 'BY20 MTBK 3012 0001 0933 0012 6296',
+  bank_institution: 'в ЗАО «МТБанк», БИК MTBKBY22',
   state_registration: 'Свидетельство о государственной регистрации и юридического лица №591535043 от 31.01.2025',
   trade_register: 'Дата и номер регистрации в торговом реестре Республики Беларусь: 03.04.2025 г. №746010',
   services_register: 'Дата и номер регистрации в реестре бытовых услуг Республики Беларусь: 27.03.2025 г. №100797',
@@ -125,8 +127,18 @@ export function Footer() {
               </div>
               <div>
                 <p className="font-medium text-black mb-1">{t('footer.phone2Label')}</p>
-                <a href="tel:+375297801304" className="hover:text-black transition-colors">+375 29 780 13 04</a>
+                <div className="flex flex-col gap-0.5">
+                  <a href="tel:+375297801304" className="hover:text-black transition-colors">+375 29 780 13 04</a>
+                  <a href="tel:+375296011637" className="hover:text-black transition-colors">+375 29 601 16 37</a>
+                  <a href="tel:+375152490729" className="hover:text-black transition-colors">+375 15 249 07 29</a>
+                </div>
               </div>
+            </div>
+            <div>
+              <p className="font-medium text-black mb-1">{t('footer.emailLabel')}</p>
+              <a href={`mailto:${info.contact_email}`} className="hover:text-black transition-colors break-all">
+                {info.contact_email}
+              </a>
             </div>
           </div>
 
@@ -147,12 +159,20 @@ export function Footer() {
                 {info.okpo && <>{t('footer.okpoLabel')} {info.okpo}</>}
               </p>
             )}
+            {(info.bank_account || info.bank_institution) && (
+              <>
+                {info.bank_account && (
+                  <p>
+                    <span className="text-black/70">{t('footer.bankAccountLabel')} </span>
+                    {info.bank_account}
+                  </p>
+                )}
+                {info.bank_institution && <p>{info.bank_institution}</p>}
+              </>
+            )}
             {info.state_registration && <p>{info.state_registration}</p>}
             {info.trade_register && <p>{info.trade_register}</p>}
             {info.services_register && <p>{info.services_register}</p>}
-            <a href={`mailto:${info.contact_email}`} className="inline-block text-black/80 hover:text-black transition-colors">
-              {info.contact_email}
-            </a>
             <div className="flex flex-col gap-2 pt-2">
               <Link
                 href="/privacy"

@@ -1,9 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { sendContactForm } from '@/lib/api'
+import { sendContactForm, fetchCompanyInfo, type CompanyInfo } from '@/lib/api'
+
+const defaultCompany: CompanyInfo = {
+  company_name: '',
+  legal_address: '',
+  office_address: '',
+  unp: '',
+  okpo: '',
+  bank_account: '',
+  bank_institution: '',
+  state_registration: '',
+  trade_register: '',
+  services_register: '',
+  contact_email: 'office@nemnovotour.by',
+}
 
 const IconAddress = () => (
   <svg className="w-5 h-5 shrink-0 text-primary/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -22,8 +36,21 @@ const IconPhone = () => (
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
   </svg>
 )
+const IconEmail = () => (
+  <svg className="w-5 h-5 shrink-0 text-primary/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+)
 export function ContactSection() {
   const t = useTranslations()
+  const [company, setCompany] = useState<CompanyInfo | null>(null)
+  useEffect(() => {
+    fetchCompanyInfo()
+      .then((data) => setCompany(data ?? defaultCompany))
+      .catch(() => setCompany(defaultCompany))
+  }, [])
+  const contactEmail = company?.contact_email || defaultCompany.contact_email
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -49,8 +76,8 @@ export function ContactSection() {
         <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
 
         <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start">
-          {/* Контактная информация: адрес, время, телефоны */}
-          <div className="lg:col-span-2 space-y-5 min-w-0">
+          {/* Контактная информация: 2 столбца как на nemnovo_tourbaza */}
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5 min-w-0">
             <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20">
               <div className="flex gap-4">
                 <IconAddress />
@@ -65,24 +92,60 @@ export function ContactSection() {
                 <IconClock />
                 <div className="min-w-0 flex-1">
                   <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1 break-words">{t('footer.workingHours')}</p>
-                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line uppercase break-words">{t('footer.workingHoursValue')}</p>
+                  <p className="font-sans text-sm text-black/90 leading-snug whitespace-pre-line break-words">{t('footer.workingHoursValue')}</p>
                 </div>
               </div>
             </div>
-            <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 space-y-6">
+            <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 sm:col-span-2 space-y-4">
               <div className="flex gap-4">
                 <IconPhone />
                 <div className="min-w-0 flex-1 space-y-4">
-                  <div>
-                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 whitespace-pre-line break-words">{t('footer.phone1Label')}</p>
-                    <a href="tel:+375291792539" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 179 25 39</a>
-                    <p className="font-sans text-sm text-black/80 whitespace-pre-line break-words mt-1">{t('footer.phone1Hours')}</p>
-                  </div>
-                  <div>
-                    <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 break-words">{t('footer.phone2Label')}</p>
-                    <a href="tel:+375297801304" className="font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 780 13 04</a>
-                    <p className="font-sans text-sm text-black/80 whitespace-pre-line break-words mt-1">{t('footer.phone2Hours')}</p>
-                  </div>
+                  {(() => {
+                    const parts1 = (t('footer.phone1Hours') || '').split('\n').map((s) => s.replace(/,\s*$/, '').trim())
+                    const parts2 = (t('footer.phone2Hours') || '').split('\n').map((s) => s.replace(/,\s*$/, '').trim())
+                    const [hours1, daysOff1] = [parts1[0] || '', parts1[1] || '']
+                    const [hours2, daysOff2] = [parts2[0] || '', parts2[1] || '']
+                    return (
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-x-8 gap-y-1 items-baseline">
+                          <div>
+                            <p className="font-sans text-[11px] font-semibold tracking-wide uppercase text-black/70 break-words">{t('footer.phone1Label').replace(/\n/g, ' ')}</p>
+                            <a href="tel:+375291792539" className="block font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all mt-1">+375 29 179 25 39</a>
+                          </div>
+                          <div className="sm:text-right">
+                            <p className="font-sans text-[13px] text-black/70">{hours1}</p>
+                            <p className="font-sans text-[13px] text-black/70 mt-0.5">{daysOff1}</p>
+                          </div>
+                        </div>
+                        <div className="border-t border-secondary/20" />
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-x-8 gap-y-1 items-start">
+                          <div>
+                            <p className="font-sans text-[11px] font-semibold tracking-wide uppercase text-black/70 break-words">{t('footer.phone2Label')}</p>
+                            <div className="mt-1 space-y-0.5">
+                              <a href="tel:+375297801304" className="block font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 780 13 04</a>
+                              <a href="tel:+375296011637" className="block font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 29 601 16 37</a>
+                              <a href="tel:+375152490729" className="block font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">+375 15 249 07 29</a>
+                            </div>
+                          </div>
+                          <div className="sm:text-right">
+                            <p className="font-sans text-[13px] text-black/70">{hours2}</p>
+                            <p className="font-sans text-[13px] text-black/70 mt-0.5">{daysOff2}</p>
+                          </div>
+                        </div>
+                      </>
+                    )
+                  })()}
+                </div>
+              </div>
+            </div>
+            <div className="p-5 rounded-xl bg-secondary/10 border border-secondary/20 sm:col-span-2">
+              <div className="flex gap-4">
+                <IconEmail />
+                <div className="min-w-0 flex-1">
+                  <p className="font-sans text-xs font-semibold tracking-wider uppercase text-black/70 mb-1 break-words">{t('footer.emailLabel')}</p>
+                  <a href={`mailto:${contactEmail}`} className="font-sans text-sm font-medium text-black hover:text-primary transition-colors break-all">
+                    {contactEmail}
+                  </a>
                 </div>
               </div>
             </div>

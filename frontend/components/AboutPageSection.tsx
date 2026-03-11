@@ -1,17 +1,18 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import type { AboutContent } from '@/lib/api'
+import type { AboutPageContent } from '@/lib/api'
 
-type Props = { content?: AboutContent | null }
+type Props = { content?: AboutPageContent | null }
 
-export function AboutSection({ content }: Props) {
+/** Блок «О нас» на странице /about. Внешне как на главной, но контент из отдельной модели в админке. */
+export function AboutPageSection({ content }: Props) {
   const t = useTranslations()
 
-  const title = content?.title || t('about.title')
+  const title = content?.title || t('aboutPage.title')
   const paragraphs = content?.paragraphs?.length
     ? content.paragraphs
-    : [t('about.p1'), t('about.p2')]
+    : [t('aboutPage.p1'), t('aboutPage.p2')]
 
   return (
     <section id="about" className="pt-8 md:pt-12 pb-4 md:pb-6 bg-primary border-y border-white/20">

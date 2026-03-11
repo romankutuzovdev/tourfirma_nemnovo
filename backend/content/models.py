@@ -12,6 +12,7 @@ LOCALE_CHOICES = [
 LEGAL_PAGE_CHOICES = [
     ('privacy', 'Политика обработки персональных данных'),
     ('cookie-policy', 'Политика в отношении обработки cookie'),
+    ('payment', 'Оплата'),
 ]
 
 
@@ -21,6 +22,7 @@ class Service(models.Model):
     image = models.ImageField(upload_to='services/', blank=True, null=True)
     image_url = models.URLField(blank=True, help_text='Если нет загрузки файла')
     order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField('Активно', default=True)
 
     class Meta:
         ordering = ['order', 'id']
@@ -245,8 +247,18 @@ class HotOfferTranslation(models.Model):
 
 
 class CalendarEvent(models.Model):
-    """Событие в календаре: дата, цена, слоты. Переводы в CalendarEventTranslation."""
+    """Событие в календаре: дата, время (опц.), цена, слоты. Можно привязать к сплаву (FloatTrip)."""
     date = models.DateField('Дата')
+    time = models.TimeField('Время (опц.)', null=True, blank=True, help_text='Напр. 9:30, 11:00')
+    float_trip = models.ForeignKey(
+        'FloatTrip',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='calendar_events',
+        verbose_name='Сплав',
+        help_text='Если выбрано — название, описание и фото берутся из сплава',
+    )
     price = models.DecimalField('Цена (BYN)', max_digits=10, decimal_places=2, default=0)
     max_slots = models.PositiveIntegerField('Макс. мест', default=20)
     image = models.ImageField(upload_to='calendar/', blank=True, null=True)
@@ -255,13 +267,18 @@ class CalendarEvent(models.Model):
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['date', 'order', 'id']
+        ordering = ['date', 'time', 'order', 'id']
         verbose_name = 'Событие в календаре'
         verbose_name_plural = 'События в календаре'
 
     def __str__(self):
         t = self.translations.filter(locale='ru').first()
-        return f'{self.date} — {t.title if t else "event"}'
+        title = t.title if (t and t.title) else None
+        if not title and self.float_trip:
+            ft_t = self.float_trip.translations.filter(locale='ru').first()
+            title = ft_t.title if (ft_t and ft_t.title) else self.float_trip.slug
+        time_str = f' {self.time.strftime("%H:%M")}' if self.time else ''
+        return f'{self.date}{time_str} — {title or "event"}'
 
     def get_booked_slots(self):
         from django.db.models import Sum
@@ -319,6 +336,7 @@ class FloatTrip(models.Model):
     slug = models.SlugField(max_length=120, unique=True)
     image = models.ImageField('Изображение', upload_to='floats/', blank=True, null=True)
     image_url = models.URLField('URL изображения (если нет загрузки)', blank=True)
+    is_active = models.BooleanField('Активно', default=True)
     video_url = models.URLField(
         'Видео',
         blank=True,
@@ -359,7 +377,7 @@ class FloatTripTranslation(models.Model):
 
 
 class LegalPage(models.Model):
-    """Юридическая страница (политика персональных данных, cookie). Одна запись на тип."""
+    """Информационная страница (политика, cookie, оплата). Одна запись на тип."""
     page_key = models.CharField(
         'Идентификатор',
         max_length=50,
@@ -368,8 +386,8 @@ class LegalPage(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Юридическая страница'
-        verbose_name_plural = 'Юридические страницы'
+        verbose_name = 'Информационная страница'
+        verbose_name_plural = 'Информационные страницы'
 
     def __str__(self):
         return self.get_page_key_display()
@@ -379,9 +397,11 @@ class LegalPageTranslation(models.Model):
     page = models.ForeignKey(LegalPage, on_delete=models.CASCADE, related_name='translations')
     locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
     title = models.CharField('Заголовок', max_length=300)
-    content = models.TextField(
+    content = CKEditor5Field(
         'Содержание',
-        help_text='Абзацы разделяются пустой строкой (двойной перевод строки \\n\\n).',
+        blank=True,
+        config_name='default',
+        help_text='Можно вставлять картинки через кнопку «Изображение» в редакторе.',
     )
 
     class Meta:
@@ -426,14 +446,14 @@ class HeroContentTranslation(models.Model):
 
 
 class AboutContent(models.Model):
-    """Блок «О нас» / микропрезентация. Синглтон — одна запись."""
+    """Блок «О нас» на главной странице. Синглтон — одна запись."""
 
     class Meta:
-        verbose_name = 'Блок «О нас»'
-        verbose_name_plural = 'Блок «О нас»'
+        verbose_name = 'Блок «О нас» (главная)'
+        verbose_name_plural = 'Блок «О нас» (главная)'
 
     def __str__(self):
-        return 'О нас'
+        return 'О нас (главная)'
 
 
 class AboutContentTranslation(models.Model):
@@ -456,6 +476,37 @@ class AboutContentTranslation(models.Model):
         return f'О нас ({self.locale})'
 
 
+class AboutPageContent(models.Model):
+    """Блок «О нас» на странице /about. Отдельный контент от главной."""
+
+    class Meta:
+        verbose_name = 'Страница «О нас»'
+        verbose_name_plural = 'Страница «О нас»'
+
+    def __str__(self):
+        return 'О нас (страница)'
+
+
+class AboutPageContentTranslation(models.Model):
+    about_page = models.ForeignKey(AboutPageContent, on_delete=models.CASCADE, related_name='translations')
+    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
+    title = models.CharField('Заголовок', max_length=300, blank=True)
+    paragraphs = models.TextField(
+        'Текст (абзацы)',
+        blank=True,
+        help_text='Абзацы разделяются пустой строкой (\\n\\n).',
+    )
+
+    class Meta:
+        unique_together = [('about_page', 'locale')]
+        ordering = ['about_page', 'locale']
+        verbose_name = 'Перевод страницы «О нас»'
+        verbose_name_plural = 'Переводы страницы «О нас»'
+
+    def __str__(self):
+        return f'О нас страница ({self.locale})'
+
+
 class CompanyInfo(models.Model):
     """Одна запись — контактные/юридические данные для футера и страниц (редактируются в админке)."""
     company_name = models.CharField('Название', max_length=200, default='ООО «Немново Тур»')
@@ -463,6 +514,8 @@ class CompanyInfo(models.Model):
     office_address = models.TextField('Адрес офиса', blank=True)
     unp = models.CharField('УНП', max_length=20, blank=True)
     okpo = models.CharField('ОКПО', max_length=30, blank=True)
+    bank_account = models.CharField('р/с', max_length=50, blank=True, help_text='Расчётный счёт')
+    bank_institution = models.CharField('Банк', max_length=200, blank=True, help_text='Напр.: в ЗАО «МТБанк», БИК MTBKBY22')
     state_registration = models.CharField('Свидетельство о госрегистрации', max_length=300, blank=True)
     trade_register = models.CharField('Регистрация в торговом реестре', max_length=200, blank=True)
     services_register = models.CharField('Регистрация в реестре бытовых услуг', max_length=200, blank=True)

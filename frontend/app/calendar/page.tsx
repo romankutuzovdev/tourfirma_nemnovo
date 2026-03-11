@@ -93,12 +93,9 @@ export default function CalendarPage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="aspect-[4/3] rounded-xl bg-secondary/20 animate-pulse"
-              />
+          <div className="space-y-2">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-20 rounded-lg bg-secondary/20 animate-pulse" />
             ))}
           </div>
         ) : events.length === 0 ? (
@@ -106,67 +103,72 @@ export default function CalendarPage() {
             {t('calendarPage.empty')}
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {events.map((ev) => (
-              <article
-                key={ev.id}
-                className="group relative rounded-xl overflow-hidden border border-secondary/20 bg-white shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300"
-              >
-                <Link href={`/calendar/${ev.id}`} className="block text-left">
-                  <div className="relative aspect-[4/3] bg-secondary/30">
-                    {getCalendarEventImageSrc(ev) ? (
-                      <Image
-                        src={getCalendarEventImageSrc(ev)}
-                        alt={ev.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 flex items-center justify-center">
-                        <span className="font-serif text-4xl font-medium text-white/90">
-                          {new Date(ev.date).getDate()}
-                        </span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <span className="font-sans text-sm md:text-base font-semibold tracking-wider text-white/90 uppercase">
-                        {new Date(ev.date + 'T12:00:00').toLocaleDateString(
-                          LOCALE_TO_INTL[locale] || 'ru-RU',
-                          { day: 'numeric', month: 'short', year: 'numeric' }
-                        )}
-                      </span>
-                      <h3 className="font-serif text-lg md:text-xl font-medium text-white mt-1 line-clamp-2">
-                        {ev.title}
-                      </h3>
-                      <div className="mt-3 flex items-center gap-4 font-sans text-sm text-white/90">
-                        <span>
-                          {t('calendarPage.priceFrom')} {ev.price_display} {t('calendarPage.byr')}
-                        </span>
-                        <span>
-                          {ev.available_slots} {t('calendarPage.slots')}
-                        </span>
+          <div className="rounded-xl border border-secondary/20 bg-white shadow-sm overflow-hidden">
+            <ul className="divide-y divide-secondary/10">
+              {events.map((ev) => {
+                const dateStr = new Date(ev.date + 'T12:00:00').toLocaleDateString(
+                  LOCALE_TO_INTL[locale] || 'ru-RU',
+                  { day: 'numeric', month: 'short', year: 'numeric' }
+                )
+                const imgSrc = getCalendarEventImageSrc(ev)
+                return (
+                  <li key={ev.id} className="group">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:p-5 hover:bg-primary/5 transition-colors">
+                      <Link href={`/calendar/${ev.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="shrink-0 w-16 h-16 rounded-lg bg-secondary/20 overflow-hidden flex items-center justify-center">
+                          {imgSrc ? (
+                            <Image
+                              src={imgSrc}
+                              alt=""
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="font-serif text-xl font-medium text-primary/70">
+                              {new Date(ev.date).getDate()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-sans text-sm text-black/60">
+                            {dateStr}
+                            {ev.time_display && (
+                              <span className="ml-1.5 font-medium text-primary">
+                                {ev.time_display}
+                              </span>
+                            )}
+                          </p>
+                          <h3 className="font-serif text-lg font-medium text-black mt-0.5 group-hover:text-primary transition-colors truncate">
+                            {ev.title}
+                          </h3>
+                          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 font-sans text-sm text-black/70">
+                            <span>
+                              {t('calendarPage.priceFrom')} {ev.price_display} {t('calendarPage.byr')}
+                            </span>
+                            <span>{ev.available_slots} {t('calendarPage.slots')}</span>
+                          </div>
+                        </div>
+                      </Link>
+                      <div className="flex shrink-0 gap-2 sm:ml-4">
+                        <Link
+                          href={`/calendar/${ev.id}`}
+                          className="inline-flex px-4 py-2 rounded-lg bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90 transition-colors"
+                        >
+                          {t('calendarPage.more')}
+                        </Link>
+                        <Link
+                          href={`/calendar/${ev.id}#book`}
+                          className="inline-flex px-4 py-2 rounded-lg border-2 border-primary text-primary font-sans text-sm font-semibold hover:bg-primary/10 transition-colors"
+                        >
+                          {t('calendarPage.book')}
+                        </Link>
                       </div>
                     </div>
-                  </div>
-                </Link>
-                <div className="p-4 flex flex-wrap gap-3">
-                  <Link
-                    href={`/calendar/${ev.id}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90 transition-colors"
-                  >
-                    {t('calendarPage.more')}
-                  </Link>
-                  <Link
-                    href={`/calendar/${ev.id}#book`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-primary text-primary font-sans text-sm font-semibold hover:bg-primary/10 transition-colors"
-                  >
-                    {t('calendarPage.book')}
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         )}
       </section>

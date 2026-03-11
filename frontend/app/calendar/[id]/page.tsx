@@ -66,13 +66,15 @@ export default function CalendarEventDetailPage() {
     }
   }
 
-  const formatDate = (dateStr: string) =>
-    new Date(dateStr + 'T12:00:00').toLocaleDateString(LOCALE_TO_INTL[locale] || 'ru-RU', {
+  const formatDate = (dateStr: string, timeStr?: string | null) => {
+    const d = new Date(dateStr + 'T12:00:00').toLocaleDateString(LOCALE_TO_INTL[locale] || 'ru-RU', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
       year: 'numeric',
     })
+    return timeStr ? `${d}, ${timeStr}` : d
+  }
 
   if (loading || !params?.id) {
     return (
@@ -105,7 +107,7 @@ export default function CalendarEventDetailPage() {
   return (
     <PageLayout
       title={event.title}
-      description={formatDate(event.date)}
+      description={formatDate(event.date, event.time_display)}
       badge={t('calendarPage.title')}
       headerClassName="pt-52 md:pt-40"
     >
@@ -131,7 +133,7 @@ export default function CalendarEventDetailPage() {
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <p className="font-sans text-white/90 text-sm md:text-base">{formatDate(event.date)}</p>
+              <p className="font-sans text-white/90 text-sm md:text-base">{formatDate(event.date, event.time_display)}</p>
               <div className="mt-2 flex flex-wrap gap-4 font-sans text-white/90">
                 <span>
                   {t('calendarPage.priceFrom')} {event.price_display} {t('calendarPage.byr')}

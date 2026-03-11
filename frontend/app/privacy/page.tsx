@@ -1,12 +1,12 @@
 import { PageLayout } from '@/components/PageLayout'
 import { fetchLegalPage } from '@/lib/api'
+import { FloatDescription } from '@/components/FloatDescription'
+
 export default async function PrivacyPage() {
   const content = await fetchLegalPage('privacy', 'ru')
 
-  const title = content?.title || ''
-  const paragraphs = content?.content
-    ? content.content.split('\n\n').filter(p => p.trim())
-    : []
+  const title = content?.title || 'Политика конфиденциальности'
+  const body = content?.content?.trim() || ''
 
   return (
     <PageLayout>
@@ -15,9 +15,11 @@ export default async function PrivacyPage() {
           <h1 className="font-serif text-3xl md:text-4xl font-medium text-black tracking-tight mb-8">
             {title}
           </h1>
-          <div className="font-sans text-black/80 leading-relaxed space-y-6">
-            {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
-          </div>
+          {body ? (
+            <FloatDescription text={body} className="text-black/80" />
+          ) : (
+            <p className="font-sans text-black/70">Содержание будет добавлено.</p>
+          )}
         </div>
       </section>
     </PageLayout>

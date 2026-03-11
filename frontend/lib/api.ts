@@ -272,6 +272,8 @@ export type CompanyInfo = {
   office_address: string
   unp: string
   okpo: string
+  bank_account: string
+  bank_institution: string
   state_registration?: string
   trade_register: string
   services_register: string
@@ -288,6 +290,8 @@ export async function fetchCompanyInfo(): Promise<CompanyInfo | null> {
 export type CalendarEventItem = {
   id: number
   date: string
+  time: string | null
+  time_display: string | null
   title: string
   image: string | null
   price: string
@@ -407,7 +411,7 @@ export async function fetchLegalPage(pageKey: string, locale: Locale): Promise<L
   return res.json().catch(() => null)
 }
 
-/** Блок «О нас» из /api/about-content/?locale= */
+/** Блок «О нас» на главной из /api/about-content/?locale= */
 export type AboutContent = {
   title: string
   paragraphs: string[]
@@ -416,6 +420,19 @@ export type AboutContent = {
 export async function fetchAboutContent(locale: Locale): Promise<AboutContent | null> {
   const loc = LOCALES.includes(locale) ? locale : 'ru'
   const res = await apiFetch(`${getApiUrl()}/api/about-content/?locale=${loc}`)
+  if (!res?.ok) return null
+  return res.json().catch(() => null)
+}
+
+/** Блок страницы «О нас» из /api/about-page-content/?locale= (отдельно от главной) */
+export type AboutPageContent = {
+  title: string
+  paragraphs: string[]
+}
+
+export async function fetchAboutPageContent(locale: Locale): Promise<AboutPageContent | null> {
+  const loc = LOCALES.includes(locale) ? locale : 'ru'
+  const res = await apiFetch(`${getApiUrl()}/api/about-page-content/?locale=${loc}`)
   if (!res?.ok) return null
   return res.json().catch(() => null)
 }

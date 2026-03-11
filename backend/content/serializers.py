@@ -16,6 +16,7 @@ from .models import (
     HeroContent,
     LegalPage,
     AboutContent,
+    AboutPageContent,
 )
 
 
@@ -387,7 +388,8 @@ class CompanyInfoSerializer(serializers.ModelSerializer):
         model = CompanyInfo
         fields = [
             'company_name', 'legal_address', 'office_address',
-            'unp', 'okpo', 'state_registration', 'trade_register', 'services_register', 'contact_email',
+            'unp', 'okpo', 'bank_account', 'bank_institution',
+            'state_registration', 'trade_register', 'services_register', 'contact_email',
         ]
 
 
@@ -397,11 +399,12 @@ class CalendarEventListSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     available_slots = serializers.SerializerMethodField()
     price_display = serializers.SerializerMethodField()
+    time_display = serializers.SerializerMethodField()
 
     class Meta:
         model = CalendarEvent
         fields = [
-            'id', 'date', 'title', 'image',
+            'id', 'date', 'time', 'time_display', 'title', 'image',
             'price', 'price_display', 'max_slots', 'available_slots', 'is_active',
         ]
 
@@ -410,14 +413,41 @@ class CalendarEventListSerializer(serializers.ModelSerializer):
         t = obj.translations.filter(locale=locale).first()
         return t or obj.translations.filter(locale='ru').first()
 
+    def _get_float_trip_translation(self, float_trip, locale):
+        if not float_trip:
+            return None
+        t = float_trip.translations.filter(locale=locale).first()
+        return t or float_trip.translations.filter(locale='ru').first()
+
     def get_title(self, obj):
         t = self._get_translation(obj)
-        return t.title if t else str(obj.date)
+        title = (t.title if t else '').strip()
+        if title:
+            return title
+        ft = obj.float_trip
+        if ft:
+            ft_t = self._get_float_trip_translation(ft, self.context.get('locale', 'ru'))
+            if ft_t and ft_t.title:
+                return ft_t.title
+        return str(obj.date)
 
     def get_image(self, obj):
         if obj.image:
             return _build_media_url(self.context.get('request'), obj.image)
-        return obj.image_url or None
+        if obj.image_url:
+            return obj.image_url
+        ft = obj.float_trip
+        if ft:
+            if ft.image:
+                return _build_media_url(self.context.get('request'), ft.image)
+            if ft.image_url:
+                return ft.image_url
+        return None
+
+    def get_time_display(self, obj):
+        if not obj.time:
+            return None
+        return obj.time.strftime('%H:%M')
 
     def get_available_slots(self, obj):
         return obj.get_available_slots()
@@ -435,9 +465,15 @@ class CalendarEventDetailSerializer(CalendarEventListSerializer):
 
     def get_long_desc(self, obj):
         t = self._get_translation(obj)
-        if not t:
-            return ''
-        return getattr(t, 'long_desc', '') or ''
+        desc = (getattr(t, 'long_desc', '') or '').strip() if t else ''
+        if desc:
+            return desc
+        ft = obj.float_trip
+        if ft:
+            ft_t = self._get_float_trip_translation(ft, self.context.get('locale', 'ru'))
+            if ft_t and ft_t.description:
+                return ft_t.description or ''
+        return ''
 
 
 class FloatTripListSerializer(serializers.ModelSerializer):
@@ -558,6 +594,31 @@ class AboutContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AboutContent
+        fields = ['title', 'paragraphs']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else ''
+
+    def get_paragraphs(self, obj):
+        t = self._get_translation(obj)
+        if not t or not t.paragraphs:
+            return []
+        return [p.strip() for p in t.paragraphs.split('\n\n') if p.strip()]
+
+
+class AboutPageContentSerializer(serializers.ModelSerializer):
+    """Страница «О нас»: заголовок и абзацы для заданной локали."""
+    title = serializers.SerializerMethodField()
+    paragraphs = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AboutPageContent
         fields = ['title', 'paragraphs']
 
     def _get_translation(self, obj):

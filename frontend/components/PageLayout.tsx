@@ -19,6 +19,7 @@ const SEGMENT_TO_KEY: Record<string, string> = {
   floats: 'nav.floats',
   reviews: 'nav.reviews',
   contact: 'nav.contact',
+  payment: 'nav.payment',
   'cookie-policy': 'footer.cookiePolicy',
   privacy: 'footer.privacy',
 }

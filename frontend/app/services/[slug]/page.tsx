@@ -73,7 +73,7 @@ export default async function ServicePage({ params }: Props) {
               aria-hidden
             />
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white tracking-tight">
+              <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-medium text-white tracking-tight">
                 {serviceTitle}
               </h1>
             </div>
@@ -108,7 +108,7 @@ export default async function ServicePage({ params }: Props) {
         </article>
 
         <div className="mt-20 pt-16 border-t border-secondary/20">
-          <h2 className="font-serif text-xl md:text-2xl font-medium text-black mb-8">
+          <h2 className="font-serif text-xl font-medium text-black mb-8">
             {t('common.otherServices')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">

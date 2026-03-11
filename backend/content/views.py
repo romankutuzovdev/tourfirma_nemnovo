@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent
+from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent, AboutPageContent
 from .serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
@@ -34,6 +34,7 @@ from .serializers import (
     HeroContentSerializer,
     LegalPageSerializer,
     AboutContentSerializer,
+    AboutPageContentSerializer,
 )
 
 VALID_LOCALES = {'ru', 'be', 'en', 'pl', 'zh'}
@@ -55,6 +56,8 @@ def company_info(request):
             'office_address': '',
             'unp': '',
             'okpo': '',
+            'bank_account': '',
+            'bank_institution': '',
             'trade_register': '',
             'services_register': '',
             'contact_email': 'office@nemnovotour.by',
@@ -66,7 +69,7 @@ def company_info(request):
 @api_view(['GET'])
 def service_list(request):
     locale = get_locale(request)
-    qs = Service.objects.all()
+    qs = Service.objects.filter(is_active=True)
     serializer = ServiceListSerializer(qs, many=True, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
@@ -75,7 +78,7 @@ def service_list(request):
 def service_detail(request, slug):
     locale = get_locale(request)
     try:
-        service = Service.objects.get(slug=slug)
+        service = Service.objects.get(slug=slug, is_active=True)
     except Service.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = ServiceDetailSerializer(service, context={'locale': locale, 'request': request})
@@ -243,7 +246,7 @@ def calendar_event_detail(request, pk):
 def float_trip_list(request):
     """Список сплавов: название, километраж, цена."""
     locale = get_locale(request)
-    qs = FloatTrip.objects.all()
+    qs = FloatTrip.objects.filter(is_active=True)
     serializer = FloatTripListSerializer(qs, many=True, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
@@ -253,7 +256,7 @@ def float_trip_detail(request, slug):
     """Детали сплава: описание, точки маршрута для карты."""
     locale = get_locale(request)
     try:
-        trip = FloatTrip.objects.get(slug=slug)
+        trip = FloatTrip.objects.get(slug=slug, is_active=True)
     except FloatTrip.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = FloatTripDetailSerializer(trip, context={'locale': locale, 'request': request})
@@ -358,12 +361,23 @@ def hero_content(request):
 
 @api_view(['GET'])
 def about_content(request):
-    """Контент блока «О нас»: заголовок и абзацы."""
+    """Контент блока «О нас» на главной: заголовок и абзацы."""
     locale = get_locale(request)
     obj = AboutContent.objects.prefetch_related('translations').first()
     if not obj:
         return Response({'title': '', 'paragraphs': []})
     serializer = AboutContentSerializer(obj, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def about_page_content(request):
+    """Контент страницы «О нас»: заголовок и абзацы (отдельно от главной)."""
+    locale = get_locale(request)
+    obj = AboutPageContent.objects.prefetch_related('translations').first()
+    if not obj:
+        return Response({'title': '', 'paragraphs': []})
+    serializer = AboutPageContentSerializer(obj, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
 

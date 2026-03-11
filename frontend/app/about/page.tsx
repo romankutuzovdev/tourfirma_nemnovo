@@ -1,13 +1,13 @@
-'use client'
-
 import { PageLayout } from '@/components/PageLayout'
-import { AboutSection } from '@/components/AboutSection'
+import { AboutPageSection } from '@/components/AboutPageSection'
 import { VideoSection } from '@/components/VideoSection'
+import { fetchAboutPageContent } from '@/lib/api'
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const aboutContent = await fetchAboutPageContent('ru')
   return (
     <PageLayout hideBreadcrumbs simpleHomeLink>
-      <AboutSection />
+      <AboutPageSection content={aboutContent} />
       <VideoSection />
     </PageLayout>
   )

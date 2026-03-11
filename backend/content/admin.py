@@ -8,10 +8,12 @@ from .models import (
     Review,
     Partner,
     CompanyInfo,
+    LegalPage, LegalPageTranslation,
     CalendarEvent, CalendarEventTranslation, CalendarBooking,
     FloatTrip, FloatTripTranslation,
     HeroContent, HeroContentTranslation,
     AboutContent, AboutContentTranslation,
+    AboutPageContent, AboutPageContentTranslation,
 )
 
 
@@ -22,7 +24,9 @@ class ServiceTranslationInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'order']
+    list_display = ['slug', 'order', 'is_active']
+    list_filter = ['is_active']
+    list_editable = ['order', 'is_active']
     inlines = [ServiceTranslationInline]
 
 
@@ -199,17 +203,181 @@ class CalendarEventTranslationInline(admin.TabularInline):
     extra = 0
 
 
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
+from django.shortcuts import render
+from datetime import datetime, date, time, timedelta
+from django.utils.dateparse import parse_time
+
+
+def parse_times(value):
+    """Парсит строку времени: "9:30, 11:00" или по строкам -> [(9,30), (11,0), ...]."""
+    if not value or not str(value).strip():
+        return []
+    result = []
+    for part in str(value).replace(',', '\n').split():
+        part = part.strip()
+        if not part:
+            continue
+        t = parse_time(part)
+        if t:
+            result.append(t)
+        else:
+            # пробуем 9:30 или 930
+            try:
+                if ':' in part:
+                    h, m = part.split(':', 1)
+                    result.append(time(int(h.strip()), int(m.strip())))
+                else:
+                    result.append(time(int(part[:2]), int(part[2:4]) if len(part) >= 4 else 0))
+            except (ValueError, IndexError):
+                pass
+    return result
+
+
+WEEKDAYS = [(i, ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'][i]) for i in range(7)]
+
+
 @admin.register(CalendarEvent)
 class CalendarEventAdmin(admin.ModelAdmin):
-    list_display = ['date', 'price', 'max_slots', '_available', 'is_active', 'order']
-    list_filter = ['date', 'is_active']
+    list_display = ['date', '_time', 'float_trip', 'price', 'max_slots', '_available', 'is_active', 'order']
+    list_filter = ['date', 'is_active', 'float_trip']
     list_editable = ['is_active', 'order', 'price', 'max_slots']
     date_hierarchy = 'date'
     inlines = [CalendarEventTranslationInline]
+    change_list_template = 'admin/content/calendarevent/change_list.html'
+    list_select_related = ['float_trip']
+    fields = ['date', 'time', 'float_trip', 'price', 'max_slots', 'image', 'image_url', 'is_active', 'order']
+
+    def _time(self, obj):
+        return obj.time.strftime('%H:%M') if obj.time else '—'
+    _time.short_description = 'Время'
 
     def _available(self, obj):
         return obj.get_available_slots()
     _available.short_description = 'Свободно мест'
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.float_trip and not obj.translations.exists():
+            for ft_t in obj.float_trip.translations.all():
+                CalendarEventTranslation.objects.get_or_create(
+                    calendar_event=obj,
+                    locale=ft_t.locale,
+                    defaults={'title': ft_t.title, 'long_desc': ft_t.description or ''},
+                )
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom = [
+            path('bulk-create/', self.admin_site.admin_view(self.bulk_create_view), name='content_calendarevent_bulk_create'),
+        ]
+        return custom + urls
+
+    def bulk_create_view(self, request):
+        from .models import FloatTrip, CalendarEventTranslation
+
+        float_trips = FloatTrip.objects.filter(is_active=True).order_by('order', 'id')
+        form_data = {
+            'float_trip': '',
+            'date_from': '',
+            'date_to': '',
+            'weekdays': list(range(7)),
+            'times': '9:30, 11:00, 13:30, 15:00',
+            'price': '0',
+            'max_slots': '20',
+        }
+        errors = []
+
+        if request.method == 'POST':
+            ft_val = request.POST.get('float_trip', '')
+            try:
+                form_data['float_trip'] = int(ft_val) if ft_val else ''
+            except ValueError:
+                form_data['float_trip'] = ''
+            form_data['date_from'] = request.POST.get('date_from', '')
+            form_data['date_to'] = request.POST.get('date_to', '')
+            form_data['weekdays'] = [int(x) for x in request.POST.getlist('weekdays') if x.isdigit()]
+            form_data['times'] = request.POST.get('times', '')
+            form_data['price'] = request.POST.get('price', '0')
+            form_data['max_slots'] = request.POST.get('max_slots', '20')
+
+            errors = []
+            if not form_data['float_trip']:
+                errors.append('Выберите сплав.')
+            try:
+                date_from = datetime.strptime(form_data['date_from'], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                errors.append('Некорректная дата «с».')
+                date_from = None
+            try:
+                date_to = datetime.strptime(form_data['date_to'], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                errors.append('Некорректная дата «по».')
+                date_to = None
+            if date_from and date_to and date_from > date_to:
+                errors.append('Дата «с» не может быть позже даты «по».')
+            if not form_data['weekdays']:
+                errors.append('Выберите хотя бы один день недели.')
+            times = parse_times(form_data['times'])
+            if not times:
+                errors.append('Укажите хотя бы одно время (например 9:30, 11:00).')
+            try:
+                price_val = float(form_data['price'])
+            except (ValueError, TypeError):
+                price_val = 0
+            try:
+                max_slots_val = max(1, int(form_data['max_slots']))
+            except (ValueError, TypeError):
+                max_slots_val = 20
+
+            if not errors:
+                float_trip = FloatTrip.objects.filter(pk=form_data['float_trip']).first()
+                if not float_trip:
+                    errors.append('Сплав не найден.')
+                else:
+                    created = 0
+                    current = date_from
+                    while current <= date_to:
+                        if current.weekday() in form_data['weekdays']:
+                            for t in times:
+                                ev, was_created = CalendarEvent.objects.get_or_create(
+                                    date=current,
+                                    time=t,
+                                    float_trip=float_trip,
+                                    defaults={
+                                        'price': price_val,
+                                        'max_slots': max_slots_val,
+                                        'is_active': True,
+                                    },
+                                )
+                                if was_created:
+                                    for loc in ['ru', 'be', 'en', 'pl', 'zh']:
+                                        ft_t = float_trip.translations.filter(locale=loc).first()
+                                        if ft_t:
+                                            CalendarEventTranslation.objects.get_or_create(
+                                                calendar_event=ev,
+                                                locale=loc,
+                                                defaults={'title': ft_t.title, 'long_desc': ft_t.description or ''},
+                                            )
+                                    created += 1
+                        current += timedelta(days=1)
+
+                    return render(request, 'admin/content/calendarevent/bulk_create.html', {
+                        'float_trips': float_trips,
+                        'form': form_data,
+                        'weekdays': WEEKDAYS,
+                        'created_count': created,
+                        'errors': [],
+                    })
+
+        return render(request, 'admin/content/calendarevent/bulk_create.html', {
+            'float_trips': float_trips,
+            'form': form_data,
+            'weekdays': WEEKDAYS,
+            'created_count': None,
+            'errors': errors if request.method == 'POST' else [],
+        })
 
 
 @admin.register(CalendarBooking)
@@ -226,9 +394,10 @@ class FloatTripTranslationInline(admin.TabularInline):
 
 @admin.register(FloatTrip)
 class FloatTripAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'distance_km', 'price_per_person', 'order']
-    list_editable = ['order', 'distance_km', 'price_per_person']
-    fields = ['slug', 'image', 'image_url', 'video_url', 'distance_km', 'price_per_person', 'order', 'map_embed_url']
+    list_display = ['slug', 'distance_km', 'price_per_person', 'order', 'is_active']
+    list_filter = ['is_active']
+    list_editable = ['order', 'distance_km', 'price_per_person', 'is_active']
+    fields = ['slug', 'image', 'image_url', 'video_url', 'distance_km', 'price_per_person', 'order', 'is_active', 'map_embed_url']
     inlines = [FloatTripTranslationInline]
 
 
@@ -254,12 +423,42 @@ class AboutContentAdmin(admin.ModelAdmin):
     inlines = [AboutContentTranslationInline]
 
 
+class AboutPageContentTranslationInline(admin.StackedInline):
+    model = AboutPageContentTranslation
+    extra = 0
+
+
+@admin.register(AboutPageContent)
+class AboutPageContentAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
+    inlines = [AboutPageContentTranslationInline]
+
+
+class LegalPageTranslationInline(admin.StackedInline):
+    model = LegalPageTranslation
+    extra = 0
+
+
+@admin.register(LegalPage)
+class LegalPageAdmin(admin.ModelAdmin):
+    list_display = ['page_key', 'get_title']
+    list_filter = ['page_key']
+
+    def get_title(self, obj):
+        t = obj.translations.filter(locale='ru').first()
+        return t.title if t else '—'
+    get_title.short_description = 'Заголовок (ru)'
+
+    inlines = [LegalPageTranslationInline]
+
+
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ['company_name', 'contact_email']
     fields = [
         'company_name', 'legal_address', 'office_address',
-        'unp', 'okpo', 'trade_register', 'services_register', 'contact_email',
+        'unp', 'okpo', 'bank_account', 'bank_institution',
+        'trade_register', 'services_register', 'contact_email',
     ]
 
 
