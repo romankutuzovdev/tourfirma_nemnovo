@@ -22,6 +22,7 @@ const SEGMENT_TO_KEY: Record<string, string> = {
   payment: 'nav.payment',
   'cookie-policy': 'footer.cookiePolicy',
   privacy: 'footer.privacy',
+  'public-offer': 'footer.publicOffer',
 }
 
 type PageLayoutProps = {

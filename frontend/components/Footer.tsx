@@ -95,12 +95,6 @@ export function Footer() {
               {t('footer.copyright')}
             </Link>
             <p className="mt-3 font-sans text-sm text-black/80 max-w-xs">
-              {t('about.title')}
-            </p>
-            <p className="mt-2 font-sans text-sm text-black/80 max-w-xs">
-              {t('about.p1')}
-            </p>
-            <p className="mt-2 font-sans text-sm text-black/80 max-w-xs">
               {t('about.p2')}
             </p>
             <div className="flex gap-3 mt-6">
@@ -185,6 +179,12 @@ export function Footer() {
                 className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
               >
                 {t('footer.cookiePolicy')}
+              </Link>
+              <Link
+                href="/public-offer"
+                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
+              >
+                {t('footer.publicOffer')}
               </Link>
             </div>
           </div>

@@ -73,13 +73,13 @@ export default async function ServicePage({ params }: Props) {
               aria-hidden
             />
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-              <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-medium text-white tracking-tight">
+              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white tracking-tight">
                 {serviceTitle}
               </h1>
             </div>
           </div>
 
-          <p className="mt-8 font-sans text-base text-black/80 leading-relaxed">
+          <p className="mt-8 font-sans text-base text-black/90 leading-relaxed">
             {serviceShortDesc}
           </p>
 
@@ -87,7 +87,7 @@ export default async function ServicePage({ params }: Props) {
             {blocks.map((block, i) => (
               <div key={i}>
                 {block.section && (
-                  <h2 className="font-serif text-xl font-medium text-black mb-4">
+                  <h2 className="font-serif text-xl font-medium text-black/90 mb-4">
                     {block.section}
                   </h2>
                 )}
@@ -95,7 +95,7 @@ export default async function ServicePage({ params }: Props) {
                   {block.items.map((item, j) => (
                     <li
                       key={j}
-                      className="flex items-center gap-3 p-4 md:p-5 bg-secondary/50 border border-secondary/10 rounded-lg font-sans text-base text-black"
+                      className="flex items-center gap-3 p-4 md:p-5 bg-secondary/50 border border-secondary/10 rounded-lg font-sans text-base text-black/90"
                     >
                       <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary/60" aria-hidden />
                       {item}
@@ -108,7 +108,7 @@ export default async function ServicePage({ params }: Props) {
         </article>
 
         <div className="mt-20 pt-16 border-t border-secondary/20">
-          <h2 className="font-serif text-xl font-medium text-black mb-8">
+          <h2 className="font-serif text-2xl md:text-3xl font-medium text-black mb-8">
             {t('common.otherServices')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">

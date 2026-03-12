@@ -240,14 +240,14 @@ WEEKDAYS = [(i, ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'][i]) for
 
 @admin.register(CalendarEvent)
 class CalendarEventAdmin(admin.ModelAdmin):
-    list_display = ['date', '_time', 'float_trip', 'price', 'max_slots', '_available', 'is_active', 'order']
-    list_filter = ['date', 'is_active', 'float_trip']
+    list_display = ['date', '_time', 'float_trip', 'service', 'price', 'max_slots', '_available', 'is_active', 'order']
+    list_filter = ['date', 'is_active', 'float_trip', 'service']
     list_editable = ['is_active', 'order', 'price', 'max_slots']
     date_hierarchy = 'date'
     inlines = [CalendarEventTranslationInline]
     change_list_template = 'admin/content/calendarevent/change_list.html'
-    list_select_related = ['float_trip']
-    fields = ['date', 'time', 'float_trip', 'price', 'max_slots', 'image', 'image_url', 'is_active', 'order']
+    list_select_related = ['float_trip', 'service']
+    fields = ['date', 'time', 'float_trip', 'service', 'price', 'max_slots', 'image', 'image_url', 'is_active', 'order']
 
     def _time(self, obj):
         return obj.time.strftime('%H:%M') if obj.time else '—'
@@ -259,12 +259,21 @@ class CalendarEventAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        if obj.float_trip and not obj.translations.exists():
+        if obj.translations.exists():
+            return
+        if obj.float_trip:
             for ft_t in obj.float_trip.translations.all():
                 CalendarEventTranslation.objects.get_or_create(
                     calendar_event=obj,
                     locale=ft_t.locale,
                     defaults={'title': ft_t.title, 'long_desc': ft_t.description or ''},
+                )
+        elif obj.service:
+            for s_t in obj.service.translations.all():
+                CalendarEventTranslation.objects.get_or_create(
+                    calendar_event=obj,
+                    locale=s_t.locale,
+                    defaults={'title': s_t.title, 'long_desc': s_t.long_desc or ''},
                 )
 
     def get_urls(self):
@@ -275,11 +284,14 @@ class CalendarEventAdmin(admin.ModelAdmin):
         return custom + urls
 
     def bulk_create_view(self, request):
-        from .models import FloatTrip, CalendarEventTranslation
+        from .models import FloatTrip, Service, CalendarEventTranslation
 
         float_trips = FloatTrip.objects.filter(is_active=True).order_by('order', 'id')
+        services = Service.objects.filter(is_active=True).order_by('order', 'id')
         form_data = {
+            'source_type': 'float_trip',
             'float_trip': '',
+            'service': '',
             'date_from': '',
             'date_to': '',
             'weekdays': list(range(7)),
@@ -290,11 +302,17 @@ class CalendarEventAdmin(admin.ModelAdmin):
         errors = []
 
         if request.method == 'POST':
+            form_data['source_type'] = request.POST.get('source_type', 'float_trip')
             ft_val = request.POST.get('float_trip', '')
+            svc_val = request.POST.get('service', '')
             try:
                 form_data['float_trip'] = int(ft_val) if ft_val else ''
             except ValueError:
                 form_data['float_trip'] = ''
+            try:
+                form_data['service'] = int(svc_val) if svc_val else ''
+            except ValueError:
+                form_data['service'] = ''
             form_data['date_from'] = request.POST.get('date_from', '')
             form_data['date_to'] = request.POST.get('date_to', '')
             form_data['weekdays'] = [int(x) for x in request.POST.getlist('weekdays') if x.isdigit()]
@@ -303,8 +321,12 @@ class CalendarEventAdmin(admin.ModelAdmin):
             form_data['max_slots'] = request.POST.get('max_slots', '20')
 
             errors = []
-            if not form_data['float_trip']:
-                errors.append('Выберите сплав.')
+            if form_data['source_type'] == 'service':
+                if not form_data['service']:
+                    errors.append('Выберите услугу.')
+            else:
+                if not form_data['float_trip']:
+                    errors.append('Выберите сплав.')
             try:
                 date_from = datetime.strptime(form_data['date_from'], '%Y-%m-%d').date()
             except (ValueError, TypeError):
@@ -332,10 +354,18 @@ class CalendarEventAdmin(admin.ModelAdmin):
                 max_slots_val = 20
 
             if not errors:
-                float_trip = FloatTrip.objects.filter(pk=form_data['float_trip']).first()
-                if not float_trip:
-                    errors.append('Сплав не найден.')
+                float_trip = None
+                service = None
+                if form_data['source_type'] == 'service':
+                    service = Service.objects.filter(pk=form_data['service']).first()
+                    if not service:
+                        errors.append('Услуга не найдена.')
                 else:
+                    float_trip = FloatTrip.objects.filter(pk=form_data['float_trip']).first()
+                    if not float_trip:
+                        errors.append('Сплав не найден.')
+
+                if not errors:
                     created = 0
                     current = date_from
                     while current <= date_to:
@@ -345,6 +375,7 @@ class CalendarEventAdmin(admin.ModelAdmin):
                                     date=current,
                                     time=t,
                                     float_trip=float_trip,
+                                    service=service,
                                     defaults={
                                         'price': price_val,
                                         'max_slots': max_slots_val,
@@ -353,18 +384,28 @@ class CalendarEventAdmin(admin.ModelAdmin):
                                 )
                                 if was_created:
                                     for loc in ['ru', 'be', 'en', 'pl', 'zh']:
-                                        ft_t = float_trip.translations.filter(locale=loc).first()
-                                        if ft_t:
-                                            CalendarEventTranslation.objects.get_or_create(
-                                                calendar_event=ev,
-                                                locale=loc,
-                                                defaults={'title': ft_t.title, 'long_desc': ft_t.description or ''},
-                                            )
+                                        if float_trip:
+                                            ft_t = float_trip.translations.filter(locale=loc).first()
+                                            if ft_t:
+                                                CalendarEventTranslation.objects.get_or_create(
+                                                    calendar_event=ev,
+                                                    locale=loc,
+                                                    defaults={'title': ft_t.title, 'long_desc': ft_t.description or ''},
+                                                )
+                                        elif service:
+                                            s_t = service.translations.filter(locale=loc).first()
+                                            if s_t:
+                                                CalendarEventTranslation.objects.get_or_create(
+                                                    calendar_event=ev,
+                                                    locale=loc,
+                                                    defaults={'title': s_t.title, 'long_desc': s_t.long_desc or ''},
+                                                )
                                     created += 1
                         current += timedelta(days=1)
 
                     return render(request, 'admin/content/calendarevent/bulk_create.html', {
                         'float_trips': float_trips,
+                        'services': services,
                         'form': form_data,
                         'weekdays': WEEKDAYS,
                         'created_count': created,
@@ -373,6 +414,7 @@ class CalendarEventAdmin(admin.ModelAdmin):
 
         return render(request, 'admin/content/calendarevent/bulk_create.html', {
             'float_trips': float_trips,
+            'services': services,
             'form': form_data,
             'weekdays': WEEKDAYS,
             'created_count': None,

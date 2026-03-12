@@ -33,7 +33,7 @@ export function FloatDescription({
     }
     return (
       <div
-        className={`float-description font-sans text-black/90 leading-relaxed [&_figure]:my-6 [&_figure]:flex [&_figure]:flex-col [&_figure]:items-center [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_figcaption]:mt-2 [&_figcaption]:text-center [&_figcaption]:text-sm [&_figcaption]:text-black/60 [&_p]:mb-3 [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-xl [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:font-serif [&_h3]:text-lg [&_a]:text-primary [&_a]:underline hover:[&_a]:no-underline ${stripImages ? 'line-clamp-3' : ''} ${className}`}
+        className={`float-description font-sans text-base text-black/90 leading-relaxed [&_figure]:my-6 [&_figure]:flex [&_figure]:flex-col [&_figure]:items-center [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_figcaption]:mt-2 [&_figcaption]:text-center [&_figcaption]:text-sm [&_figcaption]:text-black/60 [&_p]:mb-3 [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-xl [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:font-serif [&_h3]:text-lg [&_a]:text-primary [&_a]:underline hover:[&_a]:no-underline ${stripImages ? 'line-clamp-3' : ''} ${className}`}
         dangerouslySetInnerHTML={{ __html: sanitized }}
       />
     )
@@ -44,7 +44,7 @@ export function FloatDescription({
     const stripped = text.replace(/!\[[^\]]*\]\([^)]+\)/g, '').trim()
     if (!stripped) return null
     return (
-      <p className={`font-sans text-black/80 leading-relaxed line-clamp-3 whitespace-pre-line ${className}`}>
+      <p className={`font-sans text-base text-black/90 leading-relaxed line-clamp-3 whitespace-pre-line ${className}`}>
         {stripped}
       </p>
     )
@@ -87,5 +87,5 @@ export function FloatDescription({
     )
   }
 
-  return <div className={`font-sans text-black/90 leading-relaxed ${className}`}>{parts}</div>
+  return <div className={`font-sans text-base text-black/90 leading-relaxed ${className}`}>{parts}</div>
 }

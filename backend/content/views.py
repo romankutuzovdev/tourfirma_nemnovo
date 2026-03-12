@@ -221,7 +221,7 @@ def calendar_events_list(request):
     _, last_day = monthrange(year, month)
     start = date(year, month, 1)
     end = date(year, month, last_day)
-    qs = CalendarEvent.objects.filter(date__gte=start, date__lte=end, is_active=True)
+    qs = CalendarEvent.objects.filter(date__gte=start, date__lte=end, is_active=True).select_related('float_trip', 'service').prefetch_related('translations')
     serializer = CalendarEventListSerializer(
         qs,
         many=True,
@@ -235,7 +235,7 @@ def calendar_event_detail(request, pk):
     """Детали события в календаре."""
     locale = get_locale(request)
     try:
-        ev = CalendarEvent.objects.get(pk=pk, is_active=True)
+        ev = CalendarEvent.objects.select_related('float_trip', 'service').prefetch_related('translations').get(pk=pk, is_active=True)
     except CalendarEvent.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = CalendarEventDetailSerializer(ev, context={'locale': locale, 'request': request})

@@ -13,6 +13,7 @@ LEGAL_PAGE_CHOICES = [
     ('privacy', 'Политика обработки персональных данных'),
     ('cookie-policy', 'Политика в отношении обработки cookie'),
     ('payment', 'Оплата'),
+    ('public-offer', 'Договор публичной оферты'),
 ]
 
 
@@ -247,7 +248,7 @@ class HotOfferTranslation(models.Model):
 
 
 class CalendarEvent(models.Model):
-    """Событие в календаре: дата, время (опц.), цена, слоты. Можно привязать к сплаву (FloatTrip)."""
+    """Событие в календаре: дата, время (опц.), цена, слоты. Можно привязать к сплаву (FloatTrip) или услуге (Service)."""
     date = models.DateField('Дата')
     time = models.TimeField('Время (опц.)', null=True, blank=True, help_text='Напр. 9:30, 11:00')
     float_trip = models.ForeignKey(
@@ -258,6 +259,15 @@ class CalendarEvent(models.Model):
         related_name='calendar_events',
         verbose_name='Сплав',
         help_text='Если выбрано — название, описание и фото берутся из сплава',
+    )
+    service = models.ForeignKey(
+        'Service',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='calendar_events',
+        verbose_name='Услуга',
+        help_text='Если выбрано — название и описание берутся из услуги',
     )
     price = models.DecimalField('Цена (BYN)', max_digits=10, decimal_places=2, default=0)
     max_slots = models.PositiveIntegerField('Макс. мест', default=20)
@@ -277,6 +287,9 @@ class CalendarEvent(models.Model):
         if not title and self.float_trip:
             ft_t = self.float_trip.translations.filter(locale='ru').first()
             title = ft_t.title if (ft_t and ft_t.title) else self.float_trip.slug
+        if not title and self.service:
+            s_t = self.service.translations.filter(locale='ru').first()
+            title = s_t.title if (s_t and s_t.title) else self.service.slug
         time_str = f' {self.time.strftime("%H:%M")}' if self.time else ''
         return f'{self.date}{time_str} — {title or "event"}'
 

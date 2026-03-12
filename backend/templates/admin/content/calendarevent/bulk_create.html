@@ -35,14 +35,41 @@
     <h2>Параметры</h2>
     <div class="form-row">
       <div>
+        <label>Тип *</label>
+        <div style="margin-top: 8px;">
+          <label style="margin-right: 16px;">
+            <input type="radio" name="source_type" value="float_trip" {% if form.source_type != "service" %}checked{% endif %} />
+            Сплав
+          </label>
+          <label>
+            <input type="radio" name="source_type" value="service" {% if form.source_type == "service" %}checked{% endif %} />
+            Услуга
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row" id="float_trip_row">
+      <div>
         <label for="id_float_trip">Сплав *</label>
-        <select name="float_trip" id="id_float_trip" required style="min-width: 300px;">
+        <select name="float_trip" id="id_float_trip" style="min-width: 300px;">
           <option value="">---------</option>
           {% for ft in float_trips %}
           <option value="{{ ft.pk }}" {% if form.float_trip and form.float_trip == ft.pk %}selected{% endif %}>{{ ft }}</option>
           {% endfor %}
         </select>
         <p class="help">Название, описание и фото будут взяты из сплава.</p>
+      </div>
+    </div>
+    <div class="form-row" id="service_row" style="display: none;">
+      <div>
+        <label for="id_service">Услуга *</label>
+        <select name="service" id="id_service" style="min-width: 300px;">
+          <option value="">---------</option>
+          {% for svc in services %}
+          <option value="{{ svc.pk }}" {% if form.service and form.service == svc.pk %}selected{% endif %}>{{ svc }}</option>
+          {% endfor %}
+        </select>
+        <p class="help">Название и описание будут взяты из услуги.</p>
       </div>
     </div>
     <div class="form-row">
@@ -92,5 +119,25 @@
     <a href="{% url 'admin:content_calendarevent_changelist' %}" class="button cancel-link">Отмена</a>
   </div>
 </form>
+<script>
+(function() {
+  var floatRow = document.getElementById('float_trip_row');
+  var serviceRow = document.getElementById('service_row');
+  var floatSelect = document.getElementById('id_float_trip');
+  var serviceSelect = document.getElementById('id_service');
+  var radios = document.querySelectorAll('input[name="source_type"]');
+  function update() {
+    var isFloat = document.querySelector('input[name="source_type"]:checked').value === 'float_trip';
+    floatRow.style.display = isFloat ? '' : 'none';
+    serviceRow.style.display = isFloat ? 'none' : '';
+    floatSelect.required = isFloat;
+    serviceSelect.required = !isFloat;
+    if (!isFloat) floatSelect.value = '';
+    if (isFloat) serviceSelect.value = '';
+  }
+  radios.forEach(function(r) { r.addEventListener('change', update); });
+  update();
+})();
+</script>
 {% endif %}
 {% endblock %}

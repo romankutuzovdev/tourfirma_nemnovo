@@ -419,16 +419,28 @@ class CalendarEventListSerializer(serializers.ModelSerializer):
         t = float_trip.translations.filter(locale=locale).first()
         return t or float_trip.translations.filter(locale='ru').first()
 
+    def _get_service_translation(self, service, locale):
+        if not service:
+            return None
+        t = service.translations.filter(locale=locale).first()
+        return t or service.translations.filter(locale='ru').first()
+
     def get_title(self, obj):
         t = self._get_translation(obj)
         title = (t.title if t else '').strip()
         if title:
             return title
+        locale = self.context.get('locale', 'ru')
         ft = obj.float_trip
         if ft:
-            ft_t = self._get_float_trip_translation(ft, self.context.get('locale', 'ru'))
+            ft_t = self._get_float_trip_translation(ft, locale)
             if ft_t and ft_t.title:
                 return ft_t.title
+        svc = obj.service
+        if svc:
+            s_t = self._get_service_translation(svc, locale)
+            if s_t and s_t.title:
+                return s_t.title
         return str(obj.date)
 
     def get_image(self, obj):
@@ -442,6 +454,12 @@ class CalendarEventListSerializer(serializers.ModelSerializer):
                 return _build_media_url(self.context.get('request'), ft.image)
             if ft.image_url:
                 return ft.image_url
+        svc = obj.service
+        if svc:
+            if svc.image:
+                return _build_media_url(self.context.get('request'), svc.image)
+            if svc.image_url:
+                return svc.image_url
         return None
 
     def get_time_display(self, obj):
@@ -468,11 +486,17 @@ class CalendarEventDetailSerializer(CalendarEventListSerializer):
         desc = (getattr(t, 'long_desc', '') or '').strip() if t else ''
         if desc:
             return desc
+        locale = self.context.get('locale', 'ru')
         ft = obj.float_trip
         if ft:
-            ft_t = self._get_float_trip_translation(ft, self.context.get('locale', 'ru'))
+            ft_t = self._get_float_trip_translation(ft, locale)
             if ft_t and ft_t.description:
                 return ft_t.description or ''
+        svc = obj.service
+        if svc:
+            s_t = self._get_service_translation(svc, locale)
+            if s_t and s_t.long_desc:
+                return s_t.long_desc or ''
         return ''
 
 

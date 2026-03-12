@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { PageLayout } from '@/components/PageLayout'
+import { FloatDescription } from '@/components/FloatDescription'
 import {
   fetchCalendarEventDetail,
   bookCalendarEvent,
@@ -145,12 +146,10 @@ export default function CalendarEventDetailPage() {
             </div>
           </div>
 
-          {/* Описание */}
+          {/* Описание (HTML из CKEditor или plain text) */}
           {desc && (
             <div className="prose prose-lg max-w-none mb-12">
-              <div className="font-sans text-black/85 leading-relaxed whitespace-pre-line">
-                {desc}
-              </div>
+              <FloatDescription text={desc} className="text-black/85" />
             </div>
           )}
 
