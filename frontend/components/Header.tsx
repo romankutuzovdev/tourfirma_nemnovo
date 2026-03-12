@@ -89,6 +89,7 @@ export function Header() {
   const moreNav = [
     { href: '/news', label: t('nav.news') },
     { href: '/reviews', label: t('nav.reviews') },
+    { href: '/agencies', label: t('nav.agencies') },
     { href: '/payment', label: t('nav.payment') },
   ]
   const authLink = isAuthenticated

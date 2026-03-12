@@ -170,21 +170,27 @@ export function Footer() {
             <div className="flex flex-col gap-2 pt-2">
               <Link
                 href="/privacy"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
+                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.personalDataPolicy')}
               </Link>
               <Link
                 href="/cookie-policy"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
+                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.cookiePolicy')}
               </Link>
               <Link
                 href="/public-offer"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2"
+                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.publicOffer')}
+              </Link>
+              <Link
+                href="/certificate"
+                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+              >
+                {t('certificateSection.title')}
               </Link>
             </div>
           </div>

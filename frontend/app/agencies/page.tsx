@@ -2,10 +2,10 @@ import { PageLayout } from '@/components/PageLayout'
 import { fetchLegalPage } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
 
-export default async function PaymentPage() {
-  const content = await fetchLegalPage('payment', 'ru')
+export default async function AgenciesPage() {
+  const content = await fetchLegalPage('agencies', 'ru')
 
-  const title = content?.title || 'Условия оплаты'
+  const title = content?.title || 'Для агентств'
   const body = content?.content?.trim() || ''
 
   return (
@@ -18,7 +18,7 @@ export default async function PaymentPage() {
           {body ? (
             <FloatDescription text={body} className="text-black/80" />
           ) : (
-            <p className="font-sans text-black/70">Информация об условиях оплаты будет добавлена.</p>
+            <p className="font-sans text-black/70">Содержание будет добавлено.</p>
           )}
         </div>
       </section>

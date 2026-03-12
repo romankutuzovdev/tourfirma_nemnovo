@@ -13,11 +13,13 @@ from .models import (
     FloatTrip, FloatTripTranslation,
     HeroContent, HeroContentTranslation,
     AboutContent, AboutContentTranslation,
-    AboutPageContent, AboutPageContentTranslation,
+    AboutPageContent, AboutPageContentTranslation, AboutPageImage,
+    CertificateContent, CertificateContentTranslation,
 )
 
 
-class ServiceTranslationInline(admin.TabularInline):
+class ServiceTranslationInline(admin.StackedInline):
+    """StackedInline нужен для CKEditor — в TabularInline редактор не помещается."""
     model = ServiceTranslation
     extra = 0
 
@@ -472,10 +474,16 @@ class AboutPageContentTranslationInline(admin.StackedInline):
     extra = 0
 
 
+class AboutPageImageInline(admin.TabularInline):
+    model = AboutPageImage
+    extra = 1
+
+
 @admin.register(AboutPageContent)
 class AboutPageContentAdmin(admin.ModelAdmin):
     list_display = ['__str__']
-    inlines = [AboutPageContentTranslationInline]
+    fields = ['video_url', 'presentation', 'presentation_url']
+    inlines = [AboutPageContentTranslationInline, AboutPageImageInline]
 
 
 class LegalPageTranslationInline(admin.StackedInline):
@@ -494,6 +502,17 @@ class LegalPageAdmin(admin.ModelAdmin):
     get_title.short_description = 'Заголовок (ru)'
 
     inlines = [LegalPageTranslationInline]
+
+
+class CertificateContentTranslationInline(admin.StackedInline):
+    model = CertificateContentTranslation
+    extra = 0
+
+
+@admin.register(CertificateContent)
+class CertificateContentAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
+    inlines = [CertificateContentTranslationInline]
 
 
 @admin.register(CompanyInfo)

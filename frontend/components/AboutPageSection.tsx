@@ -15,7 +15,7 @@ export function AboutPageSection({ content }: Props) {
     : [t('aboutPage.p1'), t('aboutPage.p2')]
 
   return (
-    <section id="about" className="pt-8 md:pt-12 pb-4 md:pb-6 bg-primary border-y border-white/20">
+    <section id="about" className="pt-12 md:pt-16 pb-8 md:pb-10 bg-primary border-y border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
           <div>

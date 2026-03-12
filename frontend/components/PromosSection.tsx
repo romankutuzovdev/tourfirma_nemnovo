@@ -8,7 +8,9 @@ import { usePromos } from '@/contexts/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { getPromoImageSrc } from '@/lib/api'
 
-export function PromosSection() {
+type Props = { hideTitle?: boolean }
+
+export function PromosSection({ hideTitle }: Props = {}) {
   const t = useTranslations()
   const promos = usePromos()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -39,13 +41,15 @@ export function PromosSection() {
   if (promos.length === 0) return null
 
   return (
-    <section id="promos" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="promos" className="pt-6 md:pt-10 pb-16 md:pb-24 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <AnimateOnScroll variant="fade-up">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h2 className="section-title-main text-primary">
-              {t('promosSection.title')}
-            </h2>
+            {!hideTitle && (
+              <h2 className="section-title-main text-primary">
+                {t('promosSection.title')}
+              </h2>
+            )}
             {promos.length > 1 && (
               <div className="flex items-center gap-2" aria-hidden>
                 <button
@@ -73,7 +77,7 @@ export function PromosSection() {
         <div
           ref={scrollRef}
           onScroll={updateArrows}
-          className="mt-8 sm:mt-12 flex gap-4 sm:gap-6 overflow-x-auto overflow-y-hidden scroll-smooth scrollbar-none py-1 -mx-1"
+          className={`flex gap-4 sm:gap-6 overflow-x-auto overflow-y-hidden scroll-smooth scrollbar-none py-1 ${hideTitle ? 'mt-6 md:mt-8' : 'mt-8 sm:mt-12'}`}
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {promos.map((p) => {
@@ -86,14 +90,14 @@ export function PromosSection() {
                 style={{ scrollSnapAlign: 'start' }}
                 aria-label={p.title}
               >
-                <article className="h-full min-h-[140px] bg-secondary/50 border border-secondary/10 rounded-sm flex flex-col md:flex-row gap-4 overflow-hidden transition-all duration-300 hover:border-secondary/20 hover:shadow-md">
+                <article className="h-full flex flex-col bg-secondary/50 border border-secondary/10 rounded-sm overflow-hidden transition-all duration-300 hover:border-secondary/20 hover:shadow-md">
                   {src && (
-                    <div className="relative w-full md:w-36 h-36 md:h-auto md:self-stretch shrink-0">
+                    <div className="relative w-full aspect-[4/3] shrink-0">
                       <Image
                         src={src}
                         alt={p.title}
                         fill
-                        sizes="(max-width: 768px) 320px, 160px"
+                        sizes="(max-width: 768px) 320px, 380px"
                         className="object-cover"
                       />
                     </div>

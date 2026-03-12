@@ -20,8 +20,8 @@ export function FloatDescription({
 
   if (isHtml) {
     let sanitized = DOMPurify.sanitize(text, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'blockquote', 'h2', 'h3', 'img', 'figure', 'figcaption'],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'class'],
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'blockquote', 'h2', 'h3', 'img', 'figure', 'figcaption', 'span'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style'],
     })
     // Преобразуем относительные /media/ URL в абсолютные для кросс-доменных запросов
     sanitized = sanitized.replace(

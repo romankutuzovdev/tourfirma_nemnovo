@@ -66,7 +66,7 @@ export function CalendarSection() {
           <button
             type="button"
             onClick={prevMonth}
-            className="p-2.5 rounded-full border-2 border-white/60 text-white hover:bg-white/20 hover:border-white transition-colors shrink-0"
+            className="p-2.5 rounded-full bg-white text-primary hover:bg-white/90 transition-colors shrink-0"
             aria-label={t('calendarPage.prevMonth')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ export function CalendarSection() {
           <button
             type="button"
             onClick={nextMonth}
-            className="p-2.5 rounded-full border-2 border-white/60 text-white hover:bg-white/20 hover:border-white transition-colors shrink-0"
+            className="p-2.5 rounded-full bg-white text-primary hover:bg-white/90 transition-colors shrink-0"
             aria-label={t('calendarPage.nextMonth')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@ export function CalendarSection() {
           </div>
         )}
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 mb-4 text-center">
           <Link
             href="/calendar"
             className="inline-flex items-center px-6 py-3 border-2 border-white text-white font-sans text-sm font-semibold tracking-wide hover:bg-white hover:text-[#f8bd69] transition-colors rounded-lg"

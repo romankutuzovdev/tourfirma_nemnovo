@@ -71,7 +71,7 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
+    <section id="contact" className="pt-4 pb-16 md:pb-24 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
 
@@ -83,7 +83,7 @@ export function ContactSection() {
                 <div className="flex gap-4">
                   <IconAddress />
                   <div className="min-w-0 flex-1">
-                    <p className="font-sans text-base font-bold uppercase tracking-wide text-black/70 mb-2 break-words">{t('footer.addressLabel')}</p>
+                    <p className="font-sans text-sm font-semibold text-black/70 mb-2 break-words">{t('footer.addressLabel')}</p>
                     <p className="font-sans text-sm text-gray-600 leading-snug whitespace-pre-line break-words">{t('footer.address')}</p>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export function ContactSection() {
                 <div className="flex gap-4">
                   <IconClock />
                   <div className="min-w-0 flex-1">
-                    <p className="font-sans text-base font-bold uppercase tracking-wide text-black/70 mb-2 break-words">{t('footer.workingHours')}</p>
+                    <p className="font-sans text-sm font-semibold text-black/70 mb-2 break-words">{t('footer.workingHours')}</p>
                     <p className="font-sans text-sm text-gray-600 leading-snug whitespace-pre-line break-words">{t('footer.workingHoursValue')}</p>
                   </div>
                 </div>

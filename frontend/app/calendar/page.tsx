@@ -59,7 +59,13 @@ export default function CalendarPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
-      <header className="pt-52 md:pt-40 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-24 md:pt-20 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-4"
+        >
+          ← {t('nav.home')}
+        </Link>
         <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-primary tracking-tight max-w-2xl">
           {t('calendarPage.title')}
         </h1>
@@ -70,7 +76,7 @@ export default function CalendarPage() {
           <button
             type="button"
             onClick={prevMonth}
-            className="p-2.5 rounded-full border-2 border-primary/40 text-primary hover:bg-primary/10 hover:border-primary transition-colors"
+            className="p-2.5 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
             aria-label="Предыдущий месяц"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +89,7 @@ export default function CalendarPage() {
           <button
             type="button"
             onClick={nextMonth}
-            className="p-2.5 rounded-full border-2 border-primary/40 text-primary hover:bg-primary/10 hover:border-primary transition-colors"
+            className="p-2.5 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
             aria-label="Следующий месяц"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

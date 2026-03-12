@@ -79,7 +79,7 @@ export default function CalendarEventDetailPage() {
 
   if (loading || !params?.id) {
     return (
-      <PageLayout headerClassName="pt-52 md:pt-40">
+      <PageLayout headerClassName="pt-24 md:pt-20">
         <div className="min-h-[50vh] flex items-center justify-center">
           <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
         </div>
@@ -89,7 +89,7 @@ export default function CalendarEventDetailPage() {
 
   if (!event) {
     return (
-      <PageLayout title={t('calendarPage.notFound')} headerClassName="pt-52 md:pt-40">
+      <PageLayout title={t('calendarPage.notFound')} headerClassName="pt-24 md:pt-20">
         <div className="py-16 text-center">
           <p className="font-sans text-black/70 mb-6">{t('calendarPage.notFoundDesc')}</p>
           <Link
@@ -110,10 +110,17 @@ export default function CalendarEventDetailPage() {
       title={event.title}
       description={formatDate(event.date, event.time_display)}
       badge={t('calendarPage.title')}
-      headerClassName="pt-52 md:pt-40"
+      headerClassName="pt-24 md:pt-20"
     >
       <article className="pb-16 md:pb-24">
         <div className="max-w-4xl mx-auto">
+          <Link
+            href="/calendar"
+            className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-primary mb-4"
+          >
+            <span aria-hidden>←</span>
+            {t('calendarPage.backToCalendar')}
+          </Link>
           {/* Hero */}
           <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden bg-secondary/30 mb-8 md:mb-12">
             {getCalendarEventImageSrc(event) ? (
@@ -242,10 +249,10 @@ export default function CalendarEventDetailPage() {
             )}
           </section>
 
-          <div className="mt-12">
+          <div className="mt-6">
             <Link
               href="/calendar"
-              className="inline-flex items-center gap-2 font-sans text-black/80 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-primary transition-colors"
             >
               <span aria-hidden>←</span>
               {t('calendarPage.backToCalendar')}

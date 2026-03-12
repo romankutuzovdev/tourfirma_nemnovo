@@ -21,10 +21,10 @@ export default function FloatsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
-      <header className="pt-48 md:pt-44 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-24 md:pt-20 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={'/'}
-          className="lg:hidden inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-4"
         >
           ← {t('nav.home')}
         </Link>

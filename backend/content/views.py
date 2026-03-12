@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent, AboutPageContent
+from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent, AboutPageContent, CertificateContent
 from .serializers import (
     ServiceListSerializer,
     ServiceTreeSerializer,
@@ -37,6 +37,7 @@ from .serializers import (
     LegalPageSerializer,
     AboutContentSerializer,
     AboutPageContentSerializer,
+    CertificateContentSerializer,
 )
 
 VALID_LOCALES = {'ru', 'be', 'en', 'pl', 'zh'}
@@ -386,12 +387,26 @@ def about_content(request):
 
 @api_view(['GET'])
 def about_page_content(request):
-    """Контент страницы «О нас»: заголовок и абзацы (отдельно от главной)."""
+    """Контент страницы «О нас»: заголовок, абзацы, фото, видео, презентация."""
     locale = get_locale(request)
-    obj = AboutPageContent.objects.prefetch_related('translations').first()
+    obj = AboutPageContent.objects.prefetch_related('translations', 'images').first()
     if not obj:
-        return Response({'title': '', 'paragraphs': []})
+        return Response({
+            'title': '', 'paragraphs': [],
+            'images': [], 'video_url': '', 'presentation': None, 'presentation_url': '',
+        })
     serializer = AboutPageContentSerializer(obj, context={'locale': locale, 'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def certificate_content(request):
+    """Контент подарочного сертификата: картинка, заголовок, описание."""
+    locale = get_locale(request)
+    obj = CertificateContent.objects.prefetch_related('translations').first()
+    if not obj:
+        return Response({'image': None, 'image_url': '', 'title': '', 'content': ''})
+    serializer = CertificateContentSerializer(obj, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
 

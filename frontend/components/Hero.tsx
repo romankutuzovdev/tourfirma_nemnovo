@@ -60,7 +60,7 @@ export function Hero({ content }: HeroProps) {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className={`inline-flex items-center justify-center px-8 py-4 border font-sans text-sm tracking-wide transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${image ? 'border-white/60 text-white hover:bg-white/20' : 'border-secondary/30 text-black hover:border-secondary/50'}`}
+            className={`inline-flex items-center justify-center px-8 py-4 border-[3px] font-sans text-sm tracking-wide transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${image ? 'border-white/60 text-white hover:bg-white/20' : 'border-secondary/30 text-black hover:border-secondary/50'}`}
           >
             {t('hero.cta2')}
           </button>

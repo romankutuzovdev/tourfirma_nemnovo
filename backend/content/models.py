@@ -14,6 +14,7 @@ LEGAL_PAGE_CHOICES = [
     ('cookie-policy', 'Политика в отношении обработки cookie'),
     ('payment', 'Оплата'),
     ('public-offer', 'Договор публичной оферты'),
+    ('agencies', 'Для агентств'),
 ]
 
 
@@ -48,8 +49,11 @@ class ServiceTranslation(models.Model):
     locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
     title = models.CharField(max_length=200)
     short_desc = models.TextField(blank=True)
-    long_desc = models.TextField(
-        help_text='Блоки: строка-заголовок (без буллета), ниже строки с «• » — пункты списка. Новая строка без «• » начинает следующий блок.'
+    long_desc = CKEditor5Field(
+        'Подробное описание',
+        blank=True,
+        config_name='default',
+        help_text='Редактор с форматированием: шрифт, заголовки, списки, картинки. Для экскурсий и других услуг.'
     )
 
     class Meta:
@@ -499,7 +503,24 @@ class AboutContentTranslation(models.Model):
 
 
 class AboutPageContent(models.Model):
-    """Блок «О нас» на странице /about. Отдельный контент от главной."""
+    """Блок «О нас» на странице /about. Фото, видео (одно, ссылка YouTube), презентация."""
+    video_url = models.URLField(
+        'Видео (YouTube)',
+        blank=True,
+        help_text='Ссылка на YouTube (youtube.com/watch?v=... или youtu.be/...). Только одно видео, как в сплавах.',
+    )
+    presentation = models.FileField(
+        'Презентация (PDF)',
+        upload_to='about/presentation/',
+        blank=True,
+        null=True,
+        help_text='PDF-файл презентации для скачивания',
+    )
+    presentation_url = models.URLField(
+        'Ссылка на презентацию',
+        blank=True,
+        help_text='Если презентация размещена по ссылке (Google Drive и т.п.)',
+    )
 
     class Meta:
         verbose_name = 'Страница «О нас»'
@@ -507,6 +528,26 @@ class AboutPageContent(models.Model):
 
     def __str__(self):
         return 'О нас (страница)'
+
+
+class AboutPageImage(models.Model):
+    """Фото в галерее страницы «О нас»."""
+    about_page = models.ForeignKey(
+        AboutPageContent,
+        on_delete=models.CASCADE,
+        related_name='images',
+    )
+    image = models.ImageField(upload_to='about/gallery/', blank=True, null=True)
+    image_url = models.URLField(blank=True, help_text='Если не загружаете файл')
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Фото «О нас»'
+        verbose_name_plural = 'Фото «О нас»'
+
+    def __str__(self):
+        return f'О нас фото #{self.order}'
 
 
 class AboutPageContentTranslation(models.Model):
@@ -527,6 +568,37 @@ class AboutPageContentTranslation(models.Model):
 
     def __str__(self):
         return f'О нас страница ({self.locale})'
+
+
+class CertificateContent(models.Model):
+    """Подарочный сертификат: картинка для главной и страница с описанием из БД."""
+    image = models.ImageField(upload_to='certificate/', blank=True, null=True)
+    image_url = models.URLField(blank=True, help_text='URL картинки, если не загружаете файл')
+
+    class Meta:
+        verbose_name = 'Подарочный сертификат'
+        verbose_name_plural = 'Подарочный сертификат'
+
+    def __str__(self):
+        return 'Сертификат'
+
+
+class CertificateContentTranslation(models.Model):
+    certificate = models.ForeignKey(CertificateContent, on_delete=models.CASCADE, related_name='translations')
+    locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
+    title = models.CharField('Заголовок', max_length=300, blank=True)
+    content = CKEditor5Field(
+        'Описание',
+        blank=True,
+        config_name='default',
+    )
+
+    class Meta:
+        unique_together = [('certificate', 'locale')]
+        ordering = ['certificate', 'locale']
+
+    def __str__(self):
+        return f'Сертификат ({self.locale})'
 
 
 class CompanyInfo(models.Model):

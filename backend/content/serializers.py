@@ -17,6 +17,7 @@ from .models import (
     LegalPage,
     AboutContent,
     AboutPageContent,
+    CertificateContent,
 )
 
 
@@ -605,6 +606,35 @@ class HeroContentSerializer(serializers.ModelSerializer):
         return t.subtitle if t else ''
 
 
+class CertificateContentSerializer(serializers.ModelSerializer):
+    """Подарочный сертификат: картинка и переводы title/content."""
+    image = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    content = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CertificateContent
+        fields = ['image', 'image_url', 'title', 'content']
+
+    def _get_translation(self, obj):
+        locale = self.context.get('locale', 'ru')
+        t = obj.translations.filter(locale=locale).first()
+        return t or obj.translations.filter(locale='ru').first()
+
+    def get_image(self, obj):
+        if obj.image:
+            return _build_media_url(self.context.get('request'), obj.image)
+        return obj.image_url or None
+
+    def get_title(self, obj):
+        t = self._get_translation(obj)
+        return t.title if t else ''
+
+    def get_content(self, obj):
+        t = self._get_translation(obj)
+        return t.content if t else ''
+
+
 class LegalPageSerializer(serializers.ModelSerializer):
     """Юридическая страница: заголовок и содержание для заданной локали."""
     title = serializers.SerializerMethodField()
@@ -653,14 +683,34 @@ class AboutContentSerializer(serializers.ModelSerializer):
         return [p.strip() for p in t.paragraphs.split('\n\n') if p.strip()]
 
 
+def _about_page_image_urls(obj, request):
+    """Список URL фото галереи страницы «О нас»."""
+    urls = []
+    images = getattr(obj, 'images', None)
+    if not images:
+        return urls
+    for img in images.all():
+        if img.image and request:
+            u = _build_media_url(request, img.image)
+            if u:
+                urls.append(u)
+        elif img.image_url:
+            urls.append(img.image_url)
+    return urls
+
+
 class AboutPageContentSerializer(serializers.ModelSerializer):
-    """Страница «О нас»: заголовок и абзацы для заданной локали."""
+    """Страница «О нас»: заголовок, абзацы, фото, видео, презентация."""
     title = serializers.SerializerMethodField()
     paragraphs = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    video_url = serializers.URLField(read_only=True)
+    presentation = serializers.SerializerMethodField()
+    presentation_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = AboutPageContent
-        fields = ['title', 'paragraphs']
+        fields = ['title', 'paragraphs', 'images', 'video_url', 'presentation', 'presentation_url']
 
     def _get_translation(self, obj):
         locale = self.context.get('locale', 'ru')
@@ -676,3 +726,12 @@ class AboutPageContentSerializer(serializers.ModelSerializer):
         if not t or not t.paragraphs:
             return []
         return [p.strip() for p in t.paragraphs.split('\n\n') if p.strip()]
+
+    def get_images(self, obj):
+        return _about_page_image_urls(obj, self.context.get('request'))
+
+    def get_presentation(self, obj):
+        """URL файла презентации, если загружен."""
+        if obj.presentation:
+            return _build_media_url(self.context.get('request'), obj.presentation)
+        return None

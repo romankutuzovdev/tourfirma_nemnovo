@@ -12,19 +12,19 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-primary">
-      <header className="pt-44 md:pt-32 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-24 md:pt-20 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={'/'}
-          className="lg:hidden inline-flex items-center gap-2 font-sans text-sm text-white/80 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 font-sans text-sm text-white/80 hover:text-white transition-colors mb-4"
         >
           ← {t('nav.home')}
         </Link>
+        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white tracking-tight max-w-2xl">
+          {t('servicesSection.title')}
+        </h1>
       </header>
-      <section className="pt-6 md:pt-8 pb-3 md:pb-4">
+      <section className="pt-6 md:pt-10 pb-16 md:pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-medium text-white tracking-tight max-w-2xl mb-8 md:mb-10">
-            {t('servicesSection.title')}
-          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {servicesTree.map((item) => (
               <div key={item.slug} className="min-w-0">
@@ -41,10 +41,10 @@ export default function ServicesPage() {
                   />
                   <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
                   <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
-                    <h2 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">
+                    <h2 className="font-serif text-lg sm:text-xl font-medium text-white tracking-tight line-clamp-2">
                       {item.title}
                     </h2>
-                    <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">
+                    <p className="mt-1.5 font-sans text-xs text-white/90 leading-snug line-clamp-2">
                       {item.short_desc}
                     </p>
                     <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">

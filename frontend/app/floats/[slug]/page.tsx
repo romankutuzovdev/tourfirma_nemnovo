@@ -35,7 +35,7 @@ export default function FloatDetailPage() {
 
   if (loading) {
     return (
-      <div className="pt-40 md:pt-44 pb-16 min-h-screen bg-white">
+      <div className="pt-24 md:pt-20 pb-16 min-h-screen bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="h-8 w-48 bg-secondary/20 rounded animate-pulse" />
           <div className="mt-8 aspect-[16/10] rounded-xl bg-secondary/20 animate-pulse" />
@@ -46,7 +46,7 @@ export default function FloatDetailPage() {
 
   if (notFound || !trip) {
     return (
-      <div className="min-h-screen pt-52 md:pt-40 pb-16 flex flex-col items-center justify-center">
+      <div className="min-h-screen pt-24 md:pt-20 pb-16 flex flex-col items-center justify-center">
         <p className="font-sans text-lg text-black/70">{t('floatsSection.notFound')}</p>
         <Link href="/floats" className="mt-4 font-sans text-primary hover:underline">
           {t('floatsSection.backToList')}
@@ -60,16 +60,16 @@ export default function FloatDetailPage() {
   const imageSrc = getFloatImageSrc(trip)
 
   return (
-    <div className="pt-40 md:pt-44 pb-16 md:pb-16 min-h-screen bg-white">
+    <div className="pt-24 md:pt-20 pb-16 md:pb-16 min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <Link
           href="/floats"
-          className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black mb-10"
+          className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black mb-4"
         >
           ← {t('floatsSection.backToList')}
         </Link>
 
-        <article className="pt-16">
+        <article className="pt-4">
           <div className="relative aspect-[16/10] md:aspect-[21/9] rounded-xl overflow-hidden bg-primary">
             {imageSrc ? (
               <Image
@@ -176,12 +176,12 @@ export default function FloatDetailPage() {
               </div>
             ))}
           </div>
-          <div className="mt-8">
+          <div className="mt-6">
             <Link
               href="/floats"
-              className="inline-flex font-sans text-sm text-black/80 hover:text-black"
+              className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black"
             >
-              {t('common.toFloatsPage')}
+              ← {t('floatsSection.backToList')}
             </Link>
           </div>
         </div>
