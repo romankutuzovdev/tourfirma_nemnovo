@@ -19,7 +19,7 @@ import { LocaleProvider } from '@/contexts/LocaleContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import type { Locale } from '@/lib/i18n'
 import { LocaleSetter } from '@/components/LocaleSetter'
-import { fetchServices, fetchNews, fetchPromos, fetchPortfolio } from '@/lib/api'
+import { fetchServicesTree, flattenServiceTree, fetchNews, fetchPromos, fetchPortfolio } from '@/lib/api'
 
 type Props = { children: React.ReactNode }
 
@@ -34,18 +34,20 @@ export default async function RootLayout({ children }: Props) {
   const loc: Locale = 'ru'
   setRequestLocale(loc)
 
-  let initialServices: Awaited<ReturnType<typeof fetchServices>> = []
+  let initialServices: Awaited<ReturnType<typeof flattenServiceTree>> = []
+  let initialServicesTree: Awaited<ReturnType<typeof fetchServicesTree>> = []
   let initialNews: Awaited<ReturnType<typeof fetchNews>> = []
   let initialPromos: Awaited<ReturnType<typeof fetchPromos>> = []
   let initialPortfolio: Awaited<ReturnType<typeof fetchPortfolio>> = []
   try {
-    const [services, news, promos, portfolio] = await Promise.all([
-      fetchServices(loc),
+    const [servicesTree, news, promos, portfolio] = await Promise.all([
+      fetchServicesTree(loc),
       fetchNews(loc),
       fetchPromos(loc),
       fetchPortfolio(loc),
     ])
-    initialServices = services
+    initialServicesTree = servicesTree
+    initialServices = flattenServiceTree(servicesTree)
     initialNews = news
     initialPromos = promos
     initialPortfolio = portfolio
@@ -62,6 +64,7 @@ export default async function RootLayout({ children }: Props) {
       <LocaleProvider
         locale={loc}
         initialServices={initialServices}
+        initialServicesTree={initialServicesTree ?? []}
         initialNews={initialNews}
         initialPromos={initialPromos}
         initialPortfolio={initialPortfolio}

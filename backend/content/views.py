@@ -4,6 +4,7 @@ from urllib.request import urlopen
 
 import json
 from django.conf import settings
+from django.db.models import Prefetch
 from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -15,6 +16,7 @@ from rest_framework import status
 from .models import Service, News, Promo, HotOffer, PortfolioItem, Review, Partner, CompanyInfo, CalendarEvent, CalendarBooking, FloatTrip, HeroContent, LegalPage, AboutContent, AboutPageContent
 from .serializers import (
     ServiceListSerializer,
+    ServiceTreeSerializer,
     ServiceDetailSerializer,
     NewsListSerializer,
     NewsDetailSerializer,
@@ -69,8 +71,18 @@ def company_info(request):
 @api_view(['GET'])
 def service_list(request):
     locale = get_locale(request)
-    qs = Service.objects.filter(is_active=True)
-    serializer = ServiceListSerializer(qs, many=True, context={'locale': locale, 'request': request})
+    use_tree = request.query_params.get('tree') == '1'
+    if use_tree:
+        child_qs = Service.objects.filter(is_active=True).prefetch_related(
+            Prefetch('children', queryset=Service.objects.filter(is_active=True).order_by('order', 'id'))
+        )
+        qs = Service.objects.filter(is_active=True, parent__isnull=True).prefetch_related(
+            Prefetch('children', queryset=child_qs.order_by('order', 'id'))
+        )
+        serializer = ServiceTreeSerializer(qs, many=True, context={'locale': locale, 'request': request})
+    else:
+        qs = Service.objects.filter(is_active=True)
+        serializer = ServiceListSerializer(qs, many=True, context={'locale': locale, 'request': request})
     return Response(serializer.data)
 
 
@@ -78,7 +90,9 @@ def service_list(request):
 def service_detail(request, slug):
     locale = get_locale(request)
     try:
-        service = Service.objects.get(slug=slug, is_active=True)
+        service = Service.objects.prefetch_related(
+            'children', 'children__translations'
+        ).get(slug=slug, is_active=True)
     except Service.DoesNotExist:
         return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = ServiceDetailSerializer(service, context={'locale': locale, 'request': request})

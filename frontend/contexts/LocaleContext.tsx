@@ -2,11 +2,12 @@
 
 import React, { createContext, useContext } from 'react'
 import type { Locale } from '@/lib/i18n'
-import type { ServiceItem, NewsItem, PromoItem, PortfolioItem } from '@/lib/api'
+import type { ServiceItem, ServiceTreeNode, NewsItem, PromoItem, PortfolioItem } from '@/lib/api'
 
 type LocaleContextValue = {
   locale: Locale
   services: ServiceItem[]
+  servicesTree: ServiceTreeNode[]
   news: NewsItem[]
   promos: PromoItem[]
   portfolio: PortfolioItem[]
@@ -17,6 +18,7 @@ const LocaleContext = createContext<LocaleContextValue | null>(null)
 export function LocaleProvider({
   locale,
   initialServices,
+  initialServicesTree,
   initialNews,
   initialPromos,
   initialPortfolio,
@@ -24,6 +26,7 @@ export function LocaleProvider({
 }: {
   locale: Locale
   initialServices: ServiceItem[]
+  initialServicesTree: ServiceTreeNode[]
   initialNews: NewsItem[]
   initialPromos: PromoItem[]
   initialPortfolio: PortfolioItem[]
@@ -34,6 +37,7 @@ export function LocaleProvider({
       value={{
         locale,
         services: initialServices,
+        servicesTree: initialServicesTree,
         news: initialNews,
         promos: initialPromos,
         portfolio: initialPortfolio,
@@ -54,6 +58,12 @@ export function useServices(): ServiceItem[] {
   const ctx = useContext(LocaleContext)
   if (!ctx) throw new Error('useServices must be used within LocaleProvider')
   return ctx.services
+}
+
+export function useServicesTree(): ServiceTreeNode[] {
+  const ctx = useContext(LocaleContext)
+  if (!ctx) throw new Error('useServicesTree must be used within LocaleProvider')
+  return ctx.servicesTree
 }
 
 export function useNews(): NewsItem[] {

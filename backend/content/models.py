@@ -18,7 +18,16 @@ LEGAL_PAGE_CHOICES = [
 
 
 class Service(models.Model):
-    """Услуга: slug и изображение общие, тексты — по локалям в ServiceTranslation."""
+    """Услуга: slug и изображение общие, тексты — по локалям в ServiceTranslation. Поддерживает иерархию через parent."""
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='children',
+        verbose_name='Родительский раздел',
+        help_text='Оставьте пустым для корневого раздела (Велопрогулки, Экскурсии и т.д.)'
+    )
     slug = models.SlugField(max_length=120, unique=True)
     image = models.ImageField(upload_to='services/', blank=True, null=True)
     image_url = models.URLField(blank=True, help_text='Если нет загрузки файла')

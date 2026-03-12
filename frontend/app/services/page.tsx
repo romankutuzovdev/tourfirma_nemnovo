@@ -3,12 +3,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useServices } from '@/contexts/LocaleContext'
+import { useServicesTree } from '@/contexts/LocaleContext'
 import { getServiceImageSrc } from '@/lib/api'
 
 export default function ServicesPage() {
   const t = useTranslations()
-  const services = useServices()
+  const servicesTree = useServicesTree()
 
   return (
     <div className="min-h-screen bg-primary">
@@ -26,34 +26,34 @@ export default function ServicesPage() {
             {t('servicesSection.title')}
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {services.map((item) => (
-            <div key={item.slug} className="min-w-0">
-              <Link
-                href={`/services/${item.slug}`}
-                className="group relative block aspect-square w-full rounded-lg overflow-hidden border border-secondary/30 bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-              >
-                <Image
-                  src={getServiceImageSrc(item)}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
-                  <h2 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">
-                    {item.title}
-                  </h2>
-                  <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">
-                    {item.short_desc}
-                  </p>
-                  <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">
-                    {t('servicesSection.more')}
-                  </span>
-                </div>
-              </Link>
-            </div>
-          ))}
+            {servicesTree.map((item) => (
+              <div key={item.slug} className="min-w-0">
+                <Link
+                  href={`/services/${item.slug}`}
+                  className="group relative block aspect-square w-full rounded-lg overflow-hidden border border-secondary/30 bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+                >
+                  <Image
+                    src={getServiceImageSrc(item)}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" aria-hidden />
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end">
+                    <h2 className="font-serif text-xl sm:text-2xl font-medium text-white tracking-tight line-clamp-2">
+                      {item.title}
+                    </h2>
+                    <p className="mt-1.5 font-sans text-sm text-white/90 leading-snug line-clamp-2">
+                      {item.short_desc}
+                    </p>
+                    <span className="mt-3 font-sans text-xs sm:text-sm text-white/80 group-hover:text-white transition-colors">
+                      {t('servicesSection.more')}
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>

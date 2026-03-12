@@ -27,8 +27,16 @@ export type ServiceItem = {
   short_desc: string
 }
 
-/** Ответ /api/services/<slug>/?locale= */
-export type ServiceDetail = ServiceItem & { long_desc: string }
+/** Иерархический элемент из /api/services/?locale=ru&tree=1 */
+export type ServiceTreeNode = ServiceItem & {
+  children: ServiceTreeNode[]
+}
+
+/** Ответ /api/services/<slug>/?locale= — children есть у разделов (категорий) */
+export type ServiceDetail = ServiceItem & {
+  long_desc: string
+  children?: ServiceItem[]
+}
 
 /** Нормализует URL картинки: полный URL или относительный /media/... (если API на том же origin) */
 function toAbsoluteImageUrl(value: string): string {
@@ -159,11 +167,32 @@ async function apiFetch(url: string): Promise<Response | null> {
   }
 }
 
-export async function fetchServices(locale: Locale): Promise<ServiceItem[]> {
+export async function fetchServices(locale: Locale, options?: { tree?: boolean }): Promise<ServiceItem[] | ServiceTreeNode[]> {
   const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/services/?locale=${loc}`)
+  const tree = options?.tree ? '&tree=1' : ''
+  const res = await apiFetch(`${getApiUrl()}/api/services/?locale=${loc}${tree}`)
   if (!res?.ok) return []
   return res.json().catch(() => [])
+}
+
+/** Получить иерархический список услуг (разделы с подразделами) */
+export async function fetchServicesTree(locale: Locale): Promise<ServiceTreeNode[]> {
+  const data = await fetchServices(locale, { tree: true })
+  return Array.isArray(data) ? data as ServiceTreeNode[] : []
+}
+
+/** Развернуть дерево услуг в плоский список (для обратной совместимости) */
+export function flattenServiceTree(nodes: ServiceTreeNode[]): ServiceItem[] {
+  const result: ServiceItem[] = []
+  function walk(items: ServiceTreeNode[]) {
+    for (const item of items) {
+      const { children, ...rest } = item
+      result.push(rest)
+      if (children?.length) walk(children)
+    }
+  }
+  walk(nodes)
+  return result
 }
 
 export async function fetchServiceBySlug(slug: string, locale: Locale): Promise<ServiceDetail | null> {

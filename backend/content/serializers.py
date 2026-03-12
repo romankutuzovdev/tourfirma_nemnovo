@@ -99,16 +99,29 @@ class ServiceListSerializer(serializers.ModelSerializer):
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
 
 
+class ServiceTreeSerializer(ServiceListSerializer):
+    """Иерархический список услуг с вложенными children."""
+    children = serializers.SerializerMethodField()
+
+    class Meta(ServiceListSerializer.Meta):
+        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'children']
+
+    def get_children(self, obj):
+        children = obj.children.filter(is_active=True).order_by('order', 'id')
+        return ServiceTreeSerializer(children, many=True, context=self.context).data
+
+
 class ServiceDetailSerializer(serializers.ModelSerializer):
-    """Одна услуга с полным переводом для локали."""
+    """Одна услуга с полным переводом для локали. При наличии потомков — добавляет children."""
     title = serializers.SerializerMethodField()
     short_desc = serializers.SerializerMethodField()
     long_desc = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc']
+        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc', 'children']
 
     def _get_locale(self):
         return self.context.get('locale', 'ru')
@@ -152,6 +165,10 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
         if obj.image:
             return _build_media_url(self.context.get('request'), obj.image)
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
+
+    def get_children(self, obj):
+        children = obj.children.filter(is_active=True).order_by('order', 'id')
+        return ServiceListSerializer(children, many=True, context=self.context).data
 
 
 def _locale_translation(queryset, locale):

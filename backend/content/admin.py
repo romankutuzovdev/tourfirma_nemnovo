@@ -24,9 +24,11 @@ class ServiceTranslationInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'order', 'is_active']
-    list_filter = ['is_active']
+    list_display = ['slug', 'parent', 'order', 'is_active']
+    list_filter = ['is_active', 'parent']
     list_editable = ['order', 'is_active']
+    list_select_related = ['parent']
+    raw_id_fields = ['parent']
     inlines = [ServiceTranslationInline]
 
 
