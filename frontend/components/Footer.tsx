@@ -33,7 +33,7 @@ function SocialLink({ href, label, icon }: { href: string; label: string; icon: 
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center w-10 h-10 rounded-full bg-black/10 text-black/80 hover:bg-primary hover:text-white transition-colors"
+      className="flex items-center justify-center w-10 h-10 rounded-full bg-black/10 text-[#502f00] hover:bg-primary hover:text-white transition-colors"
       aria-label={label}
       title={label}
     >
@@ -83,7 +83,7 @@ export function Footer() {
           <div className="flex flex-col">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 font-serif-legacy text-2xl font-medium text-black transition-opacity duration-200 hover:opacity-80 w-fit"
+              className="inline-flex items-center gap-3 font-serif-legacy text-2xl font-medium text-[#502f00] transition-opacity duration-200 hover:opacity-80 w-fit"
             >
               <Image
                 src="/logo.png"
@@ -117,20 +117,20 @@ export function Footer() {
             <div className="space-y-3">
               <div>
                 <p className="font-medium text-black mb-1">{t('footer.phone1Label')}</p>
-                <a href="tel:+375291792539" className="hover:text-black transition-colors">+375 29 179 25 39</a>
+                <a href="tel:+375291792539" className="text-[#502f00] hover:text-[#6a3f08] transition-colors">+375 29 179 25 39</a>
               </div>
               <div>
                 <p className="font-medium text-black mb-1">{t('footer.phone2Label')}</p>
                 <div className="flex flex-col gap-0.5">
-                  <a href="tel:+375297801304" className="hover:text-black transition-colors">+375 29 780 13 04</a>
-                  <a href="tel:+375296011637" className="hover:text-black transition-colors">+375 29 601 16 37</a>
-                  <a href="tel:+375152490729" className="hover:text-black transition-colors">+375 15 249 07 29</a>
+                  <a href="tel:+375297801304" className="text-[#502f00] hover:text-[#6a3f08] transition-colors">+375 29 780 13 04</a>
+                  <a href="tel:+375296011637" className="text-[#502f00] hover:text-[#6a3f08] transition-colors">+375 29 601 16 37</a>
+                  <a href="tel:+375152490729" className="text-[#502f00] hover:text-[#6a3f08] transition-colors">+375 15 249 07 29</a>
                 </div>
               </div>
             </div>
             <div>
               <p className="font-medium text-black mb-1">{t('footer.emailLabel')}</p>
-              <a href={`mailto:${info.contact_email}`} className="hover:text-black transition-colors break-all">
+              <a href={`mailto:${info.contact_email}`} className="text-[#502f00] hover:text-[#6a3f08] transition-colors break-all">
                 {info.contact_email}
               </a>
             </div>
@@ -170,25 +170,25 @@ export function Footer() {
             <div className="flex flex-col gap-2 pt-2">
               <Link
                 href="/privacy"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.personalDataPolicy')}
               </Link>
               <Link
                 href="/cookie-policy"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.cookiePolicy')}
               </Link>
               <Link
                 href="/public-offer"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('footer.publicOffer')}
               </Link>
               <Link
                 href="/certificate"
-                className="font-sans text-sm text-black/80 hover:text-black transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
                 {t('certificateSection.title')}
               </Link>
