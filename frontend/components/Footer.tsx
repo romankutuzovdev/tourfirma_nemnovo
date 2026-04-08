@@ -134,6 +134,13 @@ export function Footer() {
                 {info.contact_email}
               </a>
             </div>
+
+            <Link
+              href="/how-to-get"
+              className="mt-4 inline-flex items-center justify-center px-5 py-2.5 rounded-lg border-2 border-black/25 text-[#502f00] font-sans text-sm font-medium hover:border-[#6a3f08]/50 hover:bg-black/5 transition-colors w-fit"
+            >
+              {t('footer.howToGet')}
+            </Link>
           </div>
 
           {/* Колонка 3: реквизиты, кнопки политик */}

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useLocale } from '@/contexts/LocaleContext'
 import { fetchFloatTripBySlug, fetchFloatTrips, getFloatImageSrc } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
 import { FloatVideoPlayer } from '@/components/FloatVideoPlayer'
@@ -13,7 +14,7 @@ import type { FloatTripDetail, FloatTripItem } from '@/lib/api'
 export default function FloatDetailPage() {
   const params = useParams()
   const slug = typeof params?.slug === 'string' ? params.slug : ''
-  const locale = 'ru'
+  const locale = useLocale()
   const t = useTranslations()
   const [trip, setTrip] = useState<FloatTripDetail | null>(null)
   const [trips, setTrips] = useState<FloatTripItem[]>([])

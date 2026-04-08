@@ -38,6 +38,19 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
   const containerRef = useRef<HTMLDivElement>(null)
   const ref = useRef<HTMLDivElement>(null)
 
+  const setGoogTransCookie = (value: string | null) => {
+    const host = window.location.hostname
+    const parts = host.split('.')
+    const rootDomain = parts.length >= 2 ? `.${parts.slice(-2).join('.')}` : host
+    const maxAge = value === null ? 0 : 31536000
+    const cookieValue = value === null ? '' : value
+
+    // host-only
+    document.cookie = `googtrans=${cookieValue}; path=/; max-age=${maxAge}`
+    // root-domain (works for www + apex)
+    document.cookie = `googtrans=${cookieValue}; path=/; domain=${rootDomain}; max-age=${maxAge}`
+  }
+
   // Загружаем скрипт и инициализируем виджет
   useEffect(() => {
     if (!containerRef.current) return
@@ -100,9 +113,9 @@ export function GoogleTranslateWidget({ variant = 'desktop' }: { variant?: Varia
 
     // Cookie + reload — надёжный способ для Google Translate
     if (code === 'ru') {
-      document.cookie = 'googtrans=; path=/; max-age=0'
+      setGoogTransCookie(null)
     } else {
-      document.cookie = `googtrans=/ru/${googleCode}; path=/; max-age=31536000`
+      setGoogTransCookie(`/ru/${googleCode}`)
     }
     location.reload()
   }

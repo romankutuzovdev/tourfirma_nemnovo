@@ -14,11 +14,13 @@ export function Hero({ content }: HeroProps) {
   const t = useTranslations()
   const [modalOpen, setModalOpen] = useState(false)
 
+  if (!content) return null
+
   const image = content?.image || null
-  const badge = content?.badge || t('hero.badge')
-  const title1 = content?.title1 || t('hero.title1')
-  const title2 = content?.title2 || t('hero.title2')
-  const subtitle = content?.subtitle || t('hero.subtitle')
+  const badge = content.badge
+  const title1 = content.title1
+  const title2 = content.title2
+  const subtitle = content.subtitle
 
   return (
     <section

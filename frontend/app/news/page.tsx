@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { useLocale } from '@/contexts/LocaleContext'
 import { useNews } from '@/contexts/LocaleContext'
 import { getNewsImageSrc } from '@/lib/api'
 
@@ -21,7 +22,7 @@ function formatNewsDate(iso: string, short = false) {
 }
 
 export default function NewsPage() {
-  const locale = 'ru'
+  const locale = useLocale()
   const t = useTranslations()
   const news = useNews()
 

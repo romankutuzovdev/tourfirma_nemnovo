@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useLocale } from '@/contexts/LocaleContext'
 import { PageLayout } from '@/components/PageLayout'
 import { FloatDescription } from '@/components/FloatDescription'
 import {
@@ -24,7 +25,7 @@ const LOCALE_TO_INTL: Record<string, string> = {
 
 export default function CalendarEventDetailPage() {
   const params = useParams<{ id: string }>()
-  const locale = 'ru'
+  const locale = useLocale()
   const t = useTranslations()
   const [event, setEvent] = useState<CalendarEventDetailItem | null>(null)
   const [loading, setLoading] = useState(true)

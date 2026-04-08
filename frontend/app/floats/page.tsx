@@ -4,10 +4,11 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { useLocale } from '@/contexts/LocaleContext'
 import { fetchFloatTrips, getFloatImageSrc, type FloatTripItem } from '@/lib/api'
 
 export default function FloatsPage() {
-  const locale = 'ru'
+  const locale = useLocale()
   const t = useTranslations()
   const [trips, setTrips] = useState<FloatTripItem[]>([])
   const [loading, setLoading] = useState(true)

@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "home": "Home",
+    "menuOpen": "Menu",
+    "services": "Services",
+    "events": "Events",
+    "about": "About",
+    "portfolio": "Portfolio",
+    "reviews": "Reviews",
+    "contact": "Contacts",
+    "promos": "Promos",
+    "news": "News",
+    "calendar": "Calendar",
+    "floats": "Floats",
+    "cabinet": "Account",
+    "more": "More",
+    "agencies": "For agencies",
+    "payment": "Payment",
+    "tourfirm": "BASE",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "translateLabel": "Page language"
+  }
+}
+

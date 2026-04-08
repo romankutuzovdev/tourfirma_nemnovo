@@ -1,7 +1,6 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { PT_Serif } from 'next/font/google'
-import { NextIntlClientProvider } from 'next-intl'
 import './globals.css'
 
 const ptSerif = PT_Serif({
@@ -10,15 +9,15 @@ const ptSerif = PT_Serif({
   variable: '--font-pt-serif',
   display: 'swap',
 })
-import { setRequestLocale } from 'next-intl/server'
+
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { CookieBanner } from '@/components/CookieBanner'
 import { HotOfferPopup } from '@/components/HotOfferPopup'
 import { LocaleProvider } from '@/contexts/LocaleContext'
 import { AuthProvider } from '@/contexts/AuthContext'
-import type { Locale } from '@/lib/i18n'
 import { LocaleSetter } from '@/components/LocaleSetter'
+import type { Locale } from '@/lib/i18n'
 import { fetchServicesTree, flattenServiceTree, fetchNews, fetchPromos, fetchPortfolio } from '@/lib/api'
 
 type Props = { children: React.ReactNode }
@@ -31,8 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: Props) {
-  const loc: Locale = 'ru'
-  setRequestLocale(loc)
+  const locale: Locale = 'ru'
 
   let initialServices: Awaited<ReturnType<typeof flattenServiceTree>> = []
   let initialServicesTree: Awaited<ReturnType<typeof fetchServicesTree>> = []
@@ -41,10 +39,10 @@ export default async function RootLayout({ children }: Props) {
   let initialPortfolio: Awaited<ReturnType<typeof fetchPortfolio>> = []
   try {
     const [servicesTree, news, promos, portfolio] = await Promise.all([
-      fetchServicesTree(loc),
-      fetchNews(loc),
-      fetchPromos(loc),
-      fetchPortfolio(loc),
+      fetchServicesTree(locale),
+      fetchNews(locale),
+      fetchPromos(locale),
+      fetchPortfolio(locale),
     ])
     initialServicesTree = servicesTree
     initialServices = flattenServiceTree(servicesTree)
@@ -55,32 +53,27 @@ export default async function RootLayout({ children }: Props) {
     // leave empty
   }
 
-  const messages = (await import(`@/locales/${loc}/common.json`)).default
-
   return (
-    <html lang="ru" className={ptSerif.variable}>
+    <html lang={locale} className={ptSerif.variable}>
       <body className="min-h-screen flex flex-col bg-white text-black antialiased">
-    <NextIntlClientProvider key={loc} locale={loc} messages={messages}>
-      <LocaleProvider
-        locale={loc}
-        initialServices={initialServices}
-        initialServicesTree={initialServicesTree ?? []}
-        initialNews={initialNews}
-        initialPromos={initialPromos}
-        initialPortfolio={initialPortfolio}
-      >
-        <AuthProvider>
-        <LocaleSetter locale={loc} />
-        <Header />
-        {/* Spacer под фиксированный хедер */}
-        <div className="shrink-0 header-spacer h-[6.25rem] sm:h-[6.75rem] md:h-[7rem] lg:h-[7.75rem]" aria-hidden />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieBanner />
-        <HotOfferPopup />
-        </AuthProvider>
-      </LocaleProvider>
-    </NextIntlClientProvider>
+        <LocaleProvider
+          locale={locale}
+          initialServices={initialServices}
+          initialServicesTree={initialServicesTree ?? []}
+          initialNews={initialNews}
+          initialPromos={initialPromos}
+          initialPortfolio={initialPortfolio}
+        >
+          <AuthProvider>
+            <LocaleSetter locale={locale} />
+            <Header />
+            <div className="shrink-0 header-spacer h-[6.25rem] sm:h-[6.75rem] md:h-[7rem] lg:h-[7.75rem]" aria-hidden />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CookieBanner />
+            <HotOfferPopup />
+          </AuthProvider>
+        </LocaleProvider>
       </body>
     </html>
   )

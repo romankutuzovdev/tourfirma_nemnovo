@@ -6,15 +6,24 @@ import type { Locale } from './i18n'
 
 const LOCALES: Locale[] = ['ru']
 
+/**
+ * База URL для запросов к Django API (турфирма).
+ * - SSR: абсолютный BACKEND_URL (Node не умеет fetch с относительным URL без базы).
+ * - Браузер: пустая строка → те же /api и /media, что проксирует Next (same-origin).
+ * - Явный NEXT_PUBLIC_API_URL — для dev с отдельным origin или туннеля.
+ */
 export function getApiUrl(): string {
+  if (typeof window === 'undefined') {
+    const internal = (process.env.BACKEND_URL || 'http://127.0.0.1:8100').trim().replace(/\/$/, '')
+    return internal
+  }
   const raw = process.env.NEXT_PUBLIC_API_URL
-  if (raw === undefined || raw === null) return ''
   if (raw === '' || (typeof raw === 'string' && raw.trim() === '')) return ''
-  const url = String(raw).trim().replace(/\/$/, '')
-  if (!url) return ''
-  // Если задан NEXT_PUBLIC_API_URL — используем его (для статического экспорта и продакшена)
-  // Иначе в браузере '' → same origin → Next.js rewrite (при запущенном сервере)
-  return url
+  if (raw === undefined && process.env.NODE_ENV === 'development') {
+    return 'http://127.0.0.1:8100'.replace(/\/$/, '')
+  }
+  if (raw === undefined) return ''
+  return String(raw).trim().replace(/\/$/, '')
 }
 
 /** Элемент из /api/services/?locale= */

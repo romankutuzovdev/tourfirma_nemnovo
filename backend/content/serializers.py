@@ -22,7 +22,12 @@ from .models import (
 
 
 def _build_media_url(request, image_field):
-    """Полный URL загруженного изображения. Путь всегда /media/ + name (name = news/file.png)."""
+    """
+    URL картинки в /media/...:
+    - по умолчанию относительный путь, чтобы браузер грузил с того же хоста, что и фронт
+      (без http://127.0.0.1 в JSON, который ломает прод);
+    - при наличии PUBLIC_MEDIA_BASE_URL в settings возвращается абсолютный URL.
+    """
     if not image_field:
         return None
     name = (getattr(image_field, 'name', None) or '').strip().lstrip('/')
@@ -39,8 +44,11 @@ def _build_media_url(request, image_field):
     media = django_settings.MEDIA_URL.strip('/')
     # Encode non-ASCII filenames (e.g. Cyrillic) to a valid URL path.
     path = '/' + media + '/' + quote(name, safe='/%')
-    if request:
-        return request.build_absolute_uri(path)
+    base = getattr(django_settings, 'PUBLIC_MEDIA_BASE_URL', '') or ''
+    if isinstance(base, str):
+        base = base.strip().rstrip('/')
+    if base:
+        return f'{base}{path}'
     return path
 
 

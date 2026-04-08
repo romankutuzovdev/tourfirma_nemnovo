@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { useLocale } from '@/contexts/LocaleContext'
 import {
   fetchCalendarEvents,
   getCalendarEventImageSrc,
@@ -19,7 +20,7 @@ const LOCALE_TO_INTL: Record<string, string> = {
 }
 
 export default function CalendarPage() {
-  const locale = 'ru'
+  const locale = useLocale()
   const t = useTranslations()
   const [year, setYear] = useState(() => new Date().getFullYear())
   const [month, setMonth] = useState(() => new Date().getMonth() + 1)

@@ -1,12 +1,7 @@
-const createNextIntlPlugin = require('next-intl/plugin')
-
-const backendUrl =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
-  'http://127.0.0.1:8000'
+const backendUrl = (process.env.BACKEND_URL || 'http://127.0.0.1:8100').replace(/\/$/, '')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['@formatjs/intl-messageformat', '@formatjs/icu-messageformat-parser'],
   async rewrites() {
     return [
       { source: '/api/:path*', destination: `${backendUrl}/api/:path*` },
@@ -31,5 +26,4 @@ const nextConfig = {
   },
 }
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
-module.exports = withNextIntl(nextConfig)
+module.exports = nextConfig
