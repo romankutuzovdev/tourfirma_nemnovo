@@ -30,11 +30,11 @@ export function CookieBanner() {
     >
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <p className="font-sans text-sm text-black/80">
-          {t('cookie.text')}{' '}
-          <Link href="/privacy" className="text-black underline hover:no-underline">
+          {t('cookie.textBefore')}{' '}
+          <Link href="/cookie-policy" className="text-black underline hover:no-underline">
             {t('cookie.link')}
           </Link>
-          .
+          {t('cookie.textAfter')}
         </p>
         <button
           type="button"

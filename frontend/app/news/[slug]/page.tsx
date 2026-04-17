@@ -38,7 +38,7 @@ export default async function NewsArticlePage({ params }: Props) {
   const imageSrc = getNewsImageSrc(newsItem)
 
   return (
-    <div className="pt-24 md:pt-20 pb-16 md:pb-16 min-h-screen bg-white">
+    <div className="pt-6 md:pt-8 pb-16 md:pb-16 min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <Link
           href="/news"

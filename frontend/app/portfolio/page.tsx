@@ -8,7 +8,7 @@ export default function PortfolioPage() {
   const t = useTranslations()
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
-      <header className="pt-24 md:pt-20 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-6 md:pt-8 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={'/'}
           className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-4"

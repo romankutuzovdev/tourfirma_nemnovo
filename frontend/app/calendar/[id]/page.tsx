@@ -10,7 +10,7 @@ import { PageLayout } from '@/components/PageLayout'
 import { FloatDescription } from '@/components/FloatDescription'
 import {
   fetchCalendarEventDetail,
-  bookCalendarEvent,
+  sendContactForm,
   getCalendarEventImageSrc,
   type CalendarEventDetailItem,
 } from '@/lib/api'
@@ -32,7 +32,7 @@ export default function CalendarEventDetailPage() {
   const [booking, setBooking] = useState(false)
   const [bookSuccess, setBookSuccess] = useState(false)
   const [bookError, setBookError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', participants: 1 })
+  const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' })
 
   useEffect(() => {
     if (!params?.id) return
@@ -54,11 +54,10 @@ export default function CalendarEventDetailPage() {
     if (!event) return
     setBookError(null)
     setBooking(true)
-    const result = await bookCalendarEvent(event.id, {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || undefined,
-      participants_count: formData.participants,
+    const result = await sendContactForm('main', {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      message: `Бронирование из календаря:\nСобытие: ${event.title}\nДата: ${formatDate(event.date, event.time_display)}\nТелефон: ${formData.phone.trim()}\n\n${formData.message.trim()}`,
     })
     setBooking(false)
     if ('ok' in result) {
@@ -80,7 +79,7 @@ export default function CalendarEventDetailPage() {
 
   if (loading || !params?.id) {
     return (
-      <PageLayout headerClassName="pt-24 md:pt-20">
+      <PageLayout>
         <div className="min-h-[50vh] flex items-center justify-center">
           <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
         </div>
@@ -90,7 +89,7 @@ export default function CalendarEventDetailPage() {
 
   if (!event) {
     return (
-      <PageLayout title={t('calendarPage.notFound')} headerClassName="pt-24 md:pt-20">
+      <PageLayout title={t('calendarPage.notFound')}>
         <div className="py-16 text-center">
           <p className="font-sans text-black/70 mb-6">{t('calendarPage.notFoundDesc')}</p>
           <Link
@@ -111,7 +110,6 @@ export default function CalendarEventDetailPage() {
       title={event.title}
       description={formatDate(event.date, event.time_display)}
       badge={t('calendarPage.title')}
-      headerClassName="pt-24 md:pt-20"
     >
       <article className="pb-16 md:pb-24">
         <div className="max-w-4xl mx-auto">
@@ -192,50 +190,41 @@ export default function CalendarEventDetailPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="book-email" className="block font-sans text-sm font-medium text-black mb-1">
-                    {t('calendarPage.email')} *
-                  </label>
-                  <input
-                    id="book-email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData((d) => ({ ...d, email: e.target.value }))}
-                    className="w-full px-4 py-3 border border-secondary/30 rounded-lg font-sans text-black focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                  />
-                </div>
-                <div>
                   <label htmlFor="book-phone" className="block font-sans text-sm font-medium text-black mb-1">
-                    {t('calendarPage.phone')}
+                    {t('contact.phoneLabel')} *
                   </label>
                   <input
                     id="book-phone"
                     type="tel"
+                    required
                     value={formData.phone}
                     onChange={(e) => setFormData((d) => ({ ...d, phone: e.target.value }))}
                     className="w-full px-4 py-3 border border-secondary/30 rounded-lg font-sans text-black focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label htmlFor="book-participants" className="block font-sans text-sm font-medium text-black mb-1">
-                    {t('calendarPage.participants')}
+                  <label htmlFor="book-email" className="block font-sans text-sm font-medium text-black mb-1">
+                    {t('contact.emailLabel')}
                   </label>
                   <input
-                    id="book-participants"
-                    type="number"
-                    min={1}
-                    max={event.available_slots}
-                    value={formData.participants}
-                    onChange={(e) =>
-                      setFormData((d) => ({
-                        ...d,
-                        participants: Math.max(
-                          1,
-                          Math.min(event.available_slots, parseInt(e.target.value, 10) || 1)
-                        ),
-                      }))
-                    }
+                    id="book-email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData((d) => ({ ...d, email: e.target.value }))}
                     className="w-full px-4 py-3 border border-secondary/30 rounded-lg font-sans text-black focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="book-message" className="block font-sans text-sm font-medium text-black mb-1">
+                    {t('contact.messageLabel')} *
+                  </label>
+                  <textarea
+                    id="book-message"
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData((d) => ({ ...d, message: e.target.value }))}
+                    className="w-full px-4 py-3 border border-secondary/30 rounded-lg font-sans text-black focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none"
                   />
                 </div>
                 {bookError && <p className="font-sans text-sm text-red-600">{bookError}</p>}

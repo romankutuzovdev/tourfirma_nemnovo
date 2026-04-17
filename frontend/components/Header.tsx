@@ -33,6 +33,7 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 }
 
 const SCROLL_THRESHOLD = 60
+const HEADER_ADDRESS = 'Республика Беларусь, г. Гродно, ул. Богуцкого, 2/1'
 
 const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICONS }[] = [
   { href: 'https://t.me/nemnovo', label: 'Telegram', icon: 'telegram' },
@@ -106,7 +107,17 @@ export function Header() {
           scrolled ? 'max-h-0 opacity-0' : 'max-h-14 sm:max-h-16 opacity-100'
         }`}
       >
-        <div className="top-banner w-full flex flex-row items-center justify-end gap-4 px-4 sm:px-6 py-2 sm:py-2.5 min-h-[40px]">
+        <div className="top-banner w-full flex flex-row items-center justify-between gap-4 px-4 sm:px-6 py-2 sm:py-2.5 min-h-[40px]">
+          <div className="flex items-center gap-2 min-w-0 text-white/95">
+            <span className="shrink-0" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden>
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+              </svg>
+            </span>
+            <span className="font-sans text-[10px] sm:text-xs leading-tight truncate max-w-[180px] sm:max-w-[240px] md:max-w-none">
+              {HEADER_ADDRESS}
+            </span>
+          </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {socialLinksNoMax.map(({ href, label, icon }) => (
             <a
@@ -228,7 +239,7 @@ export function Header() {
           </Link>
           <GoogleTranslateWidget variant="desktop" />
           <a
-            href="https://nemnovotour.by/"
+            href="https://nemnovo.by/"
             target="_blank"
             rel="noopener noreferrer"
             className="font-sans text-[10px] sm:text-xs lg:text-sm font-bold tracking-wide text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
@@ -283,7 +294,7 @@ export function Header() {
               <GoogleTranslateWidget variant="mobile" />
             </div>
             <a
-              href="https://nemnovotour.by/"
+              href="https://nemnovo.by/"
               target="_blank"
               rel="noopener noreferrer"
               className="font-sans font-bold text-primary hover:text-primary/80"

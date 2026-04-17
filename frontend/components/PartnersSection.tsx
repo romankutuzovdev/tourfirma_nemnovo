@@ -98,7 +98,7 @@ export function PartnersSection() {
                             <img
                               src={p.logo_display}
                               alt={p.name}
-                              className="max-w-full max-h-full w-auto h-auto object-contain"
+                              className="block w-full h-full object-contain object-center"
                             />
                           </span>
                         ) : (
@@ -117,7 +117,7 @@ export function PartnersSection() {
                             <img
                               src={p.logo_display}
                               alt={p.name}
-                              className="max-w-full max-h-full w-auto h-auto object-contain"
+                              className="block w-full h-full object-contain object-center"
                             />
                           </span>
                         ) : (

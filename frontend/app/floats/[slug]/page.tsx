@@ -36,7 +36,7 @@ export default function FloatDetailPage() {
 
   if (loading) {
     return (
-      <div className="pt-24 md:pt-20 pb-16 min-h-screen bg-white">
+      <div className="pt-6 md:pt-8 pb-16 min-h-screen bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="h-8 w-48 bg-secondary/20 rounded animate-pulse" />
           <div className="mt-8 aspect-[16/10] rounded-xl bg-secondary/20 animate-pulse" />
@@ -47,7 +47,7 @@ export default function FloatDetailPage() {
 
   if (notFound || !trip) {
     return (
-      <div className="min-h-screen pt-24 md:pt-20 pb-16 flex flex-col items-center justify-center">
+      <div className="min-h-screen pt-6 md:pt-8 pb-16 flex flex-col items-center justify-center">
         <p className="font-sans text-lg text-black/70">{t('floatsSection.notFound')}</p>
         <Link href="/floats" className="mt-4 font-sans text-primary hover:underline">
           {t('floatsSection.backToList')}
@@ -61,7 +61,7 @@ export default function FloatDetailPage() {
   const imageSrc = getFloatImageSrc(trip)
 
   return (
-    <div className="pt-24 md:pt-20 pb-16 md:pb-16 min-h-screen bg-white">
+    <div className="pt-6 md:pt-8 pb-16 md:pb-16 min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <Link
           href="/floats"

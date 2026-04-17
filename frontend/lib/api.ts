@@ -19,6 +19,19 @@ export function getApiUrl(): string {
   }
   const raw = process.env.NEXT_PUBLIC_API_URL
   if (raw === '' || (typeof raw === 'string' && raw.trim() === '')) return ''
+  // Safety: in production browser must never call localhost/127.0.0.1
+  // (this breaks API calls for real users and hides data like float trips).
+  if (typeof raw === 'string') {
+    const val = raw.trim()
+    const host = window.location.hostname
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1'
+    const pointsToLocal =
+      val.startsWith('http://127.0.0.1') ||
+      val.startsWith('https://127.0.0.1') ||
+      val.startsWith('http://localhost') ||
+      val.startsWith('https://localhost')
+    if (!isLocalHost && pointsToLocal) return ''
+  }
   if (raw === undefined && process.env.NODE_ENV === 'development') {
     return 'http://127.0.0.1:8100'.replace(/\/$/, '')
   }
@@ -414,13 +427,27 @@ export type FloatTripDetail = FloatTripItem & {
 
 /** URL картинки сплава: приоритет у загруженного image, иначе image_url */
 export function getFloatImageSrc(item: { image: string | null; image_url: string }): string {
-  if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
+  const raw = item.image || item.image_url || ''
+  if (!raw) return ''
+
+  // В проде бэкенд иногда отдаёт абсолютные URL на 127.0.0.1 (внутренний host).
+  // Для фронта безопаснее использовать относительный путь, чтобы /media проксировался same-origin.
+  if (raw.startsWith('http://') || raw.startsWith('https://')) {
+    try {
+      const path = new URL(raw).pathname
+      return path.startsWith('/') ? path : `/${path}`
+    } catch {
+      return raw
+    }
+  }
+
+  return toAbsoluteImageUrl(raw)
 }
 
 export async function fetchFloatTrips(locale: Locale): Promise<FloatTripItem[]> {
   const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/float-trips/?locale=${loc}`)
+  // Важно: не используем "/?locale=" (даёт 308 на некоторых прокси/конфигах).
+  const res = await apiFetch(`${getApiUrl()}/api/float-trips?locale=${loc}`)
   if (!res?.ok) return []
   return res.json().catch(() => [])
 }
@@ -430,7 +457,8 @@ export async function fetchFloatTripBySlug(
   locale: Locale
 ): Promise<FloatTripDetail | null> {
   const loc = LOCALES.includes(locale) ? locale : 'ru'
-  const res = await apiFetch(`${getApiUrl()}/api/float-trips/${encodeURIComponent(slug)}/?locale=${loc}`)
+  // Аналогично списку: избегаем редиректа из-за "/?locale=".
+  const res = await apiFetch(`${getApiUrl()}/api/float-trips/${encodeURIComponent(slug)}?locale=${loc}`)
   if (!res || res.status === 404 || !res.ok) return null
   return res.json().catch(() => null)
 }

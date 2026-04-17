@@ -27,7 +27,7 @@ export function CertificateSection() {
             aria-label={t('certificateSection.link')}
           >
             <article className="rounded-xl overflow-hidden border border-secondary/20 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300">
-              <div className="relative aspect-[4/3] w-full">
+              <div className="relative aspect-[9/4] w-full">
                 <Image
                   src={imageSrc}
                   alt={t('certificateSection.title')}

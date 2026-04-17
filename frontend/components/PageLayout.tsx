@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 
 export const PAGE_CONTAINER = 'max-w-6xl mx-auto px-4 sm:px-6'
 // На мобильных отступ больше (хедер выше), на десктопе — меньше. pb единый под заголовок страницы.
-export const PAGE_TOP = 'pt-20 md:pt-12 pb-6 md:pb-8'
+export const PAGE_TOP = 'pt-6 md:pt-8 pb-6 md:pb-8'
 
 /** Сегмент пути → ключ перевода (nav.* или footer.legal.*) */
 const SEGMENT_TO_KEY: Record<string, string> = {
@@ -68,7 +68,7 @@ export function PageLayout({ children, badge, title, description, titlePrimary, 
   }
 
   const headerSpacing = simpleHomeLink
-    ? (moreTopPadding ? 'pt-24 md:pt-20 pb-6 md:pb-8' : 'pt-24 md:pt-20 pb-6 md:pb-8')
+    ? (moreTopPadding ? 'pt-10 md:pt-12 pb-6 md:pb-8' : 'pt-6 md:pt-8 pb-6 md:pb-8')
     : undefined
 
   return (
@@ -79,12 +79,11 @@ export function PageLayout({ children, badge, title, description, titlePrimary, 
             href="/"
             className={
               simpleHomeLink
-                ? 'inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-4'
-                : 'lg:hidden self-start inline-flex items-center gap-2 font-sans text-sm font-medium px-3 py-2 rounded-lg border border-secondary/30 text-black/80 hover:text-black hover:border-secondary/50 hover:bg-secondary/5 transition-colors'
+                ? 'inline-flex items-center font-sans text-sm text-black/80 hover:text-black transition-colors mb-4'
+                : 'lg:hidden self-start inline-flex items-center font-sans text-sm font-medium px-3 py-2 rounded-lg border border-secondary/30 text-black/80 hover:text-black hover:border-secondary/50 hover:bg-secondary/5 transition-colors'
             }
           >
-            <span aria-hidden>←</span>
-            {t('nav.home')}
+            ← {t('nav.home')}
           </Link>
           {!hideBreadcrumbs && (
             <ol className="flex flex-wrap items-center gap-1.5 text-sm text-black/70">

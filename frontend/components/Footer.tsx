@@ -18,7 +18,13 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   vk: (
-    <Image src="/vklogo.png" alt="VK" width={20} height={20} className="w-5 h-5 object-contain brightness-0" />
+    <Image
+      src="/vklogo.png"
+      alt="VK"
+      width={20}
+      height={20}
+      className="w-5 h-5 object-contain transition-[filter] duration-200 [filter:brightness(0)_saturate(100%)_invert(18%)_sepia(53%)_saturate(1691%)_hue-rotate(9deg)_brightness(96%)_contrast(101%)] group-hover:[filter:brightness(0)_invert(1)]"
+    />
   ),
   facebook: (
     <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -33,7 +39,7 @@ function SocialLink({ href, label, icon }: { href: string; label: string; icon: 
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center w-10 h-10 rounded-full bg-black/10 text-[#502f00] hover:bg-primary hover:text-white transition-colors"
+      className="group flex items-center justify-center w-10 h-10 rounded-full bg-black/10 text-[#502f00] hover:bg-primary hover:text-white transition-colors"
       aria-label={label}
       title={label}
     >
@@ -94,8 +100,8 @@ export function Footer() {
               />
               {t('footer.copyright')}
             </Link>
-            <p className="mt-3 font-sans text-sm text-black/80 max-w-xs">
-              {t('about.p2')}
+            <p className="mt-3 font-sans text-sm text-black/80 max-w-xs whitespace-pre-line">
+              {'Близкая. Незнакомая. Беларусь.\nСоздавайте яркие воспоминания\nвместе с нами!'}
             </p>
             <div className="flex gap-3 mt-6">
               {SOCIAL_LINKS.map(({ href, label, icon }) => (
@@ -127,20 +133,12 @@ export function Footer() {
                   <a href="tel:+375152490729" className="text-[#502f00] hover:text-[#6a3f08] transition-colors">+375 15 249 07 29</a>
                 </div>
               </div>
+              <div>
+                <a href="mailto:office@nemnovotour.by" className="text-[#502f00] hover:text-[#6a3f08] transition-colors break-all">
+                  office@nemnovotour.by
+                </a>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-black mb-1">{t('footer.emailLabel')}</p>
-              <a href={`mailto:${info.contact_email}`} className="text-[#502f00] hover:text-[#6a3f08] transition-colors break-all">
-                {info.contact_email}
-              </a>
-            </div>
-
-            <Link
-              href="/how-to-get"
-              className="mt-4 inline-flex items-center justify-center px-5 py-2.5 rounded-lg border-2 border-black/25 text-[#502f00] font-sans text-sm font-medium hover:border-[#6a3f08]/50 hover:bg-black/5 transition-colors w-fit"
-            >
-              {t('footer.howToGet')}
-            </Link>
           </div>
 
           {/* Колонка 3: реквизиты, кнопки политик */}
@@ -161,15 +159,14 @@ export function Footer() {
               </p>
             )}
             {(info.bank_account || info.bank_institution) && (
-              <>
+              <div className="space-y-1">
                 {info.bank_account && (
                   <p>
-                    <span className="text-black/70">{t('footer.bankAccountLabel')} </span>
-                    {info.bank_account}
+                    {t('footer.bankAccountLabel')} {info.bank_account}
                   </p>
                 )}
                 {info.bank_institution && <p>{info.bank_institution}</p>}
-              </>
+              </div>
             )}
             {info.state_registration && <p>{info.state_registration}</p>}
             {info.trade_register && <p>{info.trade_register}</p>}
@@ -208,6 +205,16 @@ export function Footer() {
             © {new Date().getFullYear()} {t('footer.copyright')}
           </p>
         </div>
+      </div>
+      <div className="bg-black py-3 px-4 text-center">
+        <a
+          href="https://akramedia.by/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-sans text-sm text-white hover:text-white/80 transition-colors underline underline-offset-2"
+        >
+          Разработано AKRA MEDIA
+        </a>
       </div>
     </footer>
   )

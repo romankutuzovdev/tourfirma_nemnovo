@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
+import { ContactFormModal } from '@/components/ContactFormModal'
 import {
   fetchCalendarEvents,
   getCalendarEventImageSrc,
@@ -26,6 +27,8 @@ export default function CalendarPage() {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1)
   const [events, setEvents] = useState<CalendarEventItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMessage, setModalMessage] = useState<string>('')
 
   useEffect(() => {
     setLoading(true)
@@ -60,7 +63,7 @@ export default function CalendarPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
-      <header className="pt-24 md:pt-20 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
+      <header className="pt-6 md:pt-8 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href="/"
           className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black transition-colors mb-4"
@@ -164,12 +167,17 @@ export default function CalendarPage() {
                         >
                           {t('calendarPage.more')}
                         </Link>
-                        <Link
-                          href={`/calendar/${ev.id}#book`}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const when = `${dateStr}${ev.time_display ? ` ${ev.time_display}` : ''}`
+                            setModalMessage(`Хочу забронировать: ${ev.title}\nДата: ${when}`)
+                            setModalOpen(true)
+                          }}
                           className="inline-flex px-4 py-2 rounded-lg border-2 border-primary text-primary font-sans text-sm font-semibold hover:bg-primary/10 transition-colors"
                         >
                           {t('calendarPage.book')}
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </li>
@@ -179,6 +187,7 @@ export default function CalendarPage() {
           </div>
         )}
       </section>
+      <ContactFormModal isOpen={modalOpen} onClose={() => setModalOpen(false)} initialMessage={modalMessage} />
     </div>
   )
 }
