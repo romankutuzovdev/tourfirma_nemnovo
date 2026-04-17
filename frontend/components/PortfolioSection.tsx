@@ -67,7 +67,7 @@ export function PortfolioSection({ hideTitle }: Props = {}) {
                         </time>
                       )}
                       {item.description && (
-                        <p className="mt-2 font-sans text-sm text-black/80 line-clamp-2">{item.description}</p>
+                        <p className="mt-2 font-sans text-sm text-primary line-clamp-2">{item.description}</p>
                       )}
                     </div>
                   </article>

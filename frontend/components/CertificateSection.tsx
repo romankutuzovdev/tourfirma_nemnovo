@@ -17,9 +17,9 @@ export function CertificateSection() {
   const imageSrc = content?.image || content?.image_url || '/certificate.png'
 
   return (
-    <section id="certificate" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
+    <section id="certificate" className="pt-6 md:pt-8 pb-3 md:pb-4 bg-primary border-y border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="section-title-main text-primary">{t('certificateSection.title')}</h2>
+        <h2 className="section-title-main text-white">{t('certificateSection.title')}</h2>
         <div className="mt-8 flex justify-center">
           <Link
             href="/certificate"
@@ -35,11 +35,6 @@ export function CertificateSection() {
                   sizes="(max-width: 768px) 100vw, 448px"
                   className="object-cover object-top"
                 />
-              </div>
-              <div className="p-4 text-center">
-                <span className="font-sans text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">
-                  {t('certificateSection.more')} →
-                </span>
               </div>
             </article>
           </Link>

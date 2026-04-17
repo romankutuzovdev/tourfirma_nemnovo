@@ -21,9 +21,12 @@ const LOCALE_TO_INTL: Record<string, string> = {
 export function CalendarSection() {
   const locale = 'ru'
   const t = useTranslations()
-  const now = new Date()
-  const [year, setYear] = useState(() => now.getFullYear())
-  const [month, setMonth] = useState(() => now.getMonth() + 1)
+  const [minDate] = useState(() => {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() + 1 }
+  })
+  const [year, setYear] = useState(() => minDate.year)
+  const [month, setMonth] = useState(() => minDate.month)
   const [events, setEvents] = useState<CalendarEventItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -36,6 +39,9 @@ export function CalendarSection() {
   }, [locale, year, month])
 
   const prevMonth = () => {
+    if (year === minDate.year && month === minDate.month) {
+      return
+    }
     if (month === 1) {
       setMonth(12)
       setYear((y) => y - 1)
@@ -57,22 +63,27 @@ export function CalendarSection() {
     month: 'long',
     year: 'numeric',
   })
+  const isAtMinMonth = year === minDate.year && month === minDate.month
 
   return (
     <section id="calendar" className="scroll-mt-24 pt-12 md:pt-16 pb-6 md:pb-8 bg-[#f8bd69]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="section-title-main text-white">{t('calendarPage.title')}</h2>
         <div className="mt-4 flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={prevMonth}
-            className="p-2.5 rounded-full bg-white text-primary hover:bg-white/90 transition-colors shrink-0"
-            aria-label={t('calendarPage.prevMonth')}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {isAtMinMonth ? (
+            <div className="w-10 h-10 shrink-0" aria-hidden />
+          ) : (
+            <button
+              type="button"
+              onClick={prevMonth}
+              className="p-2.5 rounded-full bg-white text-primary hover:bg-white/90 transition-colors shrink-0"
+              aria-label={t('calendarPage.prevMonth')}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
           <p className="font-sans text-xl md:text-2xl font-medium text-white capitalize">{monthName}</p>
           <button
             type="button"

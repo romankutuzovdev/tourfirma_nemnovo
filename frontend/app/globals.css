@@ -215,6 +215,19 @@ body {
   }
 }
 
+@layer base {
+  /* Единое скругление интерактивных элементов как в форме обратной связи */
+  button,
+  [type='button'],
+  [type='submit'],
+  [type='reset'],
+  input,
+  textarea,
+  select {
+    border-radius: 0.75rem;
+  }
+}
+
 /* Верхняя полоса (соцсети) */
 .top-banner {
   background: linear-gradient(135deg, rgb(247 181 87) 0%, rgb(247 181 87 / 0.95) 50%, rgb(230 165 70) 100%);

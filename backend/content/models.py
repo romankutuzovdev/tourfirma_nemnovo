@@ -14,6 +14,7 @@ LEGAL_PAGE_CHOICES = [
     ('cookie-policy', 'Политика в отношении обработки cookie'),
     ('payment', 'Оплата'),
     ('public-offer', 'Договор публичной оферты'),
+    ('service-contract', 'Договор услуг'),
     ('agencies', 'Для агентств'),
 ]
 

@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useLocale } from '@/contexts/LocaleContext'
 import { useNews } from '@/contexts/LocaleContext'
 import { getNewsImageSrc } from '@/lib/api'
 
@@ -22,7 +21,6 @@ function formatNewsDate(iso: string, short = false) {
 }
 
 export default function NewsPage() {
-  const locale = useLocale()
   const t = useTranslations()
   const news = useNews()
 
@@ -35,12 +33,12 @@ export default function NewsPage() {
         >
           ← {t('nav.home')}
         </Link>
+        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white tracking-tight max-w-2xl">
+          {t('newsSection.title')}
+        </h1>
       </header>
-      <section className="pt-3 md:pt-4 pb-3 md:pb-4">
+      <section className="pt-6 md:pt-10 pb-16 md:pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white tracking-tight max-w-2xl mb-8 md:mb-10">
-            {t('newsSection.title')}
-          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
             {news.map((item) => (
               <div key={item.slug} className="min-w-0">

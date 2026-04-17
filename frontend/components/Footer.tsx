@@ -174,7 +174,7 @@ export function Footer() {
             <div className="flex flex-col gap-2 pt-2">
               <Link
                 href="/privacy"
-                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
+                className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block whitespace-nowrap"
               >
                 {t('footer.personalDataPolicy')}
               </Link>
@@ -191,10 +191,10 @@ export function Footer() {
                 {t('footer.publicOffer')}
               </Link>
               <Link
-                href="/certificate"
+                href="/service-contract"
                 className="font-sans text-sm text-[#502f00] hover:text-[#6a3f08] transition-colors underline underline-offset-2 [text-decoration-skip-ink:none] inline-block"
               >
-                {t('certificateSection.title')}
+                {t('footer.serviceContract')}
               </Link>
             </div>
           </div>

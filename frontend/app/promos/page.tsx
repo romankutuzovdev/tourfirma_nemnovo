@@ -7,7 +7,7 @@ import { PromosSection } from '@/components/PromosSection'
 export default function PromosPage() {
   const t = useTranslations()
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
+    <div className="min-h-screen bg-white">
       <header className="pt-6 md:pt-8 pb-6 md:pb-8 max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href={'/'}
@@ -19,7 +19,7 @@ export default function PromosPage() {
           {t('promosSection.title')}
         </h1>
       </header>
-      <PromosSection hideTitle />
+      <PromosSection hideTitle containerClassName="max-w-6xl mx-auto px-4 sm:px-6" />
     </div>
   )
 }

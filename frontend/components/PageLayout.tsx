@@ -23,6 +23,7 @@ const SEGMENT_TO_KEY: Record<string, string> = {
   'cookie-policy': 'footer.cookiePolicy',
   privacy: 'footer.privacy',
   'public-offer': 'footer.publicOffer',
+  'service-contract': 'footer.serviceContract',
   certificate: 'certificateSection.title',
   agencies: 'nav.agencies',
 }
@@ -45,6 +46,8 @@ type PageLayoutProps = {
   simpleHomeLink?: boolean
   /** Больше верхнего отступа, чтобы ссылка «назад» не заходила под хедер */
   moreTopPadding?: boolean
+  /** Дополнительные классы для заголовка h1 */
+  titleClassName?: string
 }
 
 function pathSegments(pathname: string): string[] {
@@ -52,7 +55,7 @@ function pathSegments(pathname: string): string[] {
   return path ? path.split('/').filter(Boolean) : []
 }
 
-export function PageLayout({ children, badge, title, description, titlePrimary, headerClassName, hideBreadcrumbs, simpleHomeLink, moreTopPadding }: PageLayoutProps) {
+export function PageLayout({ children, badge, title, description, titlePrimary, headerClassName, hideBreadcrumbs, simpleHomeLink, moreTopPadding, titleClassName }: PageLayoutProps) {
   const pathname = usePathname() ?? ''
   const t = useTranslations()
   const segments = pathSegments(pathname)
@@ -79,7 +82,7 @@ export function PageLayout({ children, badge, title, description, titlePrimary, 
             href="/"
             className={
               simpleHomeLink
-                ? 'inline-flex items-center font-sans text-sm text-black/80 hover:text-black transition-colors mb-4'
+                ? 'self-start inline-flex items-center font-sans text-sm text-black/80 hover:text-black transition-colors mb-4'
                 : 'lg:hidden self-start inline-flex items-center font-sans text-sm font-medium px-3 py-2 rounded-lg border border-secondary/30 text-black/80 hover:text-black hover:border-secondary/50 hover:bg-secondary/5 transition-colors'
             }
           >
@@ -111,7 +114,7 @@ export function PageLayout({ children, badge, title, description, titlePrimary, 
           <h1
             className={`font-serif text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight max-w-2xl ${
               titlePrimary ? 'text-primary' : 'text-black'
-            }`}
+            } ${titleClassName ?? ''}`}
           >
             {title}
           </h1>

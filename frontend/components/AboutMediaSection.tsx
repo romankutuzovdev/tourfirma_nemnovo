@@ -28,7 +28,7 @@ export function AboutMediaSection({ content }: Props) {
         )}
 
         {presentationUrl && (
-          <AnimateOnScroll variant="fade-up" delay={hasVideo ? 120 : 80} className="mt-10">
+          <AnimateOnScroll variant="fade-up" delay={hasVideo ? 120 : 80} className="mt-10 text-left">
             <a
               href={presentationUrl}
               target="_blank"

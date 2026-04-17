@@ -31,7 +31,7 @@ export function ServiceDescription({ text }: { text: string }) {
 
   if (isHtml(text)) {
     return (
-      <div className="mt-12">
+      <div className="mt-0">
         <FloatDescription
           text={text}
           className="service-description text-sm [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:first:mt-0 [&_h2]:text-base [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:text-sm [&_ul]:my-3 [&_ol]:my-3 [&_li]:mb-1"
@@ -42,7 +42,7 @@ export function ServiceDescription({ text }: { text: string }) {
 
   const blocks = parseServiceItems(text)
   return (
-    <div className="mt-12 space-y-10">
+    <div className="mt-0 space-y-10">
       {blocks.map((block, i) => (
         <div key={i}>
           {block.section && (

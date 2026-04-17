@@ -34,6 +34,7 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 
 const SCROLL_THRESHOLD = 60
 const HEADER_ADDRESS = 'Республика Беларусь, г. Гродно, ул. Богуцкого, 2/1'
+const HEADER_ADDRESS_MAP_URL = 'https://yandex.by/maps/?text=%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%20%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D1%8C%2C%20%D0%B3.%20%D0%93%D1%80%D0%BE%D0%B4%D0%BD%D0%BE%2C%20%D1%83%D0%BB.%20%D0%91%D0%BE%D0%B3%D1%83%D1%86%D0%BA%D0%BE%D0%B3%D0%BE%2C%202%2F1'
 
 const SOCIAL_LINKS: { href: string; label: string; icon: keyof typeof SOCIAL_ICONS }[] = [
   { href: 'https://t.me/nemnovo', label: 'Telegram', icon: 'telegram' },
@@ -92,6 +93,7 @@ export function Header() {
     { href: '/reviews', label: t('nav.reviews') },
     { href: '/agencies', label: t('nav.agencies') },
     { href: '/payment', label: t('nav.payment') },
+    { href: '/certificate', label: 'Сертификат' },
   ]
   const authLink = isAuthenticated
     ? { href: '/cabinet', label: t('nav.cabinet') }
@@ -114,9 +116,15 @@ export function Header() {
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
               </svg>
             </span>
-            <span className="font-sans text-[10px] sm:text-xs leading-tight truncate max-w-[180px] sm:max-w-[240px] md:max-w-none">
+            <a
+              href={HEADER_ADDRESS_MAP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-[10px] sm:text-xs leading-tight truncate max-w-[180px] sm:max-w-[240px] md:max-w-none hover:underline"
+              title={HEADER_ADDRESS}
+            >
               {HEADER_ADDRESS}
-            </span>
+            </a>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {socialLinksNoMax.map(({ href, label, icon }) => (

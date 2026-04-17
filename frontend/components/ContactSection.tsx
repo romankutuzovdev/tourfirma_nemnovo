@@ -42,7 +42,7 @@ const IconEmail = () => (
     <polyline points="22,6 12,13 2,6" />
   </svg>
 )
-export function ContactSection() {
+export function ContactSection({ hideTitle = false }: { hideTitle?: boolean } = {}) {
   const t = useTranslations()
   const [company, setCompany] = useState<CompanyInfo | null>(null)
   useEffect(() => {
@@ -73,11 +73,13 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="pt-4 pb-16 md:pb-24 bg-white">
+    <section id="contact" className={`${hideTitle ? 'pt-0' : 'pt-4'} pb-16 md:pb-24 bg-white`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
+        {!hideTitle && (
+          <h2 className="font-serif text-3xl md:text-4xl font-medium text-primary tracking-tight">{t('contact.title')}</h2>
+        )}
 
-        <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start">
+        <div className={`${hideTitle ? 'mt-8 lg:mt-10' : 'mt-12 lg:mt-16'} grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start`}>
           {/* Контактная информация: адрес и время работы в карточках */}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5 min-w-0">
             <div className="flex flex-col gap-4 sm:col-span-2">

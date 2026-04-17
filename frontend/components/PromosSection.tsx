@@ -8,9 +8,9 @@ import { usePromos } from '@/contexts/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { getPromoImageSrc } from '@/lib/api'
 
-type Props = { hideTitle?: boolean }
+type Props = { hideTitle?: boolean; containerClassName?: string }
 
-export function PromosSection({ hideTitle }: Props = {}) {
+export function PromosSection({ hideTitle, containerClassName }: Props = {}) {
   const t = useTranslations()
   const promos = usePromos()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -42,7 +42,7 @@ export function PromosSection({ hideTitle }: Props = {}) {
 
   return (
     <section id="promos" className="pt-6 md:pt-10 pb-16 md:pb-24 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className={containerClassName ?? 'max-w-7xl mx-auto px-4 sm:px-6'}>
         <AnimateOnScroll variant="fade-up">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             {!hideTitle && (
@@ -103,10 +103,10 @@ export function PromosSection({ hideTitle }: Props = {}) {
                     </div>
                   )}
                   <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center min-w-0">
-                    <h3 className="font-serif text-xl font-medium text-black group-hover:text-primary transition-colors">
+                    <h3 className="font-serif text-xl font-medium text-primary">
                       {p.title}
                     </h3>
-                    <p className="mt-2 font-sans text-sm text-black/80 line-clamp-3 break-words">
+                    <p className="mt-2 font-sans text-sm text-primary line-clamp-3 break-words">
                       {p.short_desc.length > 120 ? `${p.short_desc.slice(0, 120).trim()}…` : p.short_desc}
                     </p>
                     <span className="mt-2 font-sans text-xs text-black/60 group-hover:text-primary transition-colors">

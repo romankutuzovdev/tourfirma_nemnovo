@@ -23,8 +23,12 @@ const LOCALE_TO_INTL: Record<string, string> = {
 export default function CalendarPage() {
   const locale = useLocale()
   const t = useTranslations()
-  const [year, setYear] = useState(() => new Date().getFullYear())
-  const [month, setMonth] = useState(() => new Date().getMonth() + 1)
+  const [minDate] = useState(() => {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() + 1 }
+  })
+  const [year, setYear] = useState(() => minDate.year)
+  const [month, setMonth] = useState(() => minDate.month)
   const [events, setEvents] = useState<CalendarEventItem[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -39,6 +43,9 @@ export default function CalendarPage() {
   }, [locale, year, month])
 
   const prevMonth = () => {
+    if (year === minDate.year && month === minDate.month) {
+      return
+    }
     if (month === 1) {
       setMonth(12)
       setYear((y) => y - 1)
@@ -60,6 +67,7 @@ export default function CalendarPage() {
     LOCALE_TO_INTL[locale] || 'ru-RU',
     { month: 'long', year: 'numeric' }
   )
+  const isAtMinMonth = year === minDate.year && month === minDate.month
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-white to-primary/20">
@@ -77,16 +85,20 @@ export default function CalendarPage() {
 
       <section className="pb-16 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 mb-8">
-          <button
-            type="button"
-            onClick={prevMonth}
-            className="p-2.5 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
-            aria-label="Предыдущий месяц"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {isAtMinMonth ? (
+            <div className="w-10 h-10 shrink-0" aria-hidden />
+          ) : (
+            <button
+              type="button"
+              onClick={prevMonth}
+              className="p-2.5 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
+              aria-label="Предыдущий месяц"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
           <h2 className="font-serif text-2xl md:text-3xl font-medium text-primary capitalize">
             {monthName}
           </h2>

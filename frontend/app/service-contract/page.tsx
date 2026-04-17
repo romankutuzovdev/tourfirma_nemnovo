@@ -1,21 +1,21 @@
 import { PageLayout } from '@/components/PageLayout'
-import { fetchCertificateContent } from '@/lib/api'
+import { fetchLegalPage } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
 
-export default async function CertificatePage() {
-  const content = await fetchCertificateContent('ru')
+export default async function ServiceContractPage() {
+  const content = await fetchLegalPage('service-contract', 'ru')
 
-  const title = content?.title || 'Подарочный сертификат'
+  const title = content?.title || 'Договор услуг'
   const body = content?.content?.trim() || ''
 
   return (
     <PageLayout title={title} titlePrimary simpleHomeLink hideBreadcrumbs>
-      <section className="pt-4 pb-12 md:pb-16">
+      <section className="pt-4 pb-16 md:pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {body ? (
             <FloatDescription text={body} className="text-black/80" />
           ) : (
-            <p className="font-sans text-black/70">Описание подарочного сертификата будет добавлено.</p>
+            <p className="font-sans text-black/70">Содержание договора услуг будет добавлено.</p>
           )}
         </div>
       </section>

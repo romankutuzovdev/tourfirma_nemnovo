@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { sendContactForm } from '@/lib/api'
 
-export function ComplaintFormSection() {
+export function ComplaintFormSection({ hideTitle = false }: { hideTitle?: boolean } = {}) {
   const t = useTranslations()
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -26,11 +26,15 @@ export function ComplaintFormSection() {
   }
 
   return (
-    <section className="bg-white border-t border-secondary/10">
+    <section className={`bg-white ${hideTitle ? '' : 'border-t border-secondary/10'}`}>
       <div>
-        <h2 className="font-serif text-2xl md:text-3xl font-medium !text-primary tracking-tight">{t('contact.formComplaint')}</h2>
-        <p className="mt-2 font-sans text-sm text-primary mb-8 max-w-xl">{t('contact.complaintIntro')}</p>
-        <div className="mt-6">
+        {!hideTitle && (
+          <>
+            <h2 className="font-serif text-2xl md:text-3xl font-medium !text-primary tracking-tight">{t('contact.formComplaint')}</h2>
+            <p className="mt-2 font-sans text-sm text-primary mb-8 max-w-xl">{t('contact.complaintIntro')}</p>
+          </>
+        )}
+        <div className={hideTitle ? 'mt-0' : 'mt-6'}>
         {sent ? (
           <p className="font-sans text-black/80">{t('contact.thanks')}</p>
         ) : (
