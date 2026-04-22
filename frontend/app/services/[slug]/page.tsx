@@ -67,6 +67,12 @@ export default async function ServicePage({ params }: Props) {
               </p>
             )}
 
+            {service.long_desc && (
+              <div className="mt-8">
+                <ServiceDescription text={service.long_desc} />
+              </div>
+            )}
+
             <div className="mt-12">
               <h2 className="font-serif text-xl font-medium text-black/90 mb-6">
                 {t('servicesSection.inSection')}
