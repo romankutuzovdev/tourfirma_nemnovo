@@ -26,15 +26,15 @@ export default async function PromoPage({ params }: Props) {
 
   return (
     <div className="pt-6 md:pt-8 pb-16 md:pb-16 min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Link
           href="/promos"
           className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black mb-4"
         >
-          ← {t('nav.promos')}
+          ← Все акции
         </Link>
 
-        <article className="mt-4 bg-secondary/30 border border-secondary/10 rounded-sm overflow-hidden">
+        <article className="mt-4 bg-secondary/30 border border-secondary/10 rounded-sm overflow-hidden max-w-3xl mx-auto">
           {hasImage && (
             <div className="relative aspect-[21/9] w-full">
               <Image
@@ -47,14 +47,19 @@ export default async function PromoPage({ params }: Props) {
               />
             </div>
           )}
-          <div className="p-4 sm:p-6 md:p-10">
+          <div className="pt-4 sm:pt-6 md:pt-10 pb-4 sm:pb-6 md:pb-10 text-center">
             <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-medium text-black tracking-tight">
               {promo.title}
             </h1>
-            {(promo.short_desc || promo.long_desc) && (
-              <div className="mt-6 font-sans text-black/80 leading-relaxed whitespace-pre-line break-words min-w-0">
-                {[promo.short_desc, promo.long_desc].filter(Boolean).join('\n\n')}
-              </div>
+            {promo.short_desc && (
+              <p className="mt-6 font-sans text-base italic text-black/80 leading-relaxed whitespace-pre-line break-words min-w-0">
+                {promo.short_desc}
+              </p>
+            )}
+            {promo.long_desc && (
+              <p className="mt-4 font-sans text-base text-black/80 leading-relaxed whitespace-pre-line break-words min-w-0">
+                {promo.long_desc}
+              </p>
             )}
           </div>
         </article>

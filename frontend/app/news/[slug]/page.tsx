@@ -76,12 +76,12 @@ export default async function NewsArticlePage({ params }: Props) {
             </div>
           </div>
 
-          <p className="mt-8 font-sans text-xl text-black/80 leading-relaxed">
+          <p className="mt-8 font-sans text-base italic text-black/80 leading-relaxed">
             {newsItem.short_desc}
           </p>
 
           {newsItem.long_desc && (
-            <div className="mt-10 font-sans text-black/85 leading-relaxed whitespace-pre-line">
+            <div className="mt-10 font-sans text-base text-black/85 leading-relaxed whitespace-pre-line">
               {newsItem.long_desc}
             </div>
           )}

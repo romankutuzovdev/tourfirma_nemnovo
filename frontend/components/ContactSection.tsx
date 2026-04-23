@@ -165,7 +165,6 @@ export function ContactSection({ hideTitle = false }: { hideTitle?: boolean } = 
                 <p className="font-sans text-black/80">{t('contact.thanks')}</p>
               ) : (
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(e.currentTarget) }} action="#" method="post">
-                  <input type="hidden" name="_to" value="office@nemnovotour.by" />
                   <div className="min-w-0">
                     <label htmlFor="main-name" className="block font-sans text-sm text-primary mb-1 break-words">{t('contact.nameLabel')}*</label>
                     <input id="main-name" name="name" type="text" required className="w-full px-4 py-3 bg-white border border-black/25 font-sans text-black placeholder:text-black/60 focus:outline-none focus:border-primary/60 rounded-lg shadow-sm" placeholder={t('contact.namePlaceholder')} />

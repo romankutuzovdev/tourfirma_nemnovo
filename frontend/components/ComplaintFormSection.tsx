@@ -39,7 +39,6 @@ export function ComplaintFormSection({ hideTitle = false }: { hideTitle?: boolea
           <p className="font-sans text-black/80">{t('contact.thanks')}</p>
         ) : (
           <form className="space-y-4 max-w-xl" onSubmit={(e) => { e.preventDefault(); handleSubmit(e.currentTarget) }} action="#" method="post">
-            <input type="hidden" name="_to" value="marketing@nemnovo.by" />
             <div>
               <label htmlFor="comp-name" className="block font-sans text-sm text-primary mb-1">{t('contact.nameLabel')}*</label>
               <input id="comp-name" name="name" type="text" required className="w-full px-4 py-3 bg-white border border-black/25 font-sans text-black placeholder:text-black/60 focus:outline-none focus:border-primary/60 rounded-lg shadow-sm" placeholder={t('contact.namePlaceholder')} />

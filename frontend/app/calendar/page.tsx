@@ -83,7 +83,7 @@ export default function CalendarPage() {
         </h1>
       </header>
 
-      <section className="pb-16 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6">
+      <section className="pt-6 md:pt-10 pb-16 md:pb-24 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 mb-8">
           {isAtMinMonth ? (
             <div className="w-10 h-10 shrink-0" aria-hidden />

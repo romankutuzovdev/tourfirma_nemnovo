@@ -106,10 +106,14 @@ CKEDITOR_5_CONFIGS = {
         'toolbar': [
             'heading', '|',
             'bold', 'italic', 'link', '|',
+            'alignment', '|',
             'bulletedList', 'numberedList', 'blockQuote', '|',
             'uploadImage', 'insertTable', '|',
             'undo', 'redo',
         ],
+        'alignment': {
+            'options': ['left', 'center', 'right', 'justify'],
+        },
         'heading': {
             'options': [
                 {'model': 'paragraph', 'title': 'Параграф', 'class': 'ck-heading_paragraph'},
@@ -127,8 +131,8 @@ AUTO_TRANSLATE_MISSING = os.environ.get('AUTO_TRANSLATE_MISSING', '1') == '1'
 # Ссылка на фронтенд для писем (сброс пароля)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 
-# Письма: тестово все на один ящик. Для реальной отправки задайте EMAIL_HOST и т.д. в .env
-CONTACT_TEST_EMAIL = os.environ.get('CONTACT_TEST_EMAIL', 'roman.kutuzov.dev@gmail.com')
+# Письма с форм уходят на единый ящик из env.
+CONTACT_TEST_EMAIL = os.environ.get('CONTACT_TEST_EMAIL', 'office@nemnovotour.by')
 if os.environ.get('EMAIL_HOST'):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.environ.get('EMAIL_HOST')

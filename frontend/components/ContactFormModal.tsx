@@ -94,7 +94,6 @@ export function ContactFormModal({ isOpen, onClose, initialMessage }: Props) {
               action="#"
               method="post"
             >
-              <input type="hidden" name="_to" value="office@nemnovotour.by" />
               <div>
                 <label htmlFor="modal-name" className="block font-sans text-sm text-black/80 mb-1">
                   {t('nameLabel')}*

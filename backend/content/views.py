@@ -202,7 +202,13 @@ def contact_submit(request):
     subject_map = {'main': '[Заявка] Nemnovo Tour', 'complaint': '[Претензия/предложение] Nemnovo Tour', 'hot_offer': '[Горячее предложение] Nemnovo Tour'}
     subject = subject_map.get(form_type, '[Заявка] Nemnovo Tour')
     type_label = {'main': 'Заявка', 'complaint': 'Претензия/предложение', 'hot_offer': 'Горячее предложение'}.get(form_type, form_type)
-    body = f"Тип: {type_label}\nИмя: {name}\nEmail: {email}\n\nСообщение:\n{message}"
+    body = (
+        "Источник: заявка с сайта турфирмы nemnovotour.by\n"
+        f"Тип: {type_label}\n"
+        f"Имя: {name}\n"
+        f"Email: {email}\n\n"
+        f"Сообщение:\n{message}"
+    )
     try:
         send_mail(
             subject=subject,

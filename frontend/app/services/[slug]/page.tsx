@@ -39,8 +39,6 @@ export default async function ServicePage({ params }: Props) {
             <Link href="/services" className="hover:text-black">
               ← {t('common.allServices')}
             </Link>
-            <span aria-hidden>/</span>
-            <span className="text-black">{serviceTitle}</span>
           </nav>
 
           <article className="pt-4">
@@ -62,7 +60,7 @@ export default async function ServicePage({ params }: Props) {
             </div>
 
             {serviceShortDesc && (
-              <p className="mt-8 font-sans text-base text-black/90 leading-relaxed">
+              <p className="mt-8 font-sans text-base italic text-black/90 leading-relaxed">
                 {serviceShortDesc}
               </p>
             )}
@@ -145,7 +143,7 @@ export default async function ServicePage({ params }: Props) {
             </div>
           </div>
 
-          <p className="mt-8 font-sans text-sm text-black/90 leading-relaxed">
+          <p className="mt-8 font-sans text-base italic text-black/90 leading-relaxed">
             {serviceShortDesc}
           </p>
 
