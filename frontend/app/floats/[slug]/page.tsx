@@ -10,6 +10,7 @@ import { fetchFloatTripBySlug, fetchFloatTrips, getFloatImageSrc } from '@/lib/a
 import { FloatDescription } from '@/components/FloatDescription'
 import { FloatVideoPlayer } from '@/components/FloatVideoPlayer'
 import type { FloatTripDetail, FloatTripItem } from '@/lib/api'
+import { useCart } from '@/contexts/CartContext'
 
 export default function FloatDetailPage() {
   const params = useParams()
@@ -20,6 +21,9 @@ export default function FloatDetailPage() {
   const [trips, setTrips] = useState<FloatTripItem[]>([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const { addItem } = useCart()
+  const [quantityInput, setQuantityInput] = useState('1')
+  const [added, setAdded] = useState(false)
 
   useEffect(() => {
     if (!slug) return
@@ -108,6 +112,38 @@ export default function FloatDetailPage() {
               <FloatDescription text={trip.description} />
             </div>
           )}
+
+          <div className="mt-6 flex items-center gap-4">
+            <p className="font-serif text-2xl text-primary">{Number(trip.price_per_person).toFixed(2)} BYN</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={quantityInput}
+                onChange={(e) => {
+                  const next = e.target.value
+                  if (next === '' || /^\d+$/.test(next)) setQuantityInput(next)
+                }}
+                onBlur={() => {
+                  if (!quantityInput || Number(quantityInput) < 1) setQuantityInput('1')
+                }}
+                className="w-16 border border-secondary/20 px-2 py-1"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const quantity = Math.max(1, Number(quantityInput) || 1)
+                  addItem({ itemType: 'float', slug: trip.slug, title: trip.title, price: Number(trip.price_per_person) }, quantity)
+                  setAdded(true)
+                  setTimeout(() => setAdded(false), 900)
+                }}
+                className={`px-4 py-2 text-sm transition-all duration-300 ${added ? 'bg-green-500 text-white scale-105 shadow-md shadow-green-600/40' : 'bg-primary text-white hover:bg-primary/90'}`}
+              >
+                {added ? 'Добавлено' : 'В корзину'}
+              </button>
+            </div>
+          </div>
 
           {hasVideo && (
             <div className="mt-12">

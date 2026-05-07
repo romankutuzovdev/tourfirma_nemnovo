@@ -38,12 +38,13 @@ export default function LoginPage() {
 
   return (
     <div className="pt-6 md:pt-8 pb-24 min-h-screen bg-white">
-      <div className="max-w-md mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Link href={'/'} className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-black mb-10">
           ← {tNav('home')}
         </Link>
-        <h1 className="font-serif text-2xl md:text-3xl font-medium text-black tracking-tight">{t('loginTitle')}</h1>
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <div className="max-w-xl">
+          <h1 className="font-serif text-2xl md:text-3xl font-medium text-black tracking-tight">{t('loginTitle')}</h1>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <div>
             <label htmlFor="email" className="block font-sans text-sm text-black/80 mb-1">{t('email')}</label>
             <input
@@ -76,14 +77,15 @@ export default function LoginPage() {
           >
             {t('submit')}
           </button>
-        </form>
-        <div className="mt-6 flex flex-col gap-2">
-          <Link href={`/forgot-password`} className="font-sans text-sm text-black/70 hover:text-black">
-            {t('forgotTitle')}
-          </Link>
-          <p className="font-sans text-sm text-black/70">
-            {t('noAccount')} <Link href={`/register`} className="text-primary hover:underline">{tNav('register')}</Link>
-          </p>
+          </form>
+          <div className="mt-6 flex flex-col gap-2">
+            <Link href={`/forgot-password`} className="font-sans text-sm text-black/70 hover:text-black">
+              {t('forgotTitle')}
+            </Link>
+            <p className="font-sans text-sm text-black/70">
+              {t('noAccount')} <Link href={`/register`} className="text-primary hover:underline">{tNav('register')}</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

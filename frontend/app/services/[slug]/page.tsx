@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { fetchServiceBySlug, fetchServices, getServiceImageSrc } from '@/lib/api'
 import { ServiceDescription } from '@/components/ServiceDescription'
+import { ServicePurchasePanel } from '@/components/ServicePurchasePanel'
 import type { Metadata } from 'next'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -12,7 +13,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const service = await fetchServiceBySlug(slug, 'ru')
   if (!service) return { title: 'Услуга не найдена' }
-  return { title: `${service.title} — Немново`, description: service.short_desc }
+  const seoTitle = service.seo_title?.trim() || service.title
+  const seoDescription = service.seo_description?.trim() || service.short_desc
+  return { title: seoTitle, description: seoDescription }
 }
 
 export default async function ServicePage({ params }: Props) {
@@ -30,6 +33,7 @@ export default async function ServicePage({ params }: Props) {
   const serviceTitle = service.title
   const serviceShortDesc = service.short_desc
   const imageSrc = getServiceImageSrc(service)
+  const price = service.price ? Number(service.price) : null
 
   if (hasChildren) {
     return (
@@ -146,6 +150,13 @@ export default async function ServicePage({ params }: Props) {
           <p className="mt-8 font-sans text-base italic text-black/90 leading-relaxed">
             {serviceShortDesc}
           </p>
+
+          <ServicePurchasePanel
+            slug={service.slug}
+            title={serviceTitle}
+            basePrice={price}
+            variants={service.variants ?? []}
+          />
 
           {service.long_desc && <ServiceDescription text={service.long_desc} />}
         </article>

@@ -1,6 +1,15 @@
+import type { Metadata } from 'next'
 import { PageLayout } from '@/components/PageLayout'
 import { fetchLegalPage } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await fetchLegalPage('agencies', 'ru')
+  return {
+    title: content?.seo_title?.trim() || content?.title || 'Для агентств',
+    description: content?.seo_description?.trim() || 'Информация для агентств и партнеров Немново Тур.',
+  }
+}
 
 export default async function AgenciesPage() {
   const content = await fetchLegalPage('agencies', 'ru')

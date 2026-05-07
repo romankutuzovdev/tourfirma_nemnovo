@@ -4,6 +4,9 @@ from rest_framework import serializers
 from .translate_utils import translate_text, _auto_translate_enabled
 from .models import (
     Service, ServiceTranslation,
+    ServiceVariant,
+    ServiceOrder,
+    ServiceOrderItem,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
@@ -55,7 +58,7 @@ def _build_media_url(request, image_field):
 class ServiceTranslationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceTranslation
-        fields = ['locale', 'title', 'short_desc', 'long_desc']
+        fields = ['locale', 'title', 'short_desc', 'long_desc', 'seo_title', 'seo_description']
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
@@ -63,10 +66,11 @@ class ServiceListSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     short_desc = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    has_variants = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc']
+        fields = ['slug', 'image', 'image_url', 'order', 'price', 'has_variants', 'title', 'short_desc']
 
     def _get_locale(self):
         return self.context.get('locale', 'ru')
@@ -107,13 +111,16 @@ class ServiceListSerializer(serializers.ModelSerializer):
             return _build_media_url(self.context.get('request'), obj.image)
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
 
+    def get_has_variants(self, obj):
+        return obj.variants.exists()
+
 
 class ServiceTreeSerializer(ServiceListSerializer):
     """Иерархический список услуг с вложенными children."""
     children = serializers.SerializerMethodField()
 
     class Meta(ServiceListSerializer.Meta):
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'children']
+        fields = ['slug', 'image', 'image_url', 'order', 'price', 'has_variants', 'title', 'short_desc', 'children']
 
     def get_children(self, obj):
         children = obj.children.filter(is_active=True).order_by('order', 'id')
@@ -125,12 +132,23 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     short_desc = serializers.SerializerMethodField()
     long_desc = serializers.SerializerMethodField()
+    seo_title = serializers.SerializerMethodField()
+    seo_description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     children = serializers.SerializerMethodField()
+    variants = serializers.SerializerMethodField()
+    has_variants = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc', 'children']
+        fields = [
+            'slug', 'image', 'image_url', 'order',
+            'price', 'has_variants',
+            'title', 'short_desc', 'long_desc',
+            'seo_title', 'seo_description',
+            'variants',
+            'children',
+        ]
 
     def _get_locale(self):
         return self.context.get('locale', 'ru')
@@ -175,9 +193,92 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
             return _build_media_url(self.context.get('request'), obj.image)
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
 
+    def get_seo_title(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_title', '') or '').strip() if t else ''
+
+    def get_seo_description(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_description', '') or '').strip() if t else ''
+
     def get_children(self, obj):
         children = obj.children.filter(is_active=True).order_by('order', 'id')
         return ServiceListSerializer(children, many=True, context=self.context).data
+
+    def get_variants(self, obj):
+        return [
+            {'name': v.name, 'description': v.description, 'price': str(v.price) if v.price is not None else None}
+            for v in obj.variants.all()
+        ]
+
+    def get_has_variants(self, obj):
+        return obj.variants.exists()
+
+
+class ServiceOrderItemCreateSerializer(serializers.Serializer):
+    service_slug = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    float_slug = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    variant_name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    quantity = serializers.IntegerField(min_value=1, default=1)
+
+
+class ServiceOrderCreateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=200, required=False, allow_blank=True)
+    email = serializers.CharField(max_length=254, required=False, allow_blank=True)
+    phone = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    comment = serializers.CharField(required=False, allow_blank=True)
+    items = ServiceOrderItemCreateSerializer(many=True)
+
+    def validate(self, attrs):
+        attrs['name'] = (attrs.get('name') or '').strip()
+        attrs['email'] = (attrs.get('email') or '').strip()
+        attrs['phone'] = (attrs.get('phone') or '').strip()
+        for item in attrs.get('items', []):
+            service_slug = (item.get('service_slug') or '').strip()
+            float_slug = (item.get('float_slug') or '').strip()
+            if not service_slug and not float_slug:
+                raise serializers.ValidationError('Каждая позиция должна содержать service_slug или float_slug.')
+            if service_slug and float_slug:
+                raise serializers.ValidationError('Позиция не может одновременно содержать service_slug и float_slug.')
+        return attrs
+
+
+class ServiceOrderItemSerializer(serializers.ModelSerializer):
+    service_slug = serializers.CharField(source='service.slug', read_only=True)
+    float_slug = serializers.CharField(source='float_trip.slug', read_only=True)
+    service_title = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ServiceOrderItem
+        fields = ['service_slug', 'float_slug', 'service_title', 'variant_name', 'quantity', 'unit_price', 'line_total']
+
+    def get_service_title(self, obj):
+        locale = self.context.get('locale', 'ru')
+        if obj.service_id:
+            t = obj.service.translations.filter(locale=locale).first() or obj.service.translations.filter(locale='ru').first()
+            return t.title if t else obj.service.slug
+        if obj.float_trip_id:
+            t = obj.float_trip.translations.filter(locale=locale).first() or obj.float_trip.translations.filter(locale='ru').first()
+            return t.title if t else obj.float_trip.slug
+        return ''
+
+
+class ServiceOrderSerializer(serializers.ModelSerializer):
+    items = ServiceOrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ServiceOrder
+        fields = [
+            'id',
+            'customer_name',
+            'customer_email',
+            'customer_phone',
+            'comment',
+            'status',
+            'total_amount',
+            'created_at',
+            'items',
+        ]
 
 
 def _locale_translation(queryset, locale):
@@ -213,12 +314,19 @@ class NewsDetailSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     short_desc = serializers.SerializerMethodField()
     long_desc = serializers.SerializerMethodField()
+    seo_title = serializers.SerializerMethodField()
+    seo_description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     created_at = serializers.DateTimeField(format='%Y-%m-%dT%H:%M:%S', read_only=True)
 
     class Meta:
         model = News
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc', 'created_at']
+        fields = [
+            'slug', 'image', 'image_url', 'order',
+            'title', 'short_desc', 'long_desc',
+            'seo_title', 'seo_description',
+            'created_at',
+        ]
 
     def get_title(self, obj):
         t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
@@ -236,6 +344,14 @@ class NewsDetailSerializer(serializers.ModelSerializer):
         if obj.image:
             return _build_media_url(self.context.get('request'), obj.image)
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
+
+    def get_seo_title(self, obj):
+        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
+        return (getattr(t, 'seo_title', '') or '').strip() if t else ''
+
+    def get_seo_description(self, obj):
+        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
+        return (getattr(t, 'seo_description', '') or '').strip() if t else ''
 
 
 class PromoListSerializer(serializers.ModelSerializer):
@@ -265,11 +381,17 @@ class PromoDetailSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     short_desc = serializers.SerializerMethodField()
     long_desc = serializers.SerializerMethodField()
+    seo_title = serializers.SerializerMethodField()
+    seo_description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = Promo
-        fields = ['slug', 'image', 'image_url', 'order', 'title', 'short_desc', 'long_desc']
+        fields = [
+            'slug', 'image', 'image_url', 'order',
+            'title', 'short_desc', 'long_desc',
+            'seo_title', 'seo_description',
+        ]
 
     def get_title(self, obj):
         t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
@@ -287,6 +409,14 @@ class PromoDetailSerializer(serializers.ModelSerializer):
         if obj.image:
             return _build_media_url(self.context.get('request'), obj.image)
         return (obj.image_url or None) if getattr(obj, 'image_url', None) else None
+
+    def get_seo_title(self, obj):
+        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
+        return (getattr(t, 'seo_title', '') or '').strip() if t else ''
+
+    def get_seo_description(self, obj):
+        t = _locale_translation(obj.translations, self.context.get('locale', 'ru'))
+        return (getattr(t, 'seo_description', '') or '').strip() if t else ''
 
 
 class HotOfferListSerializer(serializers.ModelSerializer):
@@ -566,13 +696,23 @@ class FloatTripListSerializer(serializers.ModelSerializer):
 class FloatTripDetailSerializer(FloatTripListSerializer):
     """Сплав с полным описанием и ссылкой на карту."""
     description = serializers.SerializerMethodField()
+    seo_title = serializers.SerializerMethodField()
+    seo_description = serializers.SerializerMethodField()
 
     class Meta(FloatTripListSerializer.Meta):
-        fields = FloatTripListSerializer.Meta.fields + ['description', 'video_url', 'map_embed_url']
+        fields = FloatTripListSerializer.Meta.fields + ['description', 'seo_title', 'seo_description', 'video_url', 'map_embed_url']
 
     def get_description(self, obj):
         t = self._get_translation(obj)
         return t.description if t else ''
+
+    def get_seo_title(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_title', '') or '').strip() if t else ''
+
+    def get_seo_description(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_description', '') or '').strip() if t else ''
 
 
 class HeroContentSerializer(serializers.ModelSerializer):
@@ -647,10 +787,12 @@ class LegalPageSerializer(serializers.ModelSerializer):
     """Юридическая страница: заголовок и содержание для заданной локали."""
     title = serializers.SerializerMethodField()
     content = serializers.SerializerMethodField()
+    seo_title = serializers.SerializerMethodField()
+    seo_description = serializers.SerializerMethodField()
 
     class Meta:
         model = LegalPage
-        fields = ['page_key', 'title', 'content']
+        fields = ['page_key', 'title', 'content', 'seo_title', 'seo_description']
 
     def _get_translation(self, obj):
         locale = self.context.get('locale', 'ru')
@@ -664,6 +806,14 @@ class LegalPageSerializer(serializers.ModelSerializer):
     def get_content(self, obj):
         t = self._get_translation(obj)
         return t.content if t else ''
+
+    def get_seo_title(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_title', '') or '').strip() if t else ''
+
+    def get_seo_description(self, obj):
+        t = self._get_translation(obj)
+        return (getattr(t, 'seo_description', '') or '').strip() if t else ''
 
 
 class AboutContentSerializer(serializers.ModelSerializer):

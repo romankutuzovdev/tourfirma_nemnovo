@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 
@@ -35,6 +36,14 @@ class Service(models.Model):
     image_url = models.URLField(blank=True, help_text='Если нет загрузки файла')
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField('Активно', default=True)
+    price = models.DecimalField(
+        'Цена',
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Цена услуги в BYN. Если пусто, можно выбрать цену через варианты.',
+    )
 
     class Meta:
         ordering = ['order', 'id']
@@ -56,6 +65,17 @@ class ServiceTranslation(models.Model):
         config_name='default',
         help_text='Редактор с форматированием: шрифт, заголовки, списки, картинки. Для экскурсий и других услуг.'
     )
+    seo_title = models.CharField(
+        'SEO заголовок (title)',
+        max_length=255,
+        blank=True,
+        help_text='Если пусто, используется обычный заголовок страницы.',
+    )
+    seo_description = models.TextField(
+        'SEO описание (description)',
+        blank=True,
+        help_text='Рекомендуется 140-160 символов.',
+    )
 
     class Meta:
         unique_together = [('service', 'locale')]
@@ -63,6 +83,75 @@ class ServiceTranslation(models.Model):
 
     def __str__(self):
         return f'{self.service.slug} ({self.locale})'
+
+
+class ServiceVariant(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='variants')
+    name = models.CharField('Название', max_length=200)
+    description = models.TextField('Описание', blank=True)
+    price = models.DecimalField('Цена', max_digits=10, decimal_places=2, null=True, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Вариант услуги'
+        verbose_name_plural = 'Варианты услуг'
+
+    def __str__(self):
+        return f'{self.service.slug}: {self.name}'
+
+
+class ServiceOrder(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('in_progress', 'В работе'),
+        ('done', 'Завершён'),
+        ('cancelled', 'Отменён'),
+    ]
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='service_orders',
+        verbose_name='Пользователь',
+    )
+    customer_name = models.CharField('Имя заказчика', max_length=200)
+    customer_email = models.EmailField('Email', blank=True)
+    customer_phone = models.CharField('Телефон', max_length=50, blank=True)
+    comment = models.TextField('Комментарий', blank=True)
+    total_amount = models.DecimalField('Сумма заказа', max_digits=12, decimal_places=2, default=0)
+    status = models.CharField('Статус', max_length=20, choices=STATUS_CHOICES, default='new')
+    created_at = models.DateTimeField('Создан', auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Заказ услуги'
+        verbose_name_plural = 'Заказы услуг'
+
+    def __str__(self):
+        return f'Заказ #{self.id} — {self.customer_name}'
+
+
+class ServiceOrderItem(models.Model):
+    order = models.ForeignKey(ServiceOrder, on_delete=models.CASCADE, related_name='items')
+    service = models.ForeignKey(Service, on_delete=models.PROTECT, related_name='order_items', null=True, blank=True)
+    float_trip = models.ForeignKey('FloatTrip', on_delete=models.PROTECT, related_name='order_items', null=True, blank=True)
+    variant_name = models.CharField('Вариант', max_length=200, blank=True)
+    quantity = models.PositiveIntegerField('Количество', default=1)
+    unit_price = models.DecimalField('Цена за единицу', max_digits=10, decimal_places=2)
+    line_total = models.DecimalField('Сумма позиции', max_digits=12, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Позиция заказа услуги'
+        verbose_name_plural = 'Позиции заказов услуг'
+
+    def __str__(self):
+        if self.service_id:
+            return f'{self.service.slug} x{self.quantity}'
+        if self.float_trip_id:
+            return f'{self.float_trip.slug} x{self.quantity}'
+        return f'item x{self.quantity}'
 
 
 class Promo(models.Model):
@@ -88,6 +177,17 @@ class PromoTranslation(models.Model):
     title = models.CharField(max_length=200)
     short_desc = models.TextField(blank=True)
     long_desc = models.TextField(blank=True)
+    seo_title = models.CharField(
+        'SEO заголовок (title)',
+        max_length=255,
+        blank=True,
+        help_text='Если пусто, используется обычный заголовок страницы.',
+    )
+    seo_description = models.TextField(
+        'SEO описание (description)',
+        blank=True,
+        help_text='Рекомендуется 140-160 символов.',
+    )
 
     class Meta:
         unique_together = [('promo', 'locale')]
@@ -205,6 +305,17 @@ class NewsTranslation(models.Model):
     title = models.CharField(max_length=200)
     short_desc = models.TextField(blank=True)
     long_desc = models.TextField(blank=True, help_text='Полный текст новости')
+    seo_title = models.CharField(
+        'SEO заголовок (title)',
+        max_length=255,
+        blank=True,
+        help_text='Если пусто, используется обычный заголовок страницы.',
+    )
+    seo_description = models.TextField(
+        'SEO описание (description)',
+        blank=True,
+        help_text='Рекомендуется 140-160 символов.',
+    )
 
     class Meta:
         unique_together = [('news', 'locale')]
@@ -394,6 +505,17 @@ class FloatTripTranslation(models.Model):
     locale = models.CharField(max_length=5, choices=LOCALE_CHOICES)
     title = models.CharField('Название', max_length=200)
     description = CKEditor5Field('Описание', blank=True, config_name='default')
+    seo_title = models.CharField(
+        'SEO заголовок (title)',
+        max_length=255,
+        blank=True,
+        help_text='Если пусто, используется обычный заголовок страницы.',
+    )
+    seo_description = models.TextField(
+        'SEO описание (description)',
+        blank=True,
+        help_text='Рекомендуется 140-160 символов.',
+    )
 
     class Meta:
         unique_together = [('float_trip', 'locale')]
@@ -429,6 +551,17 @@ class LegalPageTranslation(models.Model):
         blank=True,
         config_name='default',
         help_text='Можно вставлять картинки через кнопку «Изображение» в редакторе.',
+    )
+    seo_title = models.CharField(
+        'SEO заголовок (title)',
+        max_length=255,
+        blank=True,
+        help_text='Если пусто, используется обычный заголовок страницы.',
+    )
+    seo_description = models.TextField(
+        'SEO описание (description)',
+        blank=True,
+        help_text='Рекомендуется 140-160 символов.',
     )
 
     class Meta:

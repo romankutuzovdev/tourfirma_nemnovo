@@ -6,12 +6,16 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { fetchFloatTrips, getFloatImageSrc, type FloatTripItem } from '@/lib/api'
+import { useCart } from '@/contexts/CartContext'
 
 export default function FloatsPage() {
   const locale = useLocale()
   const t = useTranslations()
   const [trips, setTrips] = useState<FloatTripItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { addItem } = useCart()
+  const [addedKey, setAddedKey] = useState<string | null>(null)
+  const [qty, setQty] = useState<Record<string, string>>({})
 
   useEffect(() => {
     fetchFloatTrips(locale).then((data) => {
@@ -77,6 +81,48 @@ export default function FloatsPage() {
                     </span>
                   </div>
                 </Link>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <p className="font-serif text-lg text-primary">
+                    {Number(trip.price_per_person).toFixed(2)} BYN
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={qty[trip.slug] ?? '1'}
+                      onChange={(e) => {
+                        const next = e.target.value
+                        if (next === '' || /^\d+$/.test(next)) {
+                          setQty((prev) => ({ ...prev, [trip.slug]: next }))
+                        }
+                      }}
+                      onBlur={() => {
+                        const raw = qty[trip.slug]
+                        if (!raw || Number(raw) < 1) {
+                          setQty((prev) => ({ ...prev, [trip.slug]: '1' }))
+                        }
+                      }}
+                      className="w-14 border border-secondary/30 px-2 py-1 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addItem(
+                          { itemType: 'float', slug: trip.slug, title: trip.title, price: Number(trip.price_per_person) },
+                          Math.max(1, Number(qty[trip.slug]) || 1)
+                        )
+                        setAddedKey(trip.slug)
+                        setTimeout(() => setAddedKey(null), 900)
+                      }}
+                      className={`px-3 py-1.5 text-xs transition-all duration-300 ${
+                        addedKey === trip.slug ? 'bg-green-500 text-white scale-105 shadow-md shadow-green-600/40' : 'bg-primary text-white hover:bg-primary/90'
+                      }`}
+                    >
+                      {addedKey === trip.slug ? 'Добавлено' : 'В корзину'}
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

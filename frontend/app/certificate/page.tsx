@@ -1,6 +1,12 @@
+import type { Metadata } from 'next'
 import { PageLayout } from '@/components/PageLayout'
 import { fetchCertificateContent } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
+
+export const metadata: Metadata = {
+  title: 'Подарочный сертификат',
+  description: 'Подарочный сертификат Немново Тур: условия и описание.',
+}
 
 export default async function CertificatePage() {
   const content = await fetchCertificateContent('ru')

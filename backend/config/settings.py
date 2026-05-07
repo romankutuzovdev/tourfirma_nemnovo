@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'django_ckeditor_5',
-    'content',
+    'content.apps.ContentConfig',
     'accounts',
 ]
 
@@ -82,6 +82,18 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Storage: optimize uploaded images (resize/compress) before saving to MEDIA_ROOT.
+# This affects admin uploads, API uploads, and CKEditor uploads (uploadImage).
+STORAGES = {
+    'default': {
+        'BACKEND': 'content.storage.OptimizingMediaStorage',
+    },
+    # Keep default staticfiles behavior (served by nginx/whitenoise depending on env).
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

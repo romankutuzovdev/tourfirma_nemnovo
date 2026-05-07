@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { ContactFormModal } from '@/components/ContactFormModal'
@@ -23,12 +24,48 @@ const LOCALE_TO_INTL: Record<string, string> = {
 export default function CalendarPage() {
   const locale = useLocale()
   const t = useTranslations()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [minDate] = useState(() => {
     const now = new Date()
     return { year: now.getFullYear(), month: now.getMonth() + 1 }
   })
-  const [year, setYear] = useState(() => minDate.year)
-  const [month, setMonth] = useState(() => minDate.month)
+  const [year, setYear] = useState(() => {
+    const ym = searchParams.get('ym')
+    if (!ym) return minDate.year
+    const [rawYear, rawMonth] = ym.split('-')
+    const parsedYear = Number.parseInt(rawYear ?? '', 10)
+    const parsedMonth = Number.parseInt(rawMonth ?? '', 10)
+    if (
+      Number.isNaN(parsedYear) ||
+      Number.isNaN(parsedMonth) ||
+      parsedMonth < 1 ||
+      parsedMonth > 12 ||
+      parsedYear < minDate.year ||
+      (parsedYear === minDate.year && parsedMonth < minDate.month)
+    ) {
+      return minDate.year
+    }
+    return parsedYear
+  })
+  const [month, setMonth] = useState(() => {
+    const ym = searchParams.get('ym')
+    if (!ym) return minDate.month
+    const [rawYear, rawMonth] = ym.split('-')
+    const parsedYear = Number.parseInt(rawYear ?? '', 10)
+    const parsedMonth = Number.parseInt(rawMonth ?? '', 10)
+    if (
+      Number.isNaN(parsedYear) ||
+      Number.isNaN(parsedMonth) ||
+      parsedMonth < 1 ||
+      parsedMonth > 12 ||
+      parsedYear < minDate.year ||
+      (parsedYear === minDate.year && parsedMonth < minDate.month)
+    ) {
+      return minDate.month
+    }
+    return parsedMonth
+  })
   const [events, setEvents] = useState<CalendarEventItem[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -41,6 +78,13 @@ export default function CalendarPage() {
       setLoading(false)
     })
   }, [locale, year, month])
+
+  useEffect(() => {
+    const ym = `${year}-${String(month).padStart(2, '0')}`
+    if (searchParams.get('ym') !== ym) {
+      router.replace(`/calendar?ym=${ym}`, { scroll: false })
+    }
+  }, [year, month, router, searchParams])
 
   const prevMonth = () => {
     if (year === minDate.year && month === minDate.month) {
@@ -67,6 +111,7 @@ export default function CalendarPage() {
     LOCALE_TO_INTL[locale] || 'ru-RU',
     { month: 'long', year: 'numeric' }
   )
+  const returnMonthQuery = `?ym=${year}-${String(month).padStart(2, '0')}`
   const isAtMinMonth = year === minDate.year && month === minDate.month
 
   return (
@@ -136,7 +181,7 @@ export default function CalendarPage() {
                 return (
                   <li key={ev.id} className="group">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:p-5 hover:bg-primary/5 transition-colors">
-                      <Link href={`/calendar/${ev.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                      <Link href={`/calendar/${ev.id}${returnMonthQuery}`} className="flex items-center gap-4 flex-1 min-w-0">
                         <div className="shrink-0 w-16 h-16 rounded-lg bg-secondary/20 overflow-hidden flex items-center justify-center">
                           {imgSrc ? (
                             <Image
@@ -174,7 +219,7 @@ export default function CalendarPage() {
                       </Link>
                       <div className="flex shrink-0 gap-2 sm:ml-4">
                         <Link
-                          href={`/calendar/${ev.id}`}
+                          href={`/calendar/${ev.id}${returnMonthQuery}`}
                           className="inline-flex px-4 py-2 rounded-lg bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90 transition-colors"
                         >
                           {t('calendarPage.more')}

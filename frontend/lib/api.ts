@@ -3,6 +3,7 @@
  */
 
 import type { Locale } from './i18n'
+import { authFetch } from './auth'
 
 const LOCALES: Locale[] = ['ru']
 
@@ -45,6 +46,8 @@ export type ServiceItem = {
   image: string | null
   image_url: string
   order: number
+  price: string | null
+  has_variants?: boolean
   title: string
   short_desc: string
 }
@@ -57,17 +60,67 @@ export type ServiceTreeNode = ServiceItem & {
 /** Ответ /api/services/<slug>/?locale= — children есть у разделов (категорий) */
 export type ServiceDetail = ServiceItem & {
   long_desc: string
+  seo_title?: string
+  seo_description?: string
+  variants?: ServiceVariant[]
+  has_variants?: boolean
   children?: ServiceItem[]
+}
+
+export type ServiceVariant = {
+  name: string
+  description: string
+  price: string | null
+}
+
+export type CartCheckoutItem = {
+  service_slug?: string
+  float_slug?: string
+  variant_name?: string
+  quantity: number
+}
+
+export type ServiceOrder = {
+  id: number
+  customer_name: string
+  customer_email: string
+  customer_phone: string
+  comment: string
+  status: string
+  total_amount: string
+  created_at: string
+  items: Array<{
+    service_slug?: string
+    float_slug?: string
+    service_title: string
+    variant_name: string
+    quantity: number
+    unit_price: string
+    line_total: string
+  }>
 }
 
 /** Нормализует URL картинки: полный URL или относительный /media/... (если API на том же origin) */
 function toAbsoluteImageUrl(value: string): string {
-  if (value.startsWith('http://') || value.startsWith('https://')) return value
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    // Бэкенд может отдавать абсолютные URL на 127.0.0.1/localhost (внутренний хост).
+    // Это ломает и SSR (в HTML попадает localhost), и браузер, поэтому всегда приводим к относительному пути.
+    try {
+      const u = new URL(value)
+      if (u.hostname === '127.0.0.1' || u.hostname === 'localhost') {
+        const path = u.pathname.startsWith('/') ? u.pathname : `/${u.pathname}`
+        return path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
+      }
+    } catch {
+      // ignore
+    }
+    return value
+  }
   const path = value.startsWith('/') ? value : `/${value}`
   const mediaPath = path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
-  const base = getApiUrl()
-  if (base === '') return mediaPath
-  return `${base}${mediaPath}`
+  // Важно: изображения должны грузиться same-origin через /media (Next.js rewrite),
+  // иначе SSR может вставить внутренний BACKEND_URL (127.0.0.1), что ломает прод для пользователей.
+  return mediaPath
 }
 
 /** Преобразует относительный /media/ URL в абсолютный для запросов к бэкенду */
@@ -82,7 +135,7 @@ export function toAbsoluteMediaUrl(value: string): string {
 /** URL картинки услуги: приоритет у загруженного image, иначе image_url */
 export function getServiceImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
+  return item.image_url ? toAbsoluteImageUrl(item.image_url) : ''
 }
 
 /** Элемент из /api/news/?locale= */
@@ -97,12 +150,16 @@ export type NewsItem = {
 }
 
 /** Ответ /api/news/<slug>/?locale= */
-export type NewsDetail = NewsItem & { long_desc: string }
+export type NewsDetail = NewsItem & {
+  long_desc: string
+  seo_title?: string
+  seo_description?: string
+}
 
 /** URL картинки новости: приоритет у загруженного image, иначе image_url */
 export function getNewsImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
+  return item.image_url ? toAbsoluteImageUrl(item.image_url) : ''
 }
 
 /** Элемент из /api/promos/?locale= */
@@ -116,12 +173,16 @@ export type PromoItem = {
 }
 
 /** Ответ /api/promos/<slug>/?locale= */
-export type PromoDetail = PromoItem & { long_desc: string }
+export type PromoDetail = PromoItem & {
+  long_desc: string
+  seo_title?: string
+  seo_description?: string
+}
 
 /** URL картинки акции: приоритет у загруженного image, иначе image_url */
 export function getPromoImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
+  return item.image_url ? toAbsoluteImageUrl(item.image_url) : ''
 }
 
 /** Элемент из /api/hot-offers/?locale= (горячее предложение для попапа) */
@@ -171,7 +232,7 @@ export type PortfolioItemDetail = Omit<PortfolioItem, 'image_urls'> & { images: 
 /** URL главной картинки портфолио: приоритет у загруженного image, иначе image_url */
 export function getPortfolioImageSrc(item: { image: string | null; image_url: string }): string {
   if (item.image) return toAbsoluteImageUrl(item.image)
-  return item.image_url || ''
+  return item.image_url ? toAbsoluteImageUrl(item.image_url) : ''
 }
 
 const API_TIMEOUT = 15000 // 15 сек
@@ -397,11 +458,7 @@ export async function bookCalendarEvent(
 export function getCalendarEventImageSrc(item: { image: string | null }): string {
   const raw = item.image || ''
   if (!raw) return ''
-  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
-  const path = raw.startsWith('/') ? raw : `/${raw}`
-  const mediaPath = path.startsWith('/media') ? path : `/media/${path.replace(/^\//, '')}`
-  const base = getApiUrl()
-  return base ? `${base}${mediaPath}` : mediaPath
+  return toAbsoluteImageUrl(raw)
 }
 
 /** Отправка формы контакта (заявка, претензия или обратная связь из горячего предложения). */
@@ -421,6 +478,8 @@ export type FloatTripItem = {
 /** Детали сплава из /api/float-trips/<slug>/?locale= — с описанием, видео и картой */
 export type FloatTripDetail = FloatTripItem & {
   description: string
+  seo_title?: string
+  seo_description?: string
   video_url: string  // YouTube, Vimeo или прямой URL видео
   map_embed_url: string  // URL для iframe (Яндекс.Карты)
 }
@@ -468,6 +527,8 @@ export type LegalPageContent = {
   page_key: string
   title: string
   content: string
+  seo_title?: string
+  seo_description?: string
 }
 
 export async function fetchLegalPage(pageKey: string, locale: Locale): Promise<LegalPageContent | null> {
@@ -552,4 +613,38 @@ export async function sendContactForm(
   if (!res.ok) return { error: (data as { error?: string }).error || `Ошибка ${res.status}` }
   if ((data as { ok?: boolean }).ok) return { ok: true }
   return { error: (data as { error?: string }).error || 'Неизвестная ошибка' }
+}
+
+export async function createServiceOrder(payload: {
+  name: string
+  email?: string
+  phone?: string
+  comment?: string
+  items: CartCheckoutItem[]
+}): Promise<{ ok: true; order: ServiceOrder } | { error: string; unauthorized?: boolean }> {
+  const res = await authFetch(`${getApiUrl()}/api/orders/create/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (res.status === 401) return { error: 'Требуется авторизация', unauthorized: true }
+  if (!res.ok) {
+    const d = data as { error?: string; details?: unknown }
+    const detailsText = d.details ? ` (${JSON.stringify(d.details)})` : ''
+    return { error: (d.error || `Ошибка ${res.status}`) + detailsText }
+  }
+  if ((data as { ok?: boolean }).ok && (data as { order?: ServiceOrder }).order) {
+    return { ok: true, order: (data as { order: ServiceOrder }).order }
+  }
+  return { error: 'Не удалось оформить заказ' }
+}
+
+export async function fetchServiceOrders(): Promise<ServiceOrder[]> {
+  const res = await authFetch(`${getApiUrl()}/api/orders/`)
+  if (res.status === 401) {
+    throw new Error('UNAUTHORIZED')
+  }
+  if (!res.ok) return []
+  return res.json().catch(() => [])
 }

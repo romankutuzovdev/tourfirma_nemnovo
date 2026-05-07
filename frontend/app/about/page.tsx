@@ -1,9 +1,15 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { PageLayout } from '@/components/PageLayout'
 import { AboutPageSection } from '@/components/AboutPageSection'
 import { AboutPhotosSection } from '@/components/AboutPhotosSection'
 import { AboutMediaSection } from '@/components/AboutMediaSection'
 import { fetchAboutPageContent } from '@/lib/api'
+
+export const metadata: Metadata = {
+  title: 'О нас',
+  description: 'История и команда Немново Тур, фото и видео о компании.',
+}
 
 export default async function AboutPage() {
   const aboutContent = await fetchAboutPageContent('ru')

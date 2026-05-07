@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from .models import (
-    Service, ServiceTranslation,
+    Service, ServiceTranslation, ServiceVariant, ServiceOrder, ServiceOrderItem,
     News, NewsTranslation,
     Promo, PromoTranslation,
     HotOffer, HotOfferTranslation,
@@ -22,21 +22,45 @@ class ServiceTranslationInline(admin.StackedInline):
     """StackedInline нужен для CKEditor — в TabularInline редактор не помещается."""
     model = ServiceTranslation
     extra = 0
+    fields = ['locale', 'title', 'short_desc', 'long_desc', 'seo_title', 'seo_description']
+
+
+class ServiceVariantInline(admin.TabularInline):
+    model = ServiceVariant
+    extra = 1
+    fields = ['name', 'description', 'price', 'order']
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'parent', 'order', 'is_active']
+    list_display = ['slug', 'parent', 'price', 'order', 'is_active']
     list_filter = ['is_active', 'parent']
-    list_editable = ['order', 'is_active']
+    list_editable = ['price', 'order', 'is_active']
     list_select_related = ['parent']
     raw_id_fields = ['parent']
-    inlines = [ServiceTranslationInline]
+    inlines = [ServiceTranslationInline, ServiceVariantInline]
 
 
-class NewsTranslationInline(admin.TabularInline):
+class ServiceOrderItemInline(admin.TabularInline):
+    model = ServiceOrderItem
+    extra = 0
+    readonly_fields = ['service', 'float_trip', 'variant_name', 'quantity', 'unit_price', 'line_total']
+    can_delete = False
+
+
+@admin.register(ServiceOrder)
+class ServiceOrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'customer_name', 'customer_phone', 'customer_email', 'total_amount', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
+    search_fields = ['customer_name', 'customer_phone', 'customer_email']
+    readonly_fields = ['customer_name', 'customer_email', 'customer_phone', 'comment', 'total_amount', 'created_at']
+    inlines = [ServiceOrderItemInline]
+
+
+class NewsTranslationInline(admin.StackedInline):
     model = NewsTranslation
     extra = 0
+    fields = ['locale', 'title', 'short_desc', 'long_desc', 'seo_title', 'seo_description']
 
 
 @admin.register(News)
@@ -47,9 +71,10 @@ class NewsAdmin(admin.ModelAdmin):
     inlines = [NewsTranslationInline]
 
 
-class PromoTranslationInline(admin.TabularInline):
+class PromoTranslationInline(admin.StackedInline):
     model = PromoTranslation
     extra = 0
+    fields = ['locale', 'title', 'short_desc', 'long_desc', 'seo_title', 'seo_description']
 
 
 @admin.register(Promo)
@@ -433,9 +458,10 @@ class CalendarBookingAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email']
 
 
-class FloatTripTranslationInline(admin.TabularInline):
+class FloatTripTranslationInline(admin.StackedInline):
     model = FloatTripTranslation
     extra = 0
+    fields = ['locale', 'title', 'description', 'seo_title', 'seo_description']
 
 
 @admin.register(FloatTrip)
@@ -489,6 +515,7 @@ class AboutPageContentAdmin(admin.ModelAdmin):
 class LegalPageTranslationInline(admin.StackedInline):
     model = LegalPageTranslation
     extra = 0
+    fields = ['locale', 'title', 'content', 'seo_title', 'seo_description']
 
 
 @admin.register(LegalPage)

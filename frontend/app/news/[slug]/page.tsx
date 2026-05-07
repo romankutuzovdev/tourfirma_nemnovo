@@ -25,7 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const news = await fetchNewsBySlug(slug, 'ru')
   if (!news) return { title: 'Новость не найдена' }
-  return { title: `${news.title} — Немново`, description: news.short_desc }
+  const seoTitle = news.seo_title?.trim() || news.title
+  const seoDescription = news.seo_description?.trim() || news.short_desc
+  return { title: seoTitle, description: seoDescription }
 }
 
 export default async function NewsArticlePage({ params }: Props) {

@@ -11,7 +11,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const promo = await fetchPromoBySlug(slug, 'ru')
   if (!promo) return { title: 'Акция не найдена' }
-  return { title: `${promo.title} — Немново`, description: promo.short_desc }
+  const seoTitle = promo.seo_title?.trim() || promo.title
+  const seoDescription = promo.seo_description?.trim() || promo.short_desc
+  return { title: seoTitle, description: seoDescription }
 }
 
 export default async function PromoPage({ params }: Props) {

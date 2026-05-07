@@ -1,6 +1,15 @@
+import type { Metadata } from 'next'
 import { PageLayout } from '@/components/PageLayout'
 import { fetchLegalPage } from '@/lib/api'
 import { FloatDescription } from '@/components/FloatDescription'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await fetchLegalPage('cookie-policy', 'ru')
+  return {
+    title: content?.seo_title?.trim() || content?.title || 'Политика cookie',
+    description: content?.seo_description?.trim() || 'Политика использования файлов cookie на сайте Немново Тур.',
+  }
+}
 
 export default async function CookiePolicyPage() {
   const content = await fetchLegalPage('cookie-policy', 'ru')

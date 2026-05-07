@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useLocale } from '@/contexts/LocaleContext'
 import { PageLayout } from '@/components/PageLayout'
@@ -25,6 +25,7 @@ const LOCALE_TO_INTL: Record<string, string> = {
 
 export default function CalendarEventDetailPage() {
   const params = useParams<{ id: string }>()
+  const searchParams = useSearchParams()
   const locale = useLocale()
   const t = useTranslations()
   const [event, setEvent] = useState<CalendarEventDetailItem | null>(null)
@@ -104,6 +105,8 @@ export default function CalendarEventDetailPage() {
   }
 
   const desc = event.long_desc
+  const returnMonth = searchParams.get('ym')
+  const backToCalendarHref = returnMonth ? `/calendar?ym=${encodeURIComponent(returnMonth)}` : '/calendar'
 
   return (
     <PageLayout
@@ -114,7 +117,7 @@ export default function CalendarEventDetailPage() {
       <article className="pb-16 md:pb-24">
         <div className="max-w-4xl mx-auto">
           <Link
-            href="/calendar"
+            href={backToCalendarHref}
             className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-primary mb-4"
           >
             <span aria-hidden>←</span>
@@ -168,7 +171,7 @@ export default function CalendarEventDetailPage() {
               <div className="p-8 rounded-2xl bg-primary/10 border border-primary/20">
                 <p className="font-sans text-lg text-primary font-medium">{t('calendarPage.success')}</p>
                 <Link
-                  href="/calendar"
+                  href={backToCalendarHref}
                   className="inline-block mt-4 px-6 py-2.5 rounded-lg bg-primary text-white font-sans font-semibold hover:bg-primary/90"
                 >
                   {t('calendarPage.backToCalendar')}
@@ -241,7 +244,7 @@ export default function CalendarEventDetailPage() {
 
           <div className="mt-6">
             <Link
-              href="/calendar"
+              href={backToCalendarHref}
               className="inline-flex items-center gap-2 font-sans text-sm text-black/80 hover:text-primary transition-colors"
             >
               <span aria-hidden>←</span>
